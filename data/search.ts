@@ -47,7 +47,7 @@ export const searchIndex: SearchEntry[] = [
   ...caseStudies.map((study) => ({
     id: `case-${study.slug}`,
     title: study.title,
-    description: `${study.client} — ${study.summary}`,
+    description: `${study.client}: ${study.summary}`,
     href: ROUTES.caseStudy(study.slug),
     group: 'Case studies',
     keywords: [study.client, study.challenge, study.solution].join(' '),

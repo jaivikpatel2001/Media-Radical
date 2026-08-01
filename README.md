@@ -49,7 +49,8 @@ the file-by-file mapping are in `CLAUDE.md`.
 | File | What it is for |
 |---|---|
 | `DONE.md` | Chronological log of completed work. **Read this first** — it records what exists and which approaches were tried and rejected. |
-| `CLAUDE.md` | Working rules, project constraints, the documentation policy. |
+| `CLAUDE.md` | Working rules, project constraints, the documentation and SEO policy. |
+| `PLAN.md` | The architecture plan Phase 1 was built from. Historical — the folder structure, component architecture, data layer and routing sections are still the reference for adding page groups 2–17. |
 | `AGENTS.md` | This is Next.js 16 — read the bundled docs before writing code. |
 | `app/ROUTES.md` | How to add one of the 16 unbuilt page groups. |
 | `imagegeneration.md` | The 14 images the design expects: prompts, exact paths and sizes. |

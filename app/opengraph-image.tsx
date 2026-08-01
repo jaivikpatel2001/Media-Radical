@@ -17,7 +17,7 @@ import { site } from '@/data/site';
  * No custom font is loaded on purpose: reading a font file here would add a
  * build-time dependency on an asset for a surface nobody views at full size.
  */
-export const alt = `${site.name} — ${site.tagline}`;
+export const alt = `${site.name}: ${site.tagline}`;
 
 export const size = { width: 1200, height: 630 };
 

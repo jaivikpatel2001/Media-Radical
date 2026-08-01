@@ -26,8 +26,10 @@ export interface HeroContent {
   secondaryCta?: CTA;
   /** Three short proof chips under the CTAs. */
   proofPoints: string[];
-  /** Single figure on the card overlapping the hero art. */
+  /** Figure on the card overlapping the bottom-left of the hero art. */
   highlight?: Metric;
+  /** Second card, top-right of the hero art. */
+  highlightSecondary?: Metric;
   /**
    * Ambient art, composed for the light theme. Optional — the section falls
    * back to the CSS gradient mesh, so the page is complete without it.

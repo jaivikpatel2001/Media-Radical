@@ -51,7 +51,7 @@
 
 /* ---------- primary ---------- */
 .primary {
-  background-color: var(--color-accent);
+  background-color: var(--color-accent-strong);
   color: var(--color-accent-contrast);
   /* A one-pixel top highlight is what makes a solid button read as a physical
      object rather than a coloured rectangle. */

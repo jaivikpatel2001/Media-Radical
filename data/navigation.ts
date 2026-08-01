@@ -29,6 +29,9 @@ const serviceLinks: NavLink[] = [...services]
     icon: service.icon,
   }));
 
+/** Services with order 1–8 are delivery; 9+ are marketing and infrastructure. */
+const buildServiceCount = services.filter((service) => service.order <= 8).length;
+
 const industryLinks: NavLink[] = [...industries]
   .sort((a, b) => a.order - b.order)
   .map((industry) => ({
@@ -43,9 +46,18 @@ export const header: HeaderConfig = {
     {
       label: 'Services',
       href: ROUTES.services,
+      // Build vs Grow, split at the boundary between the eight delivery
+      // services and the six marketing ones (order >= 9). Derived rather than
+      // hardcoded, so adding a service lands in the right column by itself.
       columns: [
-        { title: 'Build', links: serviceLinks.slice(0, 4) },
-        { title: 'Run and advise', links: serviceLinks.slice(4) },
+        {
+          title: 'Build & run',
+          links: serviceLinks.slice(0, buildServiceCount),
+        },
+        {
+          title: 'Grow & market',
+          links: serviceLinks.slice(buildServiceCount),
+        },
       ],
       feature: {
         eyebrow: 'Start here',

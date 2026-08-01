@@ -103,6 +103,84 @@ Times are IST (UTC+05:30).
 | 20:08 | Measured the trade honestly: HTML gzip went 73 KB → 177 KB (80 KB brotli, which is what a CDN serves) while ~100 KB left the JS bundle. Near-neutral on bytes, but JS costs parse and execute on the main thread where static HTML is CDN-cached and parse-only — plus the content became crawlable. |
 | 20:12 | **SEO audit found two defects, both fixed.** No `<link rel="canonical">` anywhere — added via `alternates.canonical` in the root metadata, resolved against `metadataBase`. And no `og:image` or `twitter:image`, so every share rendered as a bare text link — added `app/opengraph-image.tsx` using `next/og`, statically generated at build time and derived from `data/site.ts`. Verified: canonical present, both image tags present with alt text, endpoint returns a real PNG. |
 
+### Media Radical 2.0 — real brand identity adopted
+
+| Time | What was completed |
+|---|---|
+| 20:30 | Added **`PLAN.md`** to the repo — the architecture plan Phase 1 was built from. Annotated at the top as a historical document: sections 2, 4, 5 and 7 (folder structure, component architecture, data layer, routing) are still accurate and are what you want when adding page groups 2–17. The palette, fonts and several section designs have moved on since; `DONE.md` is the source of truth for what exists. |
+| 20:35 | **Analysed mediaradical.in.** WebFetch strips CSS, so the palette was read from the live site's computed styles in the browser. Findings: primary **`#008DD2`** blue (logo, section headings, tick marks — 64 uses), secondary **`#EA6981`** rose (bullets and chevrons — 28 uses), pale wash `#FDEFF2`, and `#0178B4` as the existing hover state. |
+| 20:36 | **Positioning correction.** The real company is a *digital media agency* in Ahmedabad — SEO, PPC, social media, hosting, email, ecommerce — not an IT consultancy. Our copy had it wrong. Updated `site.ts` with the genuine details: Ahmedabad address, +91 972 344 6969, contact@mediaradical.in, trading since 2013, and `mediaradical.in` as the origin. |
+| 20:40 | **Adopted the brand palette across the design system.** `--accent-*` rebuilt around `#008DD2`, `--rose-*` around `#EA6981`, meshes and the brand gradient now run blue → rose. Zero indigo references remain. |
+| 20:42 | **Split the accent into three roles**, because one blue cannot do all three accessibly: white text on `#008DD2` measures **3.66:1** and fails AA. So `--color-accent` is the brand blue for icons and decoration (passes the 3:1 non-text bar), `--color-accent-strong` (`#0178B4`, 4.83:1) takes any fill carrying white text — buttons, active tab pill, newsletter submit — and `--color-accent-text` (`#016A9E`, 5.9:1) carries links and small text. |
+| 20:46 | **Added the six missing services** the original site leads with: SEO, PPC & Google Ads, Social Media Marketing, Domain & Hosting, Email Solutions, Ecommerce & CRM. Copy rewritten and expanded, not lifted — the source gives one sentence each. Six new hand-drawn icons. **14 services total**, and the header dropdown now splits "Build & run" / "Grow & market" from the `order` field rather than a hardcoded index. |
+| 20:50 | Rewrote the Home hero, intro, services and stats framing to the real positioning — build *and* marketing under one roof, which is the genuine differentiator. |
+| 20:55 | **Removed the blue bloom behind the hero icon cloud.** Once the logos took their own brand colours the blurred radial read as a smudge competing with them rather than as light. |
+
+### Hero layout, real client list, testimonials
+
+| Time | What was completed |
+|---|---|
+| 21:05 | **Hero split 50/50** on screens ≥900px (was 0.92fr / 1.08fr) and the headline reduced from a 92px ceiling to **68px** (`--display-lg`, 40px → 68px). `display-lg` is used only by the hero headline, so the token itself was reduced rather than adding a component override — the type scale stays the single source. |
+| 21:08 | Investigated the hero art reading 613px inside a 547px track. **Not a bug:** `offsetWidth` is 547 (an exact 50/50 layout); `getBoundingClientRect` includes the entry animation's `scale(1.12)`, which is frozen mid-tween because rAF is paused in the hidden preview pane. A defensive `min/max-inline-size` guard was kept, and the comment corrected to say what it actually does. |
+| 21:15 | **Replaced the invented client list with the twelve real clients** listed on mediaradical.in: Philbrick India, Simplex, TTE, Jasco, AK Valve, Mazda, HP Auto, HV, AB & Dhruv, Awatech, Rotary, Friends. Sector descriptors were deliberately dropped — the source gives none, and inventing one would put an unverified claim about a real, identifiable company on the page. |
+| 21:20 | **mediaradical.in has no testimonials section** — only About, Services, Technologies, Clients and Contact — so there was nothing to carry across. Testimonials were rewritten around the services the agency actually sells (websites, SEO, ads, ecommerce, email) and are clearly labelled placeholders. |
+
+> **⚠️ The testimonial quotes are invented and must not be published as-is.**
+> Attributions use obviously-fake names ("Placeholder Name", "Example
+> Manufacturing Co.") on purpose. They are deliberately NOT the real client
+> names from the trust strip: putting an invented quote in the mouth of a
+> real, identifiable business is a claim that business never made, and a legal
+> and reputational risk. Collect real quotes with written permission and
+> replace the `quote` and `author` fields — the section, layout and schema
+> need no code changes. There is a loud warning at the top of the file.
+
+### Hero cards, proof band, and two new writing rules
+
+| Time | What was completed |
+|---|---|
+| 21:30 | **Second float card** added at the top-right of the hero art ("12+ businesses trust us", grounded in the twelve real clients), mirroring the existing bottom-left one. Needed a `.artCloud .floatCardTop` override, because `.artCloud .floatCard` has higher specificity and was dragging it back to the bottom-left corner. |
+| 21:34 | **Proof points moved out of the copy column** into a full-width band below the split, redesigned as an evenly divided three-column row with hairline dividers and accent tick chips. The hero became a flex column to allow a second in-flow child. |
+| 21:38 | **Icon cloud pause button hidden.** It is visually hidden and restored on focus, not deleted: WCAG 2.2.2 requires a way to stop motion that auto-starts and runs past five seconds, and the sphere does exactly that. A keyboard or screen-reader user can still reach and operate it. Same pattern as the skip link. |
+| 21:50 | **Added the no-decorative-dash rule to `CLAUDE.md`**, then applied it to the existing copy. Rewrote every em dash in visitor-facing strings using commas, colons or separate sentences, including the metadata title template, Open Graph and Twitter titles, the OG image alt and the logo `aria-label`. **Verified: 0 em dashes in the delivered HTML.** Code comments are exempt. |
+| 22:00 | **Added the Indian-market content rule to `CLAUDE.md`**, then applied it. Rewrote all four case studies as fictional Indian businesses with Indian scenarios: Shreeji Textiles (Surat, UPI checkout), Anand Diagnostics (Ahmedabad, WhatsApp reminders), Vardhman Engineering (Rajkot, ₹340 cost per enquiry) and Rasoi Fresh (Pune). Testimonials given Indian names, cities and ₹ figures. Blog authors changed to Indian names. "Black Friday" became the Diwali rush, HIPAA became the DPDP Act, and `og:locale` moved from `en_US` to `en_IN`. |
+| 22:05 | Removed an invented "68 developers" headcount from the FAQ, which contradicted the rewritten intro and was never a known fact about the real company. |
+
+### Hero cleanup and a site-wide descender fix
+
+| Time | What was completed |
+|---|---|
+| 22:20 | **Removed the dark shadow from the hero stat cards.** They used `--shadow-lg`, a near-black drop shadow that worked over a photograph but read as a grey smudge on the near-white hero. Hairline ring only now; the frosted backdrop does the separating. |
+| 22:22 | **Removed the hero's ambient colour mesh.** The cloud's own glow had already gone, but the hero still painted three blurred blooms behind the artwork and the blue one sat directly behind the logos. Left as `display: none` with a note, so it is one line to restore, ideally on the copy side well away from the cloud. Texture now comes from the grid and grain alone. |
+| 22:35 | **Fixed clipped descenders across the whole site.** Two causes, both real: `--leading-display` was **0.98**, which makes the line box shorter than the em box so g, y, p, j and q fall outside it; and SplitText's `mask: 'lines'` wraps each line in an overflow-hidden box that then cuts them off. Raised the display leading to 1.08 (tight and 1.15), and gave `.splitLine` 0.18em of descender padding with an equal negative margin so spacing is unchanged. |
+| 22:38 | Also widened the gradient-text padding from 0.06em to 0.22em. `background-clip: text` only paints within the padding box, so a descender reaching past it loses its fill and simply vanishes. |
+
+**Measured against the rendered font rather than eyeballed.** The hero headline
+has 73px of ink (54px ascent plus 19px below the baseline) at 68px. The old
+line box was 0.98 × 68 = **66.6px**, clipping by 6.4px, which is exactly what
+was visible. It is now 73.4px. Swept every text node at 375px and 1440px: no
+element carrying a descender has a line-height ratio under 1.02, and no split
+line overflows its mask.
+
+**Contrast pass after the palette swap — 133 failing text nodes → 3**, and all
+three remaining are false positives (white text over a scrim or the accent
+pill, which the measuring walker cannot resolve). Four real defects fixed:
+
+- The per-category accent colours were used for small **text** — amber measured
+  **1.78:1**, rose 3.07:1. `constants/accents.ts` now splits the two jobs: the
+  per-category variety lives in `--accent-wash` (a background, so non-text and
+  unconstrained) while `--accent-colour` is one AA-safe brand tone.
+- `--color-text-faint` was `#9797A5` at **2.88:1** — below even the large-text
+  floor, and it carried real content. Now resolves to the muted step.
+- `--ink-500` was `#71717F`, which passed on white but measured **4.41:1** on
+  the subtle section background where much of the muted text actually sits.
+  Nudged to `#6A6A78`.
+- On the dark island and dark theme, buttons were dark-on-mid-blue at
+  **4.07:1**. Flipped to a light fill with a dark label — 9.32:1.
+
+**Placeholder vs real:** the brand colours, positioning, services, address,
+phone and email are genuine. Case studies, testimonials, client names and the
+statistics remain illustrative placeholders written to fit the brand.
+
 **Audit result for the rest:** title 47 chars, description 161, exactly one
 `h1`, clean h2/h3 order, and structured data covering ProfessionalService,
 WebSite, FAQPage plus 8 Services and Offers — all already in good shape.

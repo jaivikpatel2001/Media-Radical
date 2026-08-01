@@ -108,6 +108,54 @@ const MaintenanceSupport: IconComponent = (props) => (
   </Svg>
 );
 
+const Seo: IconComponent = (props) => (
+  <Svg {...props}>
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <path d="m15.5 15.5 5 5" />
+    <path d="M7.5 11.5 10 9l2 2 2.5-3" />
+  </Svg>
+);
+
+const Ads: IconComponent = (props) => (
+  <Svg {...props}>
+    <path d="M3.5 9.5h3l8-4.5v14l-8-4.5h-3a1.5 1.5 0 0 1-1.5-1.5v-2a1.5 1.5 0 0 1 1.5-1.5Z" />
+    <path d="M18.5 9a4 4 0 0 1 0 6" />
+    <path d="M6.5 14.5v4.5" />
+  </Svg>
+);
+
+const SocialMedia: IconComponent = (props) => (
+  <Svg {...props}>
+    <circle cx="18" cy="5.5" r="2.6" />
+    <circle cx="6" cy="12" r="2.6" />
+    <circle cx="18" cy="18.5" r="2.6" />
+    <path d="m8.4 10.8 7.2-4M8.4 13.2l7.2 4" />
+  </Svg>
+);
+
+const DomainHosting: IconComponent = (props) => (
+  <Svg {...props}>
+    <circle cx="12" cy="12" r="9" />
+    <path d="M3 12h18" />
+    <path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18Z" />
+  </Svg>
+);
+
+const Email: IconComponent = (props) => (
+  <Svg {...props}>
+    <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+    <path d="m3.5 7 8.5 6 8.5-6" />
+  </Svg>
+);
+
+const Ecommerce: IconComponent = (props) => (
+  <Svg {...props}>
+    <path d="M2.5 3.5h2.2l2.1 10.6a1.6 1.6 0 0 0 1.6 1.3h8.4a1.6 1.6 0 0 0 1.6-1.3l1.3-6.6H6" />
+    <circle cx="9" cy="19.5" r="1.4" />
+    <circle cx="17" cy="19.5" r="1.4" />
+  </Svg>
+);
+
 /* ---------------------------------------------------------------- industries */
 
 const Fintech: IconComponent = (props) => (
@@ -242,6 +290,12 @@ export const ICONS: Record<IconName, IconComponent> = {
   'ai-automation': AiAutomation,
   'it-consulting': ItConsulting,
   'maintenance-support': MaintenanceSupport,
+  seo: Seo,
+  ads: Ads,
+  'social-media': SocialMedia,
+  'domain-hosting': DomainHosting,
+  email: Email,
+  ecommerce: Ecommerce,
   // industries
   fintech: Fintech,
   healthcare: Healthcare,

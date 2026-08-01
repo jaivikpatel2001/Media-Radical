@@ -254,7 +254,7 @@ export const technologyGroups: TechnologyGroup[] = [
     category: 'ai',
     label: 'AI',
     description:
-      'Search, chat and automation — plus the testing setup that proves the answers are actually right.',
+      'Search, chat and automation, plus the testing setup that proves the answers are actually right.',
     technologyIds: [
       'openai',
       'langchain',

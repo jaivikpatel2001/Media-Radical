@@ -54,14 +54,14 @@ export const services: Service[] = [
     ],
     technologyIds: ['nextjs', 'react', 'typescript', 'node', 'postgres', 'vercel'],
     processStepIds: ['discover', 'define', 'design', 'build', 'launch', 'evolve'],
-    caseStudySlugs: ['northwind-capital-platform', 'meridian-commerce-replatform'],
+    caseStudySlugs: ['vardhman-engineering-seo', 'shreeji-textiles-store'],
     faqIds: ['faq-timeline', 'faq-engagement', 'faq-handover'],
     order: 1,
     featured: true,
     seo: {
       title: 'Web Development Services',
       description:
-        'Fast, reliable websites and web apps built to handle real traffic — and easy to update after launch.',
+        'Fast, reliable websites and web apps built to handle real traffic, and easy to update after launch.',
     },
   },
   {
@@ -105,7 +105,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['react-native', 'swift', 'kotlin', 'typescript', 'firebase'],
     processStepIds: ['discover', 'define', 'design', 'build', 'launch', 'evolve'],
-    caseStudySlugs: ['helix-health-cloud'],
+    caseStudySlugs: ['anand-diagnostics-booking'],
     faqIds: ['faq-timeline', 'faq-team', 'faq-support'],
     order: 2,
     featured: true,
@@ -156,7 +156,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['figma', 'storybook', 'react', 'typescript'],
     processStepIds: ['discover', 'define', 'design', 'build'],
-    caseStudySlugs: ['meridian-commerce-replatform', 'northwind-capital-platform'],
+    caseStudySlugs: ['shreeji-textiles-store', 'vardhman-engineering-seo'],
     faqIds: ['faq-design-handover', 'faq-engagement'],
     order: 3,
     featured: true,
@@ -207,7 +207,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['typescript', 'node', 'python', 'postgres', 'graphql', 'aws'],
     processStepIds: ['discover', 'define', 'design', 'build', 'launch', 'evolve'],
-    caseStudySlugs: ['atlas-logistics-control'],
+    caseStudySlugs: ['rasoi-fresh-delivery'],
     faqIds: ['faq-engagement', 'faq-ip', 'faq-handover'],
     order: 4,
     featured: true,
@@ -258,7 +258,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['aws', 'terraform', 'kubernetes', 'docker', 'github-actions', 'grafana'],
     processStepIds: ['discover', 'define', 'build', 'launch', 'evolve'],
-    caseStudySlugs: ['helix-health-cloud', 'atlas-logistics-control'],
+    caseStudySlugs: ['anand-diagnostics-booking', 'rasoi-fresh-delivery'],
     faqIds: ['faq-support', 'faq-security', 'faq-handover'],
     order: 5,
     featured: true,
@@ -309,7 +309,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['python', 'typescript', 'postgres', 'aws', 'langchain'],
     processStepIds: ['discover', 'define', 'build', 'launch', 'evolve'],
-    caseStudySlugs: ['atlas-logistics-control'],
+    caseStudySlugs: ['rasoi-fresh-delivery'],
     faqIds: ['faq-ai-scope', 'faq-security', 'faq-engagement'],
     order: 6,
     featured: true,
@@ -360,7 +360,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['typescript', 'aws', 'postgres', 'kubernetes'],
     processStepIds: ['discover', 'define', 'evolve'],
-    caseStudySlugs: ['meridian-commerce-replatform'],
+    caseStudySlugs: ['shreeji-textiles-store'],
     faqIds: ['faq-consulting-scope', 'faq-engagement', 'faq-pricing'],
     order: 7,
     featured: false,
@@ -411,7 +411,7 @@ export const services: Service[] = [
     ],
     technologyIds: ['github-actions', 'grafana', 'aws', 'docker'],
     processStepIds: ['launch', 'evolve'],
-    caseStudySlugs: ['helix-health-cloud'],
+    caseStudySlugs: ['anand-diagnostics-booking'],
     faqIds: ['faq-support', 'faq-pricing', 'faq-handover'],
     order: 8,
     featured: false,
@@ -419,6 +419,321 @@ export const services: Service[] = [
       title: 'Software Maintenance & Support',
       description:
         'Ongoing support with agreed response times, scheduled security updates and clear monthly reporting.',
+    },
+  },
+
+  /* -----------------------------------------------------------------------
+     The marketing and infrastructure side of the agency.
+
+     These six are the services the original mediaradical.in leads with. The
+     source describes each in a single sentence; the copy here is rewritten
+     and expanded to the depth the rest of the site carries, in the same plain
+     English. Nothing is lifted verbatim.
+     ----------------------------------------------------------------------- */
+  {
+    slug: 'seo',
+    name: 'SEO',
+    shortName: 'SEO',
+    tagline: 'Get found by people already looking for you',
+    summary:
+      'We improve where your site appears in Google for the searches that actually bring customers. No tricks, just the work that moves rankings.',
+    icon: 'seo',
+    accent: 'indigo',
+    capabilities: [
+      'Keyword and competitor research',
+      'On-page and technical SEO',
+      'Local and Google Business Profile',
+      'Content planning',
+      'Monthly ranking reports',
+    ],
+    benefits: [
+      {
+        id: 'seo-benefit-intent',
+        title: 'Traffic that converts',
+        description:
+          'We target searches with buying intent, not the ones with the biggest numbers. Fewer visitors, more enquiries.',
+        icon: 'target',
+      },
+      {
+        id: 'seo-benefit-technical',
+        title: 'The technical work too',
+        description:
+          'Speed, mobile, crawlability and structured data. Most agencies stop at keywords, and that is where rankings are usually lost.',
+        icon: 'gauge',
+      },
+      {
+        id: 'seo-benefit-report',
+        title: 'Reports you can read',
+        description:
+          'Every month: what moved, what we did, what is next. Plain English, with the numbers attached.',
+        icon: 'growth',
+      },
+    ],
+    technologyIds: ['nextjs', 'wordpress', 'gcp'],
+    processStepIds: ['discover', 'define', 'build', 'evolve'],
+    caseStudySlugs: ['shreeji-textiles-store'],
+    faqIds: ['faq-engagement', 'faq-pricing', 'faq-timeline'],
+    order: 9,
+    featured: true,
+    seo: {
+      title: 'SEO Services',
+      description:
+        'Search engine optimisation aimed at searches with buying intent: technical, on-page and local, reported every month.',
+    },
+  },
+  {
+    slug: 'ppc-and-google-ads',
+    name: 'PPC & Google Ads',
+    shortName: 'Paid Ads',
+    tagline: 'Ads that pay for themselves',
+    summary:
+      'Search, shopping and social campaigns built around what a customer is actually worth to you, so you can tell whether the spend is working.',
+    icon: 'ads',
+    accent: 'rose',
+    capabilities: [
+      'Google Search and Shopping',
+      'Meta and LinkedIn ads',
+      'Landing pages built to convert',
+      'Conversion tracking setup',
+      'Budget and bid management',
+    ],
+    benefits: [
+      {
+        id: 'ppc-benefit-tracking',
+        title: 'Tracking set up first',
+        description:
+          'We do not spend a rupee until conversions are tracked correctly. Without that you are optimising blind.',
+        icon: 'target',
+      },
+      {
+        id: 'ppc-benefit-landing',
+        title: 'The landing page matters more',
+        description:
+          'Good ads pointed at a slow page waste money. We build the page as part of the campaign, not after it.',
+        icon: 'gauge',
+      },
+      {
+        id: 'ppc-benefit-honest',
+        title: 'We will tell you to stop',
+        description:
+          'If the numbers do not work for your margins, we say so rather than keep charging a management fee.',
+        icon: 'handshake',
+      },
+    ],
+    technologyIds: ['nextjs', 'gcp'],
+    processStepIds: ['discover', 'define', 'launch', 'evolve'],
+    caseStudySlugs: ['shreeji-textiles-store'],
+    faqIds: ['faq-pricing', 'faq-engagement'],
+    order: 10,
+    featured: true,
+    seo: {
+      title: 'PPC & Google Ads Management',
+      description:
+        'Paid search and social campaigns with conversion tracking set up first and landing pages built as part of the work.',
+    },
+  },
+  {
+    slug: 'social-media-marketing',
+    name: 'Social Media Marketing',
+    shortName: 'Social',
+    tagline: 'A feed worth following',
+    summary:
+      'Planning, content and community management on the platforms your customers actually use, with a calendar you can see weeks ahead.',
+    icon: 'social-media',
+    accent: 'violet',
+    capabilities: [
+      'Content strategy and calendar',
+      'Post design and copywriting',
+      'Reels and short video',
+      'Community management',
+      'Performance reporting',
+    ],
+    benefits: [
+      {
+        id: 'social-benefit-plan',
+        title: 'Planned, not panicked',
+        description:
+          'You approve a month at a time. Nobody is writing a caption at 9pm because something has to go out.',
+        icon: 'clock',
+      },
+      {
+        id: 'social-benefit-brand',
+        title: 'Consistent to your brand',
+        description:
+          'One set of templates, one tone of voice. Your tenth post looks like it came from the same company as your first.',
+        icon: 'layers',
+      },
+      {
+        id: 'social-benefit-measure',
+        title: 'Measured against something',
+        description:
+          'Reach and likes are the easy numbers. We report the ones tied to enquiries and sales.',
+        icon: 'growth',
+      },
+    ],
+    technologyIds: ['figma'],
+    processStepIds: ['discover', 'define', 'design', 'evolve'],
+    caseStudySlugs: [],
+    faqIds: ['faq-engagement', 'faq-pricing'],
+    order: 11,
+    featured: true,
+    seo: {
+      title: 'Social Media Marketing',
+      description:
+        'Strategy, content and community management with an approved calendar and reporting tied to enquiries.',
+    },
+  },
+  {
+    slug: 'domain-and-hosting',
+    name: 'Domain & Hosting',
+    shortName: 'Hosting',
+    tagline: 'Your address online, and somewhere reliable to keep it',
+    summary:
+      'Domain registration, managed hosting, SSL and backups. Set up properly once, then looked after so you never think about it.',
+    icon: 'domain-hosting',
+    accent: 'teal',
+    capabilities: [
+      'Domain registration and transfer',
+      'Managed hosting',
+      'SSL certificates',
+      'Daily backups',
+      'Uptime monitoring',
+    ],
+    benefits: [
+      {
+        id: 'hosting-benefit-uptime',
+        title: 'It stays up',
+        description:
+          'Monitored around the clock. If something goes down, we usually know before you do.',
+        icon: 'shield',
+      },
+      {
+        id: 'hosting-benefit-backup',
+        title: 'Backups you can restore',
+        description:
+          'Taken daily and tested. A backup nobody has ever restored from is not a backup.',
+        icon: 'clock',
+      },
+      {
+        id: 'hosting-benefit-own',
+        title: 'Registered in your name',
+        description:
+          'Your domain and accounts belong to you. Some agencies hold the logins; we hand them over.',
+        icon: 'handshake',
+      },
+    ],
+    technologyIds: ['cloudflare', 'nginx', 'gcp', 'vercel'],
+    processStepIds: ['define', 'launch', 'evolve'],
+    caseStudySlugs: [],
+    faqIds: ['faq-support', 'faq-ip'],
+    order: 12,
+    featured: false,
+    seo: {
+      title: 'Domain & Hosting Services',
+      description:
+        'Domain registration and managed hosting with SSL, daily tested backups and uptime monitoring.',
+    },
+  },
+  {
+    slug: 'email-solutions',
+    name: 'Email Solutions',
+    shortName: 'Email',
+    tagline: 'Email at your own domain, set up right',
+    summary:
+      'Google Workspace, Microsoft 365 or standard business email, migrated, configured and protected so your messages reach the inbox.',
+    icon: 'email',
+    accent: 'cyan',
+    capabilities: [
+      'Google Workspace setup',
+      'Microsoft 365 setup',
+      'Migration from an old provider',
+      'SPF, DKIM and DMARC',
+      'Shared mailboxes and groups',
+    ],
+    benefits: [
+      {
+        id: 'email-benefit-deliver',
+        title: 'Lands in the inbox',
+        description:
+          'SPF, DKIM and DMARC configured properly. Without them your mail quietly goes to spam.',
+        icon: 'target',
+      },
+      {
+        id: 'email-benefit-migrate',
+        title: 'Nothing lost in the move',
+        description:
+          'Existing mail, contacts and calendars come across, and migrations run outside working hours.',
+        icon: 'layers',
+      },
+      {
+        id: 'email-benefit-trust',
+        title: 'Looks professional',
+        description:
+          'An address at your own domain instead of a free one. A small thing customers notice.',
+        icon: 'shield',
+      },
+    ],
+    technologyIds: ['gcp'],
+    processStepIds: ['define', 'launch'],
+    caseStudySlugs: [],
+    faqIds: ['faq-support'],
+    order: 13,
+    featured: false,
+    seo: {
+      title: 'Business Email Solutions',
+      description:
+        'Google Workspace and Microsoft 365 setup and migration, with SPF, DKIM and DMARC configured for deliverability.',
+    },
+  },
+  {
+    slug: 'ecommerce-and-crm',
+    name: 'Ecommerce & CRM',
+    shortName: 'Ecommerce',
+    tagline: 'Sell online and keep track of who bought',
+    summary:
+      'Online stores with payments, stock and shipping wired up, connected to a CRM so every enquiry and order sits in one place.',
+    icon: 'ecommerce',
+    accent: 'amber',
+    capabilities: [
+      'Shopify and WooCommerce stores',
+      'Payment gateway integration',
+      'Stock and order management',
+      'CRM setup and integration',
+      'Abandoned cart recovery',
+    ],
+    benefits: [
+      {
+        id: 'ecom-benefit-checkout',
+        title: 'A checkout that finishes',
+        description:
+          'Most carts are lost at payment. We keep the steps short and the page fast, then measure where people drop out.',
+        icon: 'gauge',
+      },
+      {
+        id: 'ecom-benefit-stock',
+        title: 'Stock that matches reality',
+        description:
+          'Your store, your warehouse and your accounts show the same numbers, because they update from one source.',
+        icon: 'layers',
+      },
+      {
+        id: 'ecom-benefit-crm',
+        title: 'Every customer in one place',
+        description:
+          'Orders, enquiries and conversations together, so your team can answer without asking three people first.',
+        icon: 'people',
+      },
+    ],
+    technologyIds: ['shopify', 'wordpress', 'nextjs', 'postgres'],
+    processStepIds: ['discover', 'define', 'design', 'build', 'launch', 'evolve'],
+    caseStudySlugs: ['shreeji-textiles-store'],
+    faqIds: ['faq-timeline', 'faq-pricing', 'faq-support'],
+    order: 14,
+    featured: true,
+    seo: {
+      title: 'Ecommerce & CRM Development',
+      description:
+        'Online stores with payments, stock and shipping connected to a CRM, so orders and enquiries live in one place.',
     },
   },
 ];

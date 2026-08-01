@@ -15,7 +15,10 @@
   --ink-200: #d8d8e0;
   --ink-300: #bebec9;
   --ink-400: #9797a5;
-  --ink-500: #71717f;
+  /* Nudged from #71717F. That measured 4.41:1 against the subtle section
+     background (#F5F5F7) — passing on pure white but failing on the tinted
+     bands, which is where much of the muted text actually sits. */
+  --ink-500: #6a6a78;
   --ink-600: #55555f;
   --ink-700: #3c3c45;
   --ink-800: #292930;
@@ -24,25 +27,42 @@
   --ink-950: #0b0b0e;
   --ink-1000: #000000;
 
-  /* ---------- Accent: electric indigo ---------- */
-  --accent-50: #f0f0ff;
-  --accent-100: #e3e2ff;
-  --accent-200: #c8c5ff;
-  --accent-300: #a5a0ff;
-  --accent-400: #837cff;
-  --accent-500: #5b53f5;
-  --accent-600: #4a3fe0;
-  --accent-700: #3a31b6;
-  --accent-800: #2b248a;
+  /* ---------- Accent: Media Radical blue ----------
+     #008DD2 is the brand colour, sampled from mediaradical.in where it
+     carries the logo, section headings and list ticks.
 
-  /* ---------- Supporting hues (gradient meshes, category accents) -------- */
-  --cyan-400: #3ecfff;
-  --cyan-500: #0fb5ec;
+     It is NOT used for surfaces that hold white text: white on #008DD2
+     measures 3.66:1, under the 4.5:1 AA floor. The 600 step (which the
+     original site already uses as its hover state) clears it at 4.83:1 and
+     takes that job; the 700 step carries link and small text on white at
+     5.9:1. See the semantic mapping in themes.css. */
+  --accent-50: #e8f6fd;
+  --accent-100: #cbeafa;
+  --accent-200: #9ad6f4;
+  --accent-300: #5fbdea;
+  --accent-400: #26a3dd;
+  --accent-500: #008dd2;
+  --accent-600: #0178b4;
+  --accent-700: #016a9e;
+  --accent-800: #014e75;
+
+  /* ---------- Secondary: Media Radical rose ----------
+     #EA6981 is the brand's second colour, used on the original site for
+     bullets and chevrons. Decorative and large-text only — 3.07:1 on white
+     is below the floor for body copy. #FDEFF2 is its pale wash, also taken
+     from the original palette. */
+  --rose-100: #fdeff2;
+  --rose-300: #f3a3b4;
+  --rose-400: #ea6981;
+  --rose-500: #d94a66;
+
+  /* ---------- Supporting hues (gradient meshes only) ---------- */
+  --cyan-400: #5fbdea;
+  --cyan-500: #26a3dd;
   --violet-400: #b57bff;
   --violet-500: #9333ea;
   --teal-400: #2ee6b6;
   --amber-400: #ffb340;
-  --rose-400: #ff6b81;
 
   /* ---------- Radii ---------- */
   --radius-xs: 4px;

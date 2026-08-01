@@ -1,7 +1,10 @@
+/* A column, not a row: the copy/art split and the proof band beneath it are
+   two stacked in-flow children. */
 .hero {
   position: relative;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  justify-content: center;
   min-block-size: min(100svh, 900px);
   padding-block: calc(var(--header-h) + var(--space-12)) var(--space-16);
   overflow: hidden;
@@ -9,22 +12,16 @@
 }
 
 /* ---------------------------------------------------------------- ambience
-   Three soft blooms, offset from one another so the light reads as coming
-   from somewhere rather than being applied evenly. Kept behind everything and
-   heavily blurred — at this radius the GPU cost is a single composited layer. */
+   The hero used to carry three blurred colour blooms behind the artwork.
+   They were removed: once the technology logos took their own brand colours,
+   the blue bloom sat directly behind them and read as a smudge competing
+   with the marks rather than as ambient light.
+
+   Texture now comes from the faint grid and grain alone, which suits a
+   light-first design. If ambient colour is ever wanted back, restore a single
+   very low-opacity bloom on the COPY side, well away from the cloud. */
 .mesh {
-  position: absolute;
-  inset-block-start: -30%;
-  inset-inline-end: -12%;
-  inline-size: min(1180px, 118vw);
-  aspect-ratio: 1;
-  background:
-    radial-gradient(circle at 34% 32%, var(--mesh-1), transparent 56%),
-    radial-gradient(circle at 66% 44%, var(--mesh-2), transparent 54%),
-    radial-gradient(circle at 48% 72%, var(--mesh-3), transparent 58%);
-  filter: blur(var(--blur-glow));
-  pointer-events: none;
-  z-index: var(--z-base);
+  display: none;
 }
 
 .inner {
@@ -113,28 +110,64 @@
   margin-block-start: var(--space-2);
 }
 
+/* ---------------------------------------------------------------- proof band
+   Full width under both hero columns. Stacks on small screens; on desktop it
+   becomes an evenly divided row, which reads as a summary line for the whole
+   section rather than a list belonging to the copy. */
+.proofBand {
+  position: relative;
+  z-index: var(--z-raised);
+  margin-block-start: clamp(var(--space-10), 5vw, var(--space-16));
+}
+
 .proof {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  margin-block-start: var(--space-6);
+  display: grid;
+  gap: var(--space-4);
   padding-block-start: var(--space-6);
   border-block-start: 1px solid var(--color-hairline);
-  inline-size: 100%;
-  max-inline-size: 520px;
 }
 
 .proofItem {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: var(--space-4);
   font-size: var(--text-md);
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
+}
+
+/* The tick sits in its own soft accent chip, which gives the row a rhythm at
+   full width where a bare tick would look lost. */
+.proofTickWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 30px;
+  block-size: 30px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent-soft);
+  flex-shrink: 0;
 }
 
 .proofTick {
-  color: var(--color-accent);
+  color: var(--color-accent-text);
   flex-shrink: 0;
+}
+
+@media (min-width: 760px) {
+  .proof {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  /* Hairline dividers between the three, not around them. */
+  .proofItem + .proofItem {
+    padding-inline-start: clamp(var(--space-5), 3vw, var(--space-10));
+    border-inline-start: 1px solid var(--color-hairline);
+  }
+
+  .proofItem:not(:last-child) {
+    padding-inline-end: clamp(var(--space-5), 3vw, var(--space-10));
+  }
 }
 
 /* ---------------------------------------------------------------- art */
@@ -167,6 +200,15 @@
   inset-inline-start: 0;
 }
 
+/* Same specificity as the rule above, so it has to come after to win —
+   otherwise the top card gets dragged back to the bottom-left corner. */
+.artCloud .floatCardTop {
+  inset-block-start: 2%;
+  inset-block-end: auto;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
 /* A floating proof card overlapping the art — the detail that stops the hero
    from being two rectangles side by side. */
 .floatCard {
@@ -181,7 +223,21 @@
   background-color: var(--color-glass-strong);
   backdrop-filter: blur(var(--blur-md)) saturate(180%);
   -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
-  box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--color-border);
+  /* Hairline ring only. --shadow-lg is a dark drop shadow, which read as a
+     grey smudge under the card once it sat on the near-white hero rather
+     than on a photograph. The ring plus the frosted backdrop is enough to
+     separate it from the logos behind. */
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* Second card, top-right. Mirrors the bottom-left one so the sphere sits
+   between two anchors instead of leaning on one corner. */
+.floatCardTop {
+  inset-block-start: var(--space-5);
+  inset-block-end: auto;
+  inset-inline-start: auto;
+  inset-inline-end: var(--space-5);
+  text-align: end;
 }
 
 .floatValue {
@@ -236,8 +292,10 @@
 
 /* ---------------------------------------------------------------- layout */
 @media (min-width: 900px) {
+  /* Even 50/50 split. minmax(0, …) rather than a bare 1fr so a long unbroken
+     word in the copy cannot push the column past half the container. */
   .inner {
-    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     align-items: center;
     gap: clamp(var(--space-10), 5vw, var(--space-16));
   }
@@ -268,6 +326,14 @@
 .artCloud {
   aspect-ratio: 1;
   margin-inline-end: 0;
+  /* Grid items default to min-width:auto and can push past their own track.
+     Pinning these keeps the cloud inside its half of the 50/50 split no
+     matter how wide its contents get. (Note: the entry animation scales the
+     element to 1.12, so getBoundingClientRect reads ~12% wider than the
+     layout box while that tween runs — that is the transform, not overflow.) */
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 @media (prefers-reduced-motion: reduce) {

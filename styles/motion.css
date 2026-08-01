@@ -78,6 +78,20 @@
   opacity: 0;
 }
 
+/* SplitText's `mask: 'lines'` wraps every line in an overflow-hidden box so
+   the line can slide up out of view. That box is sized to the line, which
+   means any glyph reaching past the line box — descenders on g, y, p, j, q,
+   and the tail of a gradient-filled character — is clipped.
+ *
+ * The padding gives the mask that room back, and the equal negative margin
+ * stops it changing the spacing between lines. Applied to the class
+ * `linesClass` sets in animations/presets/splitLines.ts, so it only affects
+ * split headings. */
+.splitLine {
+  padding-block-end: 0.18em;
+  margin-block-end: -0.18em;
+}
+
 /* ==========================================================================
    Reduced motion
 

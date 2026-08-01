@@ -40,7 +40,10 @@
   --display-xs: clamp(1.75rem, 1.6vw + 1.36rem, 2.5rem);
   --display-sm: clamp(2.125rem, 2.6vw + 1.5rem, 3.25rem);
   --display-md: clamp(2.5rem, 4.2vw + 1.5rem, 4.25rem);
-  --display-lg: clamp(2.875rem, 6vw + 1.4rem, 5.75rem);
+  /* Hero headline only. Pulled down from a 92px ceiling: with the hero split
+     50/50 the copy column is narrower, and the old size wrapped to four lines
+     and crowded the CTAs. 40px → 68px. */
+  --display-lg: clamp(2.5rem, 4.2vw + 1.15rem, 4.25rem);
   --display-xl: clamp(3.125rem, 8vw + 1.2rem, 7.25rem);
 
   /* ---------- Weights ---------- */
@@ -50,10 +53,17 @@
   --weight-bold: 700;
 
   /* ---------- Leading ---------- */
+  /* `--leading-none` is for numerals only (counters, the ghost step index).
+     Digits have no descenders, so a line box equal to the font size is safe
+     there and nowhere else. */
   --leading-none: 1;
-  --leading-display: 0.98;
-  --leading-tight: 1.1;
-  --leading-snug: 1.25;
+  /* Was 0.98. Anything below 1 makes the line box SHORTER than the em box, so
+     descenders (g, y, p, j, q) fall outside it and get clipped — visibly so
+     inside the overflow-hidden masks the headline reveal creates. 1.08 still
+     reads as tight editorial display type but contains the whole glyph. */
+  --leading-display: 1.08;
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
   --leading-normal: 1.5;
   --leading-relaxed: 1.62;
   --leading-loose: 1.75;
@@ -206,9 +216,13 @@ button,
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  /* A gradient clipped to a descender can look cut off; pad the box. */
-  padding-block-end: 0.06em;
-  margin-block-end: -0.06em;
+  /* `background-clip: text` paints the gradient only within the element's
+     padding box. A descender (the y in "your", the g in "digital") reaches
+     roughly 0.2em below the baseline, so with too little padding the tail of
+     the glyph falls outside the painted area and simply disappears. The
+     equal negative margin keeps the extra padding out of the layout. */
+  padding-block-end: 0.22em;
+  margin-block-end: -0.22em;
 }
 
 /* Inverted surfaces already sit on the accent glow, so a gradient fill there

@@ -128,19 +128,6 @@ export function HeroSection({ content }: SectionProps<HeroContent>) {
             ) : null}
           </div>
 
-          <ul
-            className={styles.proof}
-            data-anim-stagger
-            data-anim-delay="0.62"
-            data-anim-start="top bottom"
-          >
-            {content.proofPoints.map((point) => (
-              <li key={point} className={styles.proofItem}>
-                <Tick />
-                {point}
-              </li>
-            ))}
-          </ul>
         </div>
 
         {content.techCloud && cloudLogos.length > 0 ? (
@@ -150,6 +137,16 @@ export function HeroSection({ content }: SectionProps<HeroContent>) {
               label={content.techCloud.label}
               speed={8}
             />
+            {content.highlightSecondary ? (
+              <div className={cx(styles.floatCard, styles.floatCardTop)}>
+                <span className={styles.floatValue}>
+                  {content.highlightSecondary.value}
+                </span>
+                <span className={styles.floatLabel}>
+                  {content.highlightSecondary.label}
+                </span>
+              </div>
+            ) : null}
             {content.highlight ? (
               <div className={styles.floatCard}>
                 <span className={styles.floatValue}>
@@ -182,6 +179,23 @@ export function HeroSection({ content }: SectionProps<HeroContent>) {
             ) : null}
           </div>
         ) : null}
+      </Container>
+
+      {/* Proof points, lifted out of the copy column and set as a full-width
+          band under both halves. They read as evidence for the whole hero
+          rather than as a footnote to the left-hand text, and the row gives
+          the section a base line to sit on. */}
+      <Container className={styles.proofBand}>
+        <ul className={styles.proof} data-anim-stagger data-anim-delay="0.6">
+          {content.proofPoints.map((point) => (
+            <li key={point} className={styles.proofItem}>
+              <span className={styles.proofTickWrap}>
+                <Tick />
+              </span>
+              {point}
+            </li>
+          ))}
+        </ul>
       </Container>
 
       <div className={styles.cue} data-hero-cue aria-hidden="true">

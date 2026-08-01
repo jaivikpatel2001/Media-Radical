@@ -43,7 +43,7 @@ export const faqs: FaqItem[] = [
     categoryId: 'engagement',
     question: 'Who actually does the work?',
     answer:
-      'The people you meet on the first call. All 68 of our developers and designers are full-time employees and we never pass your project to another agency. You get their names, a project lead, and a shared chat channel with all of them in it. No account manager passing messages back and forth.',
+      'The people you meet on the first call. Our developers and designers are full-time employees and we never pass your project to another agency. You get their names, a project lead, and a shared chat channel with all of them in it. No account manager passing messages back and forth.',
   },
   {
     id: 'faq-handover',
@@ -71,7 +71,7 @@ export const faqs: FaqItem[] = [
     categoryId: 'technical',
     question: 'How do you handle security?',
     answer:
-      'We build to your industry’s rules from the first week, not the month before an audit. In practice that means limiting who can access what, encrypting your data, scanning for known problems automatically, and keeping a record of every change. We have worked under SOC 2, HIPAA and PCI-DSS, and we are happy to talk to your auditor directly.',
+      'We build to your industry’s rules from the first week, not the month before an audit. In practice that means limiting who can access what, encrypting your data, scanning for known problems automatically, and keeping a record of every change. We have worked to ISO 27001, the DPDP Act and PCI-DSS, and we are happy to talk to your auditor directly.',
   },
   {
     id: 'faq-existing-team',
@@ -92,7 +92,7 @@ export const faqs: FaqItem[] = [
     categoryId: 'technical',
     question: 'Do we need AI?',
     answer:
-      'Sometimes, and often not. We start with the job that is costing you hours and work out the simplest thing that fixes it. If ordinary automation does the job, we will say so — it is cheaper to run and easier to explain. When AI genuinely fits, we build the tests before the feature so we can show you how accurate it is.',
+      'Sometimes, and often not. We start with the job that is costing you hours and work out the simplest thing that fixes it. If ordinary automation does the job, we will say so, because it is cheaper to run and easier to explain. When AI genuinely fits, we build the tests before the feature so we can show you how accurate it is.',
   },
   {
     id: 'faq-design-handover',

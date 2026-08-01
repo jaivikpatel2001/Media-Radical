@@ -16,6 +16,7 @@ Also relevant depending on the task:
 | `AGENTS.md` | Always. This is Next.js 16 — read the bundled docs in `node_modules/next/dist/docs/` before writing code. |
 | `DONE.md` | Always. What exists, what was rejected, current state. |
 | `README.md` | Setup, scripts, architecture overview. |
+| `PLAN.md` | Adding a page group, or any structural change. Historical, but its folder-structure, component, data-layer and routing sections still hold. |
 | `app/ROUTES.md` | Adding any of the 16 unbuilt page groups. |
 | `imagegeneration.md` | Anything touching images or asset paths. |
 | `.env.example` | Anything touching configuration. |
@@ -120,6 +121,74 @@ after hydration is invisible to most crawlers and answer engines.
 6. **Next.js optimisation review done** for the areas touched.
 7. **SEO / GEO / AEO review done** via the `seo-geo-aeo` skill.
 8. If docs contradict the code, the docs are a bug — fix them now, not later.
+
+---
+
+## Writing style (mandatory)
+
+### No decorative dashes
+
+**Never use an em dash (`—`) as a separator in anything a visitor reads** —
+headings, marketing copy, descriptions, UI labels, button text, metadata. It
+is one of the strongest tells of AI-generated copy, and it makes otherwise
+good writing feel machine-made.
+
+Do not write:
+
+```
+India — Building Digital Experiences
+Fast — Secure — Reliable
+Modern — Scalable — Enterprise Ready
+```
+
+Write instead:
+
+```
+Building Digital Experiences in India
+Fast, Secure and Reliable
+Modern, Scalable and Enterprise-Ready Solutions
+```
+
+Rewrite with ordinary punctuation: a comma, a colon, a conjunction, or two
+sentences. Two short sentences almost always beat one dash.
+
+An em dash is allowed only where it is grammatically correct **and** genuinely
+the best choice — a genuine parenthetical aside or an abrupt turn in a
+sentence. If a comma or a full stop would do the same job, use that instead.
+Never use one as decoration or for rhythm.
+
+This applies to every string in `/data`, all metadata, and any user-facing
+label. Code comments and internal docs are exempt; nobody visiting the site
+reads those.
+
+The test: would a professional human copywriter have written this sentence
+this way? If the dash is doing a job punctuation could do, it goes.
+
+### All sample content must be Indian
+
+Media Radical is an Indian company based in Ahmedabad. **Every piece of
+placeholder, sample or dummy content must fit the Indian market** unless a
+feature specifically calls for international examples.
+
+That covers testimonials, client and company names, cities, states, office
+addresses, phone numbers, case studies, project examples, industries, team
+names, blog posts, FAQs, statistics, job titles and business scenarios.
+
+| Use | Not |
+|---|---|
+| Ahmedabad, Mumbai, Bengaluru, Pune, Surat, Hyderabad, Chennai, Jaipur, Indore | New York, London, California, Toronto |
+| Aarav Patel, Priya Shah, Rohan Mehta, Neha Desai, Ananya Gupta | John, Michael, Emily, David, Sarah |
+| Fictional Indian company names | Generic Western-sounding brands |
+| `+91 98XXX XXXXX` | `+1 (415) 555-0142` |
+| `₹` and lakh/crore where natural | `$` or `£` |
+| DD/MM/YYYY, IST | MM/DD/YYYY, PT/ET |
+| GST, MSME, UPI, Diwali sale season | VAT, 401(k), Black Friday |
+
+Use real Indian company names only where they are genuinely Media Radical's
+clients and the fact is verified. Otherwise invent plausible Indian ones.
+
+A reader in Ahmedabad should recognise the examples as their own market. If a
+scenario would only make sense in the US, it is the wrong scenario.
 
 ---
 

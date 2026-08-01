@@ -54,7 +54,7 @@ export const processSteps: ProcessStep[] = [
     index: 4,
     title: 'Build',
     summary:
-      'We build in two-week rounds and show you the result at the end of each one. Not a progress report — the actual working software.',
+      'We build in two-week rounds and show you the result at the end of each one. Not a progress report, the actual working software.',
     deliverables: [
       'Something new to try every two weeks',
       'Automatic testing on every change',

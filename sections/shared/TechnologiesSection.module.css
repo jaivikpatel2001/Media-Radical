@@ -39,7 +39,7 @@
   inset: 0;
   z-index: var(--z-base);
   border-radius: var(--radius-lg);
-  background-color: var(--color-accent);
+  background-color: var(--color-accent-strong);
 }
 
 .tabLabel {

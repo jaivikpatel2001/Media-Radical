@@ -34,10 +34,15 @@
   --color-glass-strong: rgb(255 255 255 / 0.92);
 
   /* Text */
+  /* `faint` was ink-400 (#9797A5), which measures 2.88:1 on white — under the
+     4.5:1 AA floor for small text and even under the 3:1 large-text floor.
+     It carried real content (the client wordmarks, the scroll cue), so it now
+     resolves to ink-500 at 4.8:1. ink-400 is kept in the ramp for non-text
+     use such as icon tints and separators. */
   --color-text: var(--ink-950);
   --color-text-secondary: var(--ink-600);
   --color-text-muted: var(--ink-500);
-  --color-text-faint: var(--ink-400);
+  --color-text-faint: var(--ink-500);
   --color-text-inverse: var(--ink-0);
   --color-text-on-contrast: var(--ink-50);
 
@@ -45,20 +50,31 @@
   --color-hairline: rgb(11 11 14 / 0.07);
   --color-border: rgb(11 11 14 / 0.11);
   --color-border-strong: rgb(11 11 14 / 0.2);
-  --color-border-accent: rgb(91 83 245 / 0.34);
+  --color-border-accent: rgb(0 141 210 / 0.36);
 
-  /* Accent */
+  /* Accent — Media Radical blue.
+     Three roles, because one blue cannot do all three accessibly:
+       --color-accent         brand blue. Icons, borders, decoration. Never
+                              behind white text (3.66:1 would fail AA).
+       --color-accent-strong  fills that DO carry white text — buttons, the
+                              active tab pill, the newsletter submit. 4.83:1.
+       --color-accent-text    links and small text on white. 5.9:1. */
   --color-accent: var(--accent-500);
-  --color-accent-hover: var(--accent-600);
-  --color-accent-text: var(--accent-600);
-  --color-accent-soft: rgb(91 83 245 / 0.09);
-  --color-accent-soft-hover: rgb(91 83 245 / 0.15);
+  --color-accent-strong: var(--accent-600);
+  --color-accent-hover: var(--accent-700);
+  --color-accent-text: var(--accent-700);
+  --color-accent-soft: rgb(0 141 210 / 0.09);
+  --color-accent-soft-hover: rgb(0 141 210 / 0.16);
   --color-accent-contrast: #ffffff;
-  --color-accent-glow: rgb(91 83 245 / 0.28);
+  --color-accent-glow: rgb(0 141 210 / 0.28);
+
+  /* Secondary brand colour. Decorative only. */
+  --color-secondary: var(--rose-400);
+  --color-secondary-soft: var(--rose-100);
 
   /* Interaction */
   --color-focus: var(--accent-500);
-  --color-selection-bg: rgb(91 83 245 / 0.2);
+  --color-selection-bg: rgb(0 141 210 / 0.2);
   --color-selection-text: var(--ink-950);
   --color-hover-wash: rgb(11 11 14 / 0.04);
 
@@ -68,13 +84,13 @@
   --shadow-md: 0 2px 4px rgb(11 11 14 / 0.04), 0 8px 20px rgb(11 11 14 / 0.07);
   --shadow-lg: 0 4px 8px rgb(11 11 14 / 0.04), 0 18px 44px rgb(11 11 14 / 0.1);
   --shadow-xl: 0 8px 16px rgb(11 11 14 / 0.05), 0 34px 80px rgb(11 11 14 / 0.14);
-  --shadow-glow: 0 12px 40px rgb(91 83 245 / 0.28);
+  --shadow-glow: 0 12px 40px rgb(0 141 210 / 0.3);
   --shadow-inset-hairline: inset 0 0 0 1px rgb(11 11 14 / 0.06);
 
   /* Ambient art */
-  --mesh-1: rgb(91 83 245 / 0.22);
-  --mesh-2: rgb(62 207 255 / 0.18);
-  --mesh-3: rgb(181 123 255 / 0.16);
+  --mesh-1: rgb(0 141 210 / 0.20);
+  --mesh-2: rgb(95 189 234 / 0.18);
+  --mesh-3: rgb(234 105 129 / 0.16);
   --mesh-base: transparent;
   --grid-line: rgb(11 11 14 / 0.055);
   --grain-opacity: 0.028;
@@ -89,10 +105,10 @@
   --cloud-bg: 255 255 255;
 
   --gradient-accent: linear-gradient(
-    135deg,
+    100deg,
     var(--accent-500) 0%,
-    var(--violet-500) 55%,
-    var(--cyan-500) 100%
+    var(--accent-300) 45%,
+    var(--rose-400) 100%
   );
   --gradient-hairline: linear-gradient(
     90deg,
@@ -123,25 +139,33 @@
   --color-text: var(--ink-25);
   --color-text-secondary: var(--ink-300);
   --color-text-muted: var(--ink-400);
-  --color-text-faint: var(--ink-500);
+  /* ink-500 is a mid grey — 3.69:1 on this ground. Light surfaces need a
+     light faint tone, not the same one the light theme uses. */
+  --color-text-faint: var(--ink-300);
   --color-text-inverse: var(--ink-950);
   --color-text-on-contrast: var(--ink-900);
 
   --color-hairline: rgb(255 255 255 / 0.06);
   --color-border: rgb(255 255 255 / 0.1);
   --color-border-strong: rgb(255 255 255 / 0.2);
-  --color-border-accent: rgb(131 124 255 / 0.42);
+  --color-border-accent: rgb(38 163 221 / 0.45);
 
   --color-accent: var(--accent-400);
+  /* Light fill + dark label. White on the mid accent measures 3.66:1; this
+     way round is 9.32:1. */
+  --color-accent-strong: var(--accent-300);
   --color-accent-hover: var(--accent-300);
   --color-accent-text: var(--accent-300);
-  --color-accent-soft: rgb(131 124 255 / 0.14);
-  --color-accent-soft-hover: rgb(131 124 255 / 0.22);
+  --color-accent-soft: rgb(38 163 221 / 0.16);
+  --color-accent-soft-hover: rgb(38 163 221 / 0.24);
   --color-accent-contrast: var(--ink-950);
-  --color-accent-glow: rgb(131 124 255 / 0.4);
+  --color-accent-glow: rgb(38 163 221 / 0.4);
+
+  --color-secondary: var(--rose-300);
+  --color-secondary-soft: rgb(234 105 129 / 0.16);
 
   --color-focus: var(--accent-300);
-  --color-selection-bg: rgb(131 124 255 / 0.32);
+  --color-selection-bg: rgb(38 163 221 / 0.32);
   --color-selection-text: var(--ink-0);
   --color-hover-wash: rgb(255 255 255 / 0.05);
 
@@ -151,12 +175,12 @@
   --shadow-md: inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 24px rgb(0 0 0 / 0.5);
   --shadow-lg: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 20px 52px rgb(0 0 0 / 0.6);
   --shadow-xl: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 36px 90px rgb(0 0 0 / 0.7);
-  --shadow-glow: 0 12px 48px rgb(131 124 255 / 0.4);
+  --shadow-glow: 0 12px 48px rgb(38 163 221 / 0.4);
   --shadow-inset-hairline: inset 0 0 0 1px rgb(255 255 255 / 0.07);
 
-  --mesh-1: rgb(91 83 245 / 0.4);
-  --mesh-2: rgb(15 181 236 / 0.26);
-  --mesh-3: rgb(147 51 234 / 0.3);
+  --mesh-1: rgb(0 141 210 / 0.38);
+  --mesh-2: rgb(95 189 234 / 0.24);
+  --mesh-3: rgb(234 105 129 / 0.26);
   --mesh-base: transparent;
   --grid-line: rgb(255 255 255 / 0.05);
   --grain-opacity: 0.05;
@@ -164,10 +188,10 @@
   --cloud-bg: 11 11 14;
 
   --gradient-accent: linear-gradient(
-    135deg,
-    var(--accent-400) 0%,
-    var(--violet-400) 55%,
-    var(--cyan-400) 100%
+    100deg,
+    var(--accent-500) 0%,
+    var(--accent-300) 45%,
+    var(--rose-400) 100%
   );
 }
 
@@ -184,20 +208,23 @@
   --color-text: var(--ink-25);
   --color-text-secondary: var(--ink-300);
   --color-text-muted: var(--ink-400);
+  --color-text-faint: var(--ink-300);
   --color-hairline: rgb(255 255 255 / 0.07);
   --color-border: rgb(255 255 255 / 0.12);
   --color-border-strong: rgb(255 255 255 / 0.22);
   --color-accent: var(--accent-400);
   --color-accent-hover: var(--accent-300);
   --color-accent-text: var(--accent-300);
-  --color-accent-soft: rgb(131 124 255 / 0.16);
+  --color-accent-soft: rgb(38 163 221 / 0.18);
+  /* Buttons on this dark island use a light fill with a dark label. */
+  --color-accent-strong: var(--accent-300);
   --color-accent-contrast: var(--ink-950);
   --color-focus: var(--accent-300);
   --color-hover-wash: rgb(255 255 255 / 0.06);
   --grid-line: rgb(255 255 255 / 0.06);
-  --mesh-1: rgb(91 83 245 / 0.42);
-  --mesh-2: rgb(15 181 236 / 0.24);
-  --mesh-3: rgb(147 51 234 / 0.3);
+  --mesh-1: rgb(0 141 210 / 0.4);
+  --mesh-2: rgb(95 189 234 / 0.24);
+  --mesh-3: rgb(234 105 129 / 0.28);
   background-color: var(--color-bg);
   color: var(--color-text);
 }

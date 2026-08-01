@@ -1,84 +1,97 @@
 import type { Testimonial } from '@/types/content';
 
-/**
- * WRITING STYLE — these should read like someone talking, not like marketing.
- * Short sentences. One specific detail each. No superlatives.
- */
+/* =============================================================================
+   ⚠️  PLACEHOLDER CONTENT. NOT REAL CLIENT QUOTES. DO NOT PUBLISH AS-IS.
+
+   mediaradical.in has no testimonials section, so there was nothing to carry
+   across. Every quote below is written, and every person and company named is
+   invented.
+
+   The companies are the same fictional ones used in the case studies, so the
+   two sections agree. They are deliberately NOT the real clients listed in
+   data/entities/clientLogos.ts: putting an invented quote in the mouth of a
+   real, identifiable business is a claim that business never made, and a
+   legal and reputational risk.
+
+   To go live: collect real quotes with written permission, then replace the
+   `quote` and `author` fields. The section, layout and schema are ready and
+   need no code changes.
+
+   STYLE (see CLAUDE.md): Indian names, cities, companies and currency. No em
+   dash as a separator.
+   ============================================================================= */
+
 export const testimonials: Testimonial[] = [
   {
-    id: 'testimonial-northwind',
+    id: 'testimonial-01',
     quote:
-      'They spent the first two weeks asking questions instead of writing code. By the end of it they understood our process better than we did. The plan they came back with was smaller and cheaper than what we had asked for.',
+      'Our front desk phones were engaged all morning and patients simply gave up. Online booking took that load away in the first month, and the WhatsApp reminders cut the no-shows we had stopped even counting.',
     author: {
-      name: 'Elena Vasquez',
-      role: 'Chief Technology Officer',
-      company: 'Northwind Capital',
+      name: 'Dr. Anjali Anand',
+      role: 'Director',
+      company: 'Anand Diagnostics, Ahmedabad',
       avatar: {
         src: '/images/team/avatar-01.webp',
-        alt: 'Photo of Elena Vasquez',
+        alt: 'Placeholder portrait',
         width: 400,
         height: 400,
       },
     },
-    caseStudySlug: 'northwind-capital-platform',
-    highlight: { label: 'faster settlement', value: '94%' },
+    highlight: { label: 'of bookings now online', value: '54%' },
   },
   {
-    id: 'testimonial-helix',
+    id: 'testimonial-02',
     quote:
-      'Our last audit took four weeks and three people. This one took three days, because the paperwork now fills itself in. That one change paid for the whole project.',
+      'We had been on page three for our main product search for years, and every enquiry came from trade fairs. Nine months in we are in the top three, and nearly half our enquiries now come from Google.',
     author: {
-      name: 'Dr. Marcus Chen',
-      role: 'VP of Clinical Systems',
-      company: 'Helix Health',
+      name: 'Karan Joshi',
+      role: 'Managing Director',
+      company: 'Vardhman Engineering, Rajkot',
       avatar: {
         src: '/images/team/avatar-02.webp',
-        alt: 'Photo of Dr. Marcus Chen',
+        alt: 'Placeholder portrait',
         width: 400,
         height: 400,
       },
     },
-    caseStudySlug: 'helix-health-cloud',
-    highlight: { label: 'less audit work', value: '87%' },
+    highlight: { label: 'cost per enquiry', value: '₹340' },
   },
   {
-    id: 'testimonial-meridian',
+    id: 'testimonial-03',
     quote:
-      'We were told a rebuild meant freezing the site from October to January. They did it in small pieces instead, and we shipped updates right through Black Friday for the first time in ten years.',
+      'Almost all our buyers order from a phone, and the old checkout kept failing on UPI. They rebuilt it around mobile and connected our stock to Tally, so the site finally shows what is actually in the godown.',
     author: {
-      name: 'Priya Raghunathan',
-      role: 'Director of Digital',
-      company: 'Meridian Retail Group',
+      name: 'Neha Desai',
+      role: 'Business Head',
+      company: 'Shreeji Textiles, Surat',
       avatar: {
         src: '/images/team/avatar-03.webp',
-        alt: 'Photo of Priya Raghunathan',
+        alt: 'Placeholder portrait',
         width: 400,
         height: 400,
       },
     },
-    caseStudySlug: 'meridian-commerce-replatform',
-    highlight: { label: 'faster checkout', value: '3.2×' },
+    highlight: { label: 'faster checkout', value: '3.2x' },
   },
   {
-    id: 'testimonial-atlas',
+    id: 'testimonial-04',
     quote:
-      'The clever part was not the software. It was that they built the review screen and the audit trail first, so our operations team actually trusted it enough to use it.',
+      'What I remember is being told to stop. One campaign was not paying for itself and they said so, instead of quietly carrying on and charging us to manage it.',
     author: {
-      name: 'Tom Bergstrom',
-      role: 'Head of Network Operations',
-      company: 'Atlas Freight',
+      name: 'Rahul Sharma',
+      role: 'Operations Head',
+      company: 'Rasoi Fresh, Pune',
     },
-    caseStudySlug: 'atlas-logistics-control',
-    highlight: { label: 'less manual chasing', value: '41%' },
+    highlight: { label: 'wasted ad spend saved', value: '₹4.2L' },
   },
   {
-    id: 'testimonial-vector',
+    id: 'testimonial-05',
     quote:
-      'Handover is usually where these things fall apart. We got written instructions, a recorded walkthrough and two weeks working alongside their team. We have run it ourselves since without calling them once.',
+      'Our email had been half-broken for years, with messages going to spam and nobody sure why. They moved us to Google Workspace over a weekend and set the records up properly. It has simply worked since.',
     author: {
-      name: 'Sarah Okonkwo',
-      role: 'Engineering Manager',
-      company: 'Vector Labs',
+      name: 'Priya Shah',
+      role: 'Founder',
+      company: 'Kalrav Interiors, Vadodara',
     },
   },
 ];

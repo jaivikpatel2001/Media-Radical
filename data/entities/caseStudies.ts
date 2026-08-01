@@ -1,150 +1,153 @@
 import type { CaseStudy } from '@/types/content';
 
-/**
- * Featured projects.
- *
- * WRITING STYLE — plain English. Say what was wrong, what we did, and what
- * changed. Numbers in the results, not in the prose.
- *
- * Cover images are the assets listed in imagegeneration.md. Until those files
- * exist at these paths, sections render a gradient placeholder — dropping the
- * real file in is a no-code change.
- */
+/* =============================================================================
+   ⚠️  ILLUSTRATIVE PLACEHOLDER CONTENT. The companies below are invented.
+
+   Replace with real engagements before launch. They are written to be
+   plausible for an Ahmedabad agency serving Indian businesses, so the layout
+   and section rhythm hold until real work goes in.
+
+   STYLE RULES (see CLAUDE.md):
+   • Indian companies, cities, currency and business scenarios only.
+   • No em dash as a separator anywhere a visitor reads.
+   • Plain English. Say what was wrong, what changed, and the number.
+   ============================================================================= */
+
 export const caseStudies: CaseStudy[] = [
   {
-    slug: 'northwind-capital-platform',
-    client: 'Northwind Capital',
-    title: 'End-of-day reports that finish in minutes',
+    slug: 'shreeji-textiles-store',
+    client: 'Shreeji Textiles',
+    title: 'An online store that finally sells on mobile',
     summary:
-      'Their books used to close overnight. Now balances update as trades happen, and the morning report is ready before anyone arrives.',
-    industrySlug: 'financial-services',
-    serviceSlugs: ['web-development', 'custom-software-development', 'ui-ux-design'],
-    cover: {
-      src: '/images/case-studies/fintech-platform.webp',
-      alt: 'A trading dashboard on a wide monitor',
-      width: 1600,
-      height: 1000,
-    },
-    challenge:
-      'Everything was processed in one overnight batch. If it failed at 2am, traders started the day with no numbers. Every report for the regulator was then rebuilt by hand.',
-    solution:
-      'We rebuilt the core so every trade updates the balance straight away, and put a live view on top of it. Reports for the regulator now come from the same data, so there is nothing to reconcile.',
-    results: [
-      { label: 'Time to close the books', value: '−94%', detail: 'From 8 hours to 27 minutes' },
-      { label: 'Analyst time saved', value: '31 hrs', detail: 'Every month, per person' },
-      { label: 'Numbers that did not match', value: '−78%', detail: 'Quarter on quarter' },
-    ],
-    technologyIds: ['typescript', 'node', 'postgres', 'kafka', 'aws', 'nextjs'],
-    testimonialId: 'testimonial-northwind',
-    durationLabel: '22 weeks',
-    year: 2025,
-    featured: true,
-    seo: {
-      title: 'Northwind Capital — Faster end-of-day reporting',
-      description:
-        'How an overnight batch process became live reporting, cutting the daily close from 8 hours to 27 minutes.',
-    },
-  },
-  {
-    slug: 'helix-health-cloud',
-    client: 'Helix Health',
-    title: 'Twelve systems, one patient record',
-    summary:
-      'Patient data was spread across twelve systems that could not talk to each other. Now it is one record, and the audit paperwork fills itself in.',
-    industrySlug: 'healthcare',
-    serviceSlugs: ['cloud-and-devops', 'mobile-app-development', 'maintenance-and-support'],
-    cover: {
-      src: '/images/case-studies/health-cloud.webp',
-      alt: 'A clinical workspace with a tablet showing patient data',
-      width: 1600,
-      height: 1000,
-    },
-    challenge:
-      'Twelve systems held overlapping records with no shared patient ID. Getting the evidence together for the annual audit took four people most of a month.',
-    solution:
-      'We built one layer that all twelve systems connect to, with a single ID per patient behind it. We moved everything onto properly monitored hosting and automated the audit paperwork.',
-    results: [
-      { label: 'Uptime', value: '99.98%', detail: 'Over the last twelve months' },
-      { label: 'Audit preparation', value: '−87%', detail: 'From 4 weeks to 3 days' },
-      { label: 'Adding a new system', value: '2 days', detail: 'Down from several weeks' },
-    ],
-    technologyIds: ['aws', 'terraform', 'kubernetes', 'postgres', 'react-native', 'typescript'],
-    testimonialId: 'testimonial-helix',
-    durationLabel: '30 weeks',
-    year: 2025,
-    featured: true,
-    seo: {
-      title: 'Helix Health — One patient record across twelve systems',
-      description:
-        'Joining twelve clinical systems into one record, and cutting audit preparation from four weeks to three days.',
-    },
-  },
-  {
-    slug: 'meridian-commerce-replatform',
-    client: 'Meridian Retail Group',
-    title: 'A checkout that survived Black Friday',
-    summary:
-      'Checkout took eleven seconds on a normal phone and the site could not be touched for three months a year. We fixed both.',
+      'A Surat textile wholesaler selling direct to retailers. Checkout took eleven seconds on a mid-range phone and most carts never made it through.',
     industrySlug: 'retail-and-ecommerce',
-    serviceSlugs: ['web-development', 'ui-ux-design', 'it-consulting'],
+    serviceSlugs: ['ecommerce-and-crm', 'web-development', 'ui-ux-design'],
     cover: {
       src: '/images/case-studies/retail-commerce.webp',
-      alt: 'An automated retail warehouse',
+      alt: 'Fabric rolls stacked in a textile warehouse',
       width: 1600,
       height: 1000,
     },
     challenge:
-      'The old site could not be changed between October and January without risking the busiest weeks of the year. Checkout took eleven seconds on a mid-range phone, and shoppers were giving up.',
+      'Nearly all their buyers shop on a phone over patchy 4G. The old store loaded slowly, the payment step failed often on UPI, and stock counts on the site rarely matched the godown.',
     solution:
-      'We replaced the site one section at a time so it kept running throughout. Checkout was rebuilt from scratch, and we added an automatic speed check that blocks any release that would slow it down again.',
+      'We rebuilt the storefront around a mobile-first checkout, added UPI and net banking through a single gateway, and connected stock to their existing Tally data so both show the same number.',
     results: [
-      { label: 'Checkout speed', value: '3.2×', detail: 'On a mid-range Android phone' },
-      { label: 'Abandoned carts', value: '−23%', detail: 'Compared to last year' },
-      { label: 'Updates shipped', value: '40×', detail: 'Monthly, now several a day' },
+      { label: 'Checkout speed', value: '3.2x', detail: 'On a mid-range Android phone' },
+      { label: 'Abandoned carts', value: '31% lower', detail: 'Compared to the previous year' },
+      { label: 'Orders from mobile', value: '68%', detail: 'Up from 41%' },
     ],
-    technologyIds: ['nextjs', 'react', 'typescript', 'vercel', 'redis', 'postgres'],
-    testimonialId: 'testimonial-meridian',
-    durationLabel: '18 weeks',
-    year: 2024,
+    technologyIds: ['nextjs', 'react', 'typescript', 'postgres', 'redis', 'shopify'],
+    testimonialId: 'testimonial-03',
+    durationLabel: '14 weeks',
+    year: 2025,
     featured: true,
     seo: {
-      title: 'Meridian Retail Group — A faster online store',
+      title: 'Shreeji Textiles: a faster mobile store',
       description:
-        'Rebuilding an online store one piece at a time: 3.2× faster checkout and 23% fewer abandoned carts.',
+        'Rebuilding a Surat wholesaler’s online store around mobile checkout and UPI, cutting abandoned carts by 31%.',
     },
   },
   {
-    slug: 'atlas-logistics-control',
-    client: 'Atlas Freight',
-    title: 'Delays that find you first',
+    slug: 'anand-diagnostics-booking',
+    client: 'Anand Diagnostics',
+    title: 'Bookings that stopped going through the front desk',
     summary:
-      'Fourteen carriers sent data fourteen different ways. Now it is one screen, and problem deliveries flag themselves before the customer calls.',
+      'A diagnostics chain across Ahmedabad and Gandhinagar. Every appointment was a phone call, and the phones were busy all morning.',
+    industrySlug: 'healthcare',
+    serviceSlugs: ['web-development', 'mobile-app-development', 'maintenance-and-support'],
+    cover: {
+      src: '/images/case-studies/health-cloud.webp',
+      alt: 'A clean diagnostics reception with a tablet on the counter',
+      width: 1600,
+      height: 1000,
+    },
+    challenge:
+      'Six centres shared one booking phone line. Patients gave up waiting, slots went unfilled, and reports were collected in person because there was nowhere to read them online.',
+    solution:
+      'We built online booking with slot availability per centre, added SMS and WhatsApp reminders, and gave patients a login to download reports. Front desk staff kept the same workflow for walk-ins.',
+    results: [
+      { label: 'Bookings made online', value: '54%', detail: 'Within four months' },
+      { label: 'Missed appointments', value: '22% lower', detail: 'After reminders went live' },
+      { label: 'Calls to the front desk', value: '1,900 fewer', detail: 'Every month' },
+    ],
+    technologyIds: ['nextjs', 'react-native', 'postgres', 'firebase', 'gcp'],
+    testimonialId: 'testimonial-01',
+    durationLabel: '18 weeks',
+    year: 2025,
+    featured: true,
+    seo: {
+      title: 'Anand Diagnostics: online appointment booking',
+      description:
+        'Online booking, WhatsApp reminders and downloadable reports for a six-centre diagnostics chain in Ahmedabad.',
+    },
+  },
+  {
+    slug: 'vardhman-engineering-seo',
+    client: 'Vardhman Engineering',
+    title: 'Page three to the top three for their main search',
+    summary:
+      'A Rajkot valve manufacturer whose enquiries came almost entirely from trade fairs and word of mouth.',
+    industrySlug: 'manufacturing',
+    serviceSlugs: ['seo', 'web-development', 'ppc-and-google-ads'],
+    cover: {
+      src: '/images/case-studies/logistics-control.webp',
+      alt: 'Machined valve components on a workbench',
+      width: 1600,
+      height: 1000,
+    },
+    challenge:
+      'Buyers searching for their exact product category found competitors first. The site had no product pages worth ranking, and nothing was tracked, so nobody knew which enquiries came from where.',
+    solution:
+      'We rebuilt the site around one page per product category, fixed the technical issues holding it back, set up proper conversion tracking, and ran a small Google Ads budget on the terms worth buying while the rankings caught up.',
+    results: [
+      { label: 'Enquiries from search', value: '48%', detail: 'Up from almost none' },
+      { label: 'Main keyword', value: 'Top 3', detail: 'From page three in nine months' },
+      { label: 'Cost per enquiry', value: '₹340', detail: 'Down from ₹1,150' },
+    ],
+    technologyIds: ['nextjs', 'wordpress', 'typescript', 'gcp'],
+    testimonialId: 'testimonial-02',
+    durationLabel: '9 months',
+    year: 2025,
+    featured: true,
+    seo: {
+      title: 'Vardhman Engineering: SEO for a valve manufacturer',
+      description:
+        'Product-led pages, technical fixes and paid search that took a Rajkot manufacturer from page three to the top three.',
+    },
+  },
+  {
+    slug: 'rasoi-fresh-delivery',
+    client: 'Rasoi Fresh',
+    title: 'Delivery problems that flag themselves',
+    summary:
+      'A Pune grocery delivery business running three vehicle partners. Customers usually reported a late order before the team knew about it.',
     industrySlug: 'logistics-and-supply-chain',
     serviceSlugs: ['custom-software-development', 'ai-and-automation', 'cloud-and-devops'],
     cover: {
-      src: '/images/case-studies/logistics-control.webp',
-      alt: 'A logistics control room screen showing delivery routes',
+      src: '/images/case-studies/fintech-platform.webp',
+      alt: 'A delivery dispatch screen showing routes across a city',
       width: 1600,
       height: 1000,
     },
     challenge:
-      'Fourteen carriers each sent updates in their own format. The team usually found out about a problem when the customer rang, and planning happened in a spreadsheet nobody could check.',
+      'Each delivery partner sent updates in a different format, some by WhatsApp. Nobody had one view of the day, and late orders were discovered by complaint.',
     solution:
-      'We put every carrier feed into one format and built a screen that flags deliveries going wrong. Anything the system is unsure about goes to a person, and every decision is recorded.',
+      'We put every partner feed into one dispatch screen and added alerts for orders running behind. Anything the system is unsure about goes to a person, and every decision is recorded.',
     results: [
-      { label: 'Manual chasing', value: '−41%', detail: 'Within six months' },
-      { label: 'Time to spot a problem', value: '11 min', detail: 'Down from 6 hours' },
-      { label: 'On-time deliveries', value: '+7.4pt', detail: 'Across the network' },
+      { label: 'Manual chasing', value: '41% lower', detail: 'Within two quarters' },
+      { label: 'Time to spot a delay', value: '11 minutes', detail: 'Down from around six hours' },
+      { label: 'On-time deliveries', value: '7.4 points up', detail: 'Across the city' },
     ],
-    technologyIds: ['python', 'typescript', 'kafka', 'postgres', 'aws', 'langchain'],
-    testimonialId: 'testimonial-atlas',
-    durationLabel: '26 weeks',
+    technologyIds: ['python', 'typescript', 'kafka', 'postgres', 'gcp', 'langchain'],
+    testimonialId: 'testimonial-04',
+    durationLabel: '22 weeks',
     year: 2025,
     featured: false,
     seo: {
-      title: 'Atlas Freight — Spotting delivery problems early',
+      title: 'Rasoi Fresh: one dispatch screen for three delivery partners',
       description:
-        'One screen for fourteen carrier feeds, with automatic alerts that cut manual chasing by 41%.',
+        'Normalised partner feeds and automatic alerts that cut manual chasing by 41% for a Pune grocery service.',
     },
   },
 ];

@@ -79,7 +79,7 @@ export function Logo({ compact = false, className, asLink = true }: LogoProps) {
     <Link
       href={ROUTES.home}
       className={cx(styles.logo, compact && styles.compact, className)}
-      aria-label={`${site.name} — home`}
+      aria-label={`${site.name} home page`}
     >
       {content}
     </Link>

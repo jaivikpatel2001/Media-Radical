@@ -16,7 +16,14 @@ export type ServiceIconName =
   | 'cloud-devops'
   | 'ai-automation'
   | 'it-consulting'
-  | 'maintenance-support';
+  | 'maintenance-support'
+  // The marketing and infrastructure side of the agency.
+  | 'seo'
+  | 'ads'
+  | 'social-media'
+  | 'domain-hosting'
+  | 'email'
+  | 'ecommerce';
 
 export type IndustryIconName =
   | 'fintech'

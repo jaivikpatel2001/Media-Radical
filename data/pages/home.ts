@@ -20,14 +20,15 @@ import { site } from '../site';
  */
 export const homePage: HomePageContent = {
   seo: {
-    title: `${site.name} — ${site.tagline}`,
+    title: `${site.name} | ${site.tagline}`,
     description: site.description,
     keywords: [
-      'IT company',
-      'software development company',
-      'web and mobile app development',
-      'cloud and DevOps services',
-      'IT consulting',
+      'digital marketing agency Ahmedabad',
+      'website development company',
+      'SEO services India',
+      'Google Ads management',
+      'mobile app development',
+      'ecommerce website development',
     ],
   },
 
@@ -37,17 +38,19 @@ export const homePage: HomePageContent = {
       label: 'Now taking new projects for Q4 2026',
       href: ROUTES.contact,
     },
-    headline: 'We build software that works.',
-    emphasis: 'that works',
-    lede: 'Web apps, mobile apps and cloud systems for growing companies. You get a clear plan and a fixed price before we start. Then working software every two weeks.',
+    headline: 'Websites, apps and the marketing to match.',
+    emphasis: 'and the marketing',
+    lede: 'A digital agency in Ahmedabad, working with businesses across India since 2013. We design and build the thing, then run the SEO, ads and social that bring people to it.',
     primaryCta: { label: 'Start your project', href: ROUTES.contact, variant: 'primary' },
     secondaryCta: { label: 'See our work', href: ROUTES.portfolio, variant: 'secondary' },
     proofPoints: [
-      '240+ projects done since 2014',
-      '68 in-house developers and designers',
-      '94% of clients come back',
+      'Over a decade in business',
+      'In-house team, nothing outsourced',
+      'Build and marketing under one roof',
     ],
     highlight: { label: 'of clients hire us again', value: '94%' },
+    // Grounded in the twelve real clients listed on mediaradical.in.
+    highlightSecondary: { label: 'businesses trust us', value: '12+' },
     // The rotating logo sphere replaces the hero image. Swap back by deleting
     // `techCloud` — `media` below is still wired up and takes over.
     techCloud: {
@@ -88,27 +91,33 @@ export const homePage: HomePageContent = {
 
   /* ------------------------------------------------------------- trusted by */
   trustedBy: {
-    heading: 'Trusted by companies in finance, healthcare, retail and logistics',
+    // Real client names from mediaradical.in. The heading avoids naming
+    // sectors, because the source gives none for any of them.
+    heading: 'Trusted by businesses across India for over a decade',
     logoIds: [
-      'northwind',
-      'helix',
-      'meridian',
-      'atlas',
-      'vector',
-      'kestrel',
-      'lumen',
-      'arboretum',
+      'philbrick',
+      'simplex',
+      'tte',
+      'jasco',
+      'akvalve',
+      'mazda',
+      'hpauto',
+      'hv',
+      'abdhruv',
+      'awatech',
+      'rotary',
+      'friends',
     ],
   },
 
   /* ----------------------------------------------------------------- intro */
   intro: {
     eyebrow: 'About us',
-    heading: 'A tech partner that feels like your own team.',
+    heading: 'A digital partner that feels like your own team.',
     emphasis: 'your own team',
     body: [
-      `${site.name} has built software for over ten years. We work with companies that need it done right the first time. Small senior teams. A clear price up front. Something you can click on every two weeks.`,
-      'We hire our own people. All 68 developers and designers are full-time staff, and we never pass your project to an outside agency. When we finish, we hand everything over and show your team how it works.',
+      `${site.name} is a digital media agency based in Ahmedabad. For over a decade we have worked with corporates, MSMEs and small businesses across India, building the website or app and then running the marketing that brings people to it.`,
+      'Design, development and marketing sit in one team. That matters more than it sounds: the person running your ads can walk over to the person who built the landing page, and a problem gets fixed the same day instead of the next sprint.',
     ],
     cta: { label: 'More about us', href: ROUTES.about, variant: 'link' },
     media: {
@@ -118,26 +127,32 @@ export const homePage: HomePageContent = {
       height: 1200,
     },
     highlights: [
-      { label: 'Started in', value: '2014' },
-      { label: 'Full-time staff', value: '68' },
-      { label: 'Clients who return', value: '94%' },
+      { label: 'Working since', value: '2013' },
+      { label: 'Based in', value: 'Ahmedabad' },
+      { label: 'Services offered', value: '14' },
     ],
   },
 
   /* -------------------------------------------------------------- services */
   services: {
     eyebrow: 'What we do',
-    heading: 'Eight services. One way of working.',
-    emphasis: 'One way of working',
-    lede: 'Most projects use two or three of these together. Every one follows the same steps and the same standards.',
+    heading: 'Fourteen services. One team.',
+    emphasis: 'One team',
+    lede: 'Build and marketing in the same place, which means the people running your ads can talk to the people who built the page they point at.',
     cta: { label: 'See all services', href: ROUTES.services, variant: 'secondary' },
     serviceSlugs: [
       'web-development',
       'mobile-app-development',
       'ui-ux-design',
+      'ecommerce-and-crm',
+      'seo',
+      'ppc-and-google-ads',
+      'social-media-marketing',
       'custom-software-development',
       'cloud-and-devops',
       'ai-and-automation',
+      'domain-and-hosting',
+      'email-solutions',
       'it-consulting',
       'maintenance-and-support',
     ],
@@ -221,9 +236,9 @@ export const homePage: HomePageContent = {
     cta: { label: 'See all case studies', href: ROUTES.portfolio, variant: 'secondary' },
     itemCtaLabel: 'Read the full story',
     caseStudySlugs: [
-      'northwind-capital-platform',
-      'helix-health-cloud',
-      'meridian-commerce-replatform',
+      'vardhman-engineering-seo',
+      'anand-diagnostics-booking',
+      'shreeji-textiles-store',
     ],
   },
 
@@ -233,18 +248,18 @@ export const homePage: HomePageContent = {
     heading: 'What clients say after we finish.',
     emphasis: 'after we finish',
     testimonialIds: [
-      'testimonial-northwind',
-      'testimonial-helix',
-      'testimonial-meridian',
-      'testimonial-atlas',
-      'testimonial-vector',
+      'testimonial-01',
+      'testimonial-02',
+      'testimonial-03',
+      'testimonial-04',
+      'testimonial-05',
     ],
   },
 
   /* ----------------------------------------------------------------- stats */
   stats: {
     eyebrow: 'The numbers',
-    heading: 'Ten years of work, counted.',
+    heading: 'A decade of work, counted.',
     statIds: ['stat-projects', 'stat-retention', 'stat-engineers', 'stat-uptime'],
   },
 
