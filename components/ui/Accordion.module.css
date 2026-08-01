@@ -1,0 +1,90 @@
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.item:first-child {
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.trigger {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  inline-size: 100%;
+  padding-block: var(--space-6);
+  text-align: start;
+  color: var(--color-text);
+  transition: color var(--dur-base) var(--ease-out-quart);
+}
+
+.trigger:hover {
+  color: var(--color-accent-text);
+}
+
+.question {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  text-wrap: balance;
+}
+
+/* A plus that rotates into a minus — one element, two states, no icon swap. */
+.indicator {
+  position: relative;
+  flex-shrink: 0;
+  inline-size: 30px;
+  block-size: 30px;
+  border-radius: 50%;
+  margin-block-start: 2px;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-base) var(--ease-out-quart);
+}
+
+.trigger:hover .indicator {
+  box-shadow: inset 0 0 0 1px var(--color-border-accent);
+}
+
+.indicatorOpen {
+  background-color: var(--color-accent-soft);
+}
+
+.bar {
+  position: absolute;
+  inset-block-start: calc(50% - 0.75px);
+  inset-inline-start: calc(50% - 6px);
+  inline-size: 12px;
+  block-size: 1.5px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.barVertical {
+  transform: rotate(90deg);
+}
+
+.indicatorOpen .barVertical {
+  transform: rotate(0deg);
+}
+
+.panel {
+  overflow: hidden;
+}
+
+.answer {
+  padding-block-end: var(--space-6);
+  padding-inline-end: var(--space-12);
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  max-inline-size: 68ch;
+}

@@ -1,0 +1,206 @@
+/* ==========================================================================
+   Design tokens — LAYER 2: semantic
+   Components consume ONLY these. If a component references --ink-* or
+   --accent-* directly it will not survive a theme flip — that is the rule the
+   Stage 7 theme audit checks for.
+
+   LIGHT IS THE DEFAULT AND THE DESIGN BASELINE. The site is authored light
+   first; dark is a supported alternative, not a coin flip. There is
+   deliberately no `prefers-color-scheme` auto-switch — a visitor whose OS is
+   dark still gets the light design until they choose otherwise, so the
+   imagery and contrast the site was composed around are what everyone sees
+   first.
+
+   Dark applies through exactly one trigger: :root[data-theme='dark'], set
+   pre-paint by the inline script in app/layout.tsx from the stored choice.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   LIGHT — the baseline
+   ------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-bg: var(--ink-0);
+  --color-bg-subtle: var(--ink-50);
+  --color-bg-contrast: var(--ink-950);
+  --color-surface: var(--ink-0);
+  --color-surface-subtle: var(--ink-50);
+  --color-surface-raised: var(--ink-0);
+  --color-surface-inset: var(--ink-50);
+  --color-scrim: rgb(11 11 14 / 0.42);
+  --color-glass: rgb(255 255 255 / 0.72);
+  --color-glass-strong: rgb(255 255 255 / 0.92);
+
+  /* Text */
+  --color-text: var(--ink-950);
+  --color-text-secondary: var(--ink-600);
+  --color-text-muted: var(--ink-500);
+  --color-text-faint: var(--ink-400);
+  --color-text-inverse: var(--ink-0);
+  --color-text-on-contrast: var(--ink-50);
+
+  /* Lines */
+  --color-hairline: rgb(11 11 14 / 0.07);
+  --color-border: rgb(11 11 14 / 0.11);
+  --color-border-strong: rgb(11 11 14 / 0.2);
+  --color-border-accent: rgb(91 83 245 / 0.34);
+
+  /* Accent */
+  --color-accent: var(--accent-500);
+  --color-accent-hover: var(--accent-600);
+  --color-accent-text: var(--accent-600);
+  --color-accent-soft: rgb(91 83 245 / 0.09);
+  --color-accent-soft-hover: rgb(91 83 245 / 0.15);
+  --color-accent-contrast: #ffffff;
+  --color-accent-glow: rgb(91 83 245 / 0.28);
+
+  /* Interaction */
+  --color-focus: var(--accent-500);
+  --color-selection-bg: rgb(91 83 245 / 0.2);
+  --color-selection-text: var(--ink-950);
+  --color-hover-wash: rgb(11 11 14 / 0.04);
+
+  /* Elevation — light mode uses genuine layered shadows */
+  --shadow-xs: 0 1px 2px rgb(11 11 14 / 0.05);
+  --shadow-sm: 0 1px 2px rgb(11 11 14 / 0.05), 0 2px 6px rgb(11 11 14 / 0.05);
+  --shadow-md: 0 2px 4px rgb(11 11 14 / 0.04), 0 8px 20px rgb(11 11 14 / 0.07);
+  --shadow-lg: 0 4px 8px rgb(11 11 14 / 0.04), 0 18px 44px rgb(11 11 14 / 0.1);
+  --shadow-xl: 0 8px 16px rgb(11 11 14 / 0.05), 0 34px 80px rgb(11 11 14 / 0.14);
+  --shadow-glow: 0 12px 40px rgb(91 83 245 / 0.28);
+  --shadow-inset-hairline: inset 0 0 0 1px rgb(11 11 14 / 0.06);
+
+  /* Ambient art */
+  --mesh-1: rgb(91 83 245 / 0.22);
+  --mesh-2: rgb(62 207 255 / 0.18);
+  --mesh-3: rgb(181 123 255 / 0.16);
+  --mesh-base: transparent;
+  --grid-line: rgb(11 11 14 / 0.055);
+  --grain-opacity: 0.028;
+
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--accent-500) 0%,
+    var(--violet-500) 55%,
+    var(--cyan-500) 100%
+  );
+  --gradient-text: linear-gradient(
+    100deg,
+    var(--ink-950) 0%,
+    var(--ink-950) 42%,
+    var(--accent-600) 78%,
+    var(--violet-500) 100%
+  );
+  --gradient-hairline: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border-strong) 22%,
+    var(--color-border-strong) 78%,
+    transparent
+  );
+}
+
+/* -------------------------------------------------------------------------
+   DARK — opt-in only
+   ------------------------------------------------------------------------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: var(--ink-950);
+  --color-bg-subtle: var(--ink-900);
+  --color-bg-contrast: var(--ink-0);
+  --color-surface: rgb(255 255 255 / 0.035);
+  --color-surface-subtle: rgb(255 255 255 / 0.02);
+  --color-surface-raised: rgb(255 255 255 / 0.07);
+  --color-surface-inset: rgb(0 0 0 / 0.35);
+  --color-scrim: rgb(0 0 0 / 0.66);
+  --color-glass: rgb(11 11 14 / 0.66);
+  --color-glass-strong: rgb(11 11 14 / 0.9);
+
+  --color-text: var(--ink-25);
+  --color-text-secondary: var(--ink-300);
+  --color-text-muted: var(--ink-400);
+  --color-text-faint: var(--ink-500);
+  --color-text-inverse: var(--ink-950);
+  --color-text-on-contrast: var(--ink-900);
+
+  --color-hairline: rgb(255 255 255 / 0.06);
+  --color-border: rgb(255 255 255 / 0.1);
+  --color-border-strong: rgb(255 255 255 / 0.2);
+  --color-border-accent: rgb(131 124 255 / 0.42);
+
+  --color-accent: var(--accent-400);
+  --color-accent-hover: var(--accent-300);
+  --color-accent-text: var(--accent-300);
+  --color-accent-soft: rgb(131 124 255 / 0.14);
+  --color-accent-soft-hover: rgb(131 124 255 / 0.22);
+  --color-accent-contrast: var(--ink-950);
+  --color-accent-glow: rgb(131 124 255 / 0.4);
+
+  --color-focus: var(--accent-300);
+  --color-selection-bg: rgb(131 124 255 / 0.32);
+  --color-selection-text: var(--ink-0);
+  --color-hover-wash: rgb(255 255 255 / 0.05);
+
+  /* Dark mode: shadows read as mud. Depth comes from hairline rings + glow. */
+  --shadow-xs: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  --shadow-sm: inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-md: inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lg: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 20px 52px rgb(0 0 0 / 0.6);
+  --shadow-xl: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 36px 90px rgb(0 0 0 / 0.7);
+  --shadow-glow: 0 12px 48px rgb(131 124 255 / 0.4);
+  --shadow-inset-hairline: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+
+  --mesh-1: rgb(91 83 245 / 0.4);
+  --mesh-2: rgb(15 181 236 / 0.26);
+  --mesh-3: rgb(147 51 234 / 0.3);
+  --mesh-base: transparent;
+  --grid-line: rgb(255 255 255 / 0.05);
+  --grain-opacity: 0.05;
+
+  --gradient-accent: linear-gradient(
+    135deg,
+    var(--accent-400) 0%,
+    var(--violet-400) 55%,
+    var(--cyan-400) 100%
+  );
+  --gradient-text: linear-gradient(
+    100deg,
+    var(--ink-25) 0%,
+    var(--ink-25) 42%,
+    var(--accent-300) 78%,
+    var(--cyan-400) 100%
+  );
+}
+
+/* Inverted island — a dark block inside the light page. Used by the closing
+   CTA and the footer to bookend the page the way an Apple product page does.
+   It stays dark in both themes, which is what makes it read as a deliberate
+   surface rather than an inverted accident. */
+.invertedSurface {
+  color-scheme: dark;
+  --color-bg: var(--ink-950);
+  --color-bg-subtle: var(--ink-900);
+  --color-surface: rgb(255 255 255 / 0.05);
+  --color-surface-raised: rgb(255 255 255 / 0.09);
+  --color-text: var(--ink-25);
+  --color-text-secondary: var(--ink-300);
+  --color-text-muted: var(--ink-400);
+  --color-hairline: rgb(255 255 255 / 0.07);
+  --color-border: rgb(255 255 255 / 0.12);
+  --color-border-strong: rgb(255 255 255 / 0.22);
+  --color-accent: var(--accent-400);
+  --color-accent-hover: var(--accent-300);
+  --color-accent-text: var(--accent-300);
+  --color-accent-soft: rgb(131 124 255 / 0.16);
+  --color-accent-contrast: var(--ink-950);
+  --color-focus: var(--accent-300);
+  --color-hover-wash: rgb(255 255 255 / 0.06);
+  --grid-line: rgb(255 255 255 / 0.06);
+  --mesh-1: rgb(91 83 245 / 0.42);
+  --mesh-2: rgb(15 181 236 / 0.24);
+  --mesh-3: rgb(147 51 234 / 0.3);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}

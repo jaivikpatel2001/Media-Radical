@@ -1,0 +1,59 @@
+.wrap {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-surface-subtle);
+}
+
+.image {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+/* Dark mode reuses the same light-composed files. A small brightness and
+   contrast pull stops them glaring against a near-black page, without needing
+   a second set of art. */
+:global(:root[data-theme='dark']) .image {
+  filter: brightness(0.86) contrast(1.04);
+}
+
+/* ---------------------------------------------------------------- placeholder
+   Shown until the real file exists at the given path. A layered gradient
+   mesh plus a grid — the same visual language as the hero, so an unfilled
+   slot reads as intentional art direction rather than a missing asset. */
+.placeholder {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  background-color: var(--color-bg-subtle);
+  background-image:
+    radial-gradient(
+      circle at 26% 24%,
+      hsl(var(--ph-hue) 92% 62% / 0.28),
+      transparent 58%
+    ),
+    radial-gradient(
+      circle at 74% 68%,
+      hsl(calc(var(--ph-hue) + 46) 92% 60% / 0.22),
+      transparent 56%
+    ),
+    linear-gradient(140deg, var(--color-bg-subtle), var(--color-surface-subtle));
+}
+
+.placeholderGrid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse 84% 74% at 50% 50%, #000 25%, transparent 100%);
+}
+
+.placeholderMark {
+  position: absolute;
+  inset-block-end: var(--space-4);
+  inset-inline-end: var(--space-5);
+  color: var(--color-text-faint);
+  opacity: 0.75;
+}

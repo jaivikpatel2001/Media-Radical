@@ -1,0 +1,251 @@
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-block-size: min(100svh, 900px);
+  padding-block: calc(var(--header-h) + var(--space-12)) var(--space-16);
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+/* ---------------------------------------------------------------- ambience
+   Three soft blooms, offset from one another so the light reads as coming
+   from somewhere rather than being applied evenly. Kept behind everything and
+   heavily blurred — at this radius the GPU cost is a single composited layer. */
+.mesh {
+  position: absolute;
+  inset-block-start: -30%;
+  inset-inline-end: -12%;
+  inline-size: min(1180px, 118vw);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 34% 32%, var(--mesh-1), transparent 56%),
+    radial-gradient(circle at 66% 44%, var(--mesh-2), transparent 54%),
+    radial-gradient(circle at 48% 72%, var(--mesh-3), transparent 58%);
+  filter: blur(var(--blur-glow));
+  pointer-events: none;
+  z-index: var(--z-base);
+}
+
+.inner {
+  position: relative;
+  z-index: var(--z-raised);
+  display: grid;
+  gap: clamp(var(--space-12), 7vw, var(--space-20));
+  inline-size: 100%;
+}
+
+/* ---------------------------------------------------------------- copy */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  max-inline-size: 640px;
+}
+
+.announcement {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-subtle);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-base) var(--ease-out-quart);
+}
+
+.announcement:hover {
+  background-color: var(--color-hover-wash);
+  box-shadow: inset 0 0 0 1px var(--color-border-accent);
+}
+
+.pulse {
+  position: relative;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  animation: pulse 2.4s var(--ease-out-quart) infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(3.2); opacity: 0; }
+}
+
+.announcementArrow {
+  opacity: 0.5;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.announcement:hover .announcementArrow {
+  transform: translateX(3px);
+}
+
+.headline {
+  color: var(--color-text);
+  max-inline-size: 14ch;
+}
+
+.lede {
+  max-inline-size: 52ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+
+.proof {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--color-hairline);
+  inline-size: 100%;
+  max-inline-size: 520px;
+}
+
+.proofItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--text-md);
+  color: var(--color-text-muted);
+}
+
+.proofTick {
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+/* ---------------------------------------------------------------- art */
+.art {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  aspect-ratio: 4 / 3;
+}
+
+.artMedia {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* A floating proof card overlapping the art — the detail that stops the hero
+   from being two rectangles side by side. */
+.floatCard {
+  position: absolute;
+  inset-block-end: var(--space-5);
+  inset-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--color-border);
+}
+
+.floatValue {
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.floatLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------- cue */
+.cue {
+  position: absolute;
+  inset-block-end: var(--space-8);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-faint);
+  z-index: var(--z-raised);
+}
+
+.cueLine {
+  inline-size: 1px;
+  block-size: 38px;
+  background: linear-gradient(to bottom, var(--color-border-strong), transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.cueLine::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 12px;
+  background-color: var(--color-accent);
+  animation: cueTravel 2.2s var(--ease-in-out-quint) infinite;
+}
+
+@keyframes cueTravel {
+  0% { transform: translateY(-14px); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(38px); opacity: 0; }
+}
+
+/* ---------------------------------------------------------------- layout */
+@media (min-width: 900px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    align-items: center;
+    gap: clamp(var(--space-10), 5vw, var(--space-16));
+  }
+
+  .art {
+    /* Bleeds past the container's right gutter so the image runs to the edge
+       of the viewport — the composition reads as a spread, not a card. */
+    margin-inline-end: calc(var(--gutter) * -1);
+    aspect-ratio: 5 / 4;
+  }
+
+  .cue {
+    display: flex;
+  }
+}
+
+@media (min-width: 1400px) {
+  .art {
+    margin-inline-end: clamp(-160px, calc((100vw - var(--container-max)) / -2), -40px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after,
+  .cueLine::after {
+    animation: none;
+  }
+}

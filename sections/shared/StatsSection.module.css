@@ -1,0 +1,79 @@
+.section {
+  position: relative;
+  overflow: hidden;
+}
+
+.bloom {
+  position: absolute;
+  inset-block-start: -55%;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  inline-size: min(1200px, 130vw);
+  aspect-ratio: 1;
+  background:
+    radial-gradient(circle at 40% 45%, var(--mesh-1), transparent 56%),
+    radial-gradient(circle at 62% 55%, var(--mesh-2), transparent 54%);
+  filter: blur(var(--blur-glow));
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+.head {
+  margin-block-end: var(--space-12);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-8) var(--space-6);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--color-border);
+}
+
+.value {
+  display: flex;
+  align-items: baseline;
+  font-size: clamp(2.75rem, 6vw, 4.5rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.045em;
+  line-height: var(--leading-none);
+  color: var(--color-text);
+  /* Tabular figures keep the digits from shifting sideways while the counter
+     runs — the detail that separates a designed counter from a janky one. */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+.affix {
+  color: var(--color-accent);
+}
+
+.label {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.description {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  max-inline-size: 34ch;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

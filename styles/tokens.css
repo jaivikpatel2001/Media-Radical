@@ -1,0 +1,124 @@
+/* ==========================================================================
+   Design tokens — LAYER 1: primitives
+   Raw values only. Nothing here references a UI concept.
+   Semantic mappings live in themes.css; nothing outside that file may
+   reference a raw ink or accent token directly.
+   ========================================================================== */
+
+:root {
+  /* ---------- Neutral ramp (cool-leaning, Apple/Linear register) ---------- */
+  --ink-0: #ffffff;
+  --ink-25: #fbfbfd;
+  --ink-50: #f5f5f7;
+  --ink-100: #ededf1;
+  --ink-150: #e3e3e9;
+  --ink-200: #d8d8e0;
+  --ink-300: #bebec9;
+  --ink-400: #9797a5;
+  --ink-500: #71717f;
+  --ink-600: #55555f;
+  --ink-700: #3c3c45;
+  --ink-800: #292930;
+  --ink-850: #1d1d23;
+  --ink-900: #141418;
+  --ink-950: #0b0b0e;
+  --ink-1000: #000000;
+
+  /* ---------- Accent: electric indigo ---------- */
+  --accent-50: #f0f0ff;
+  --accent-100: #e3e2ff;
+  --accent-200: #c8c5ff;
+  --accent-300: #a5a0ff;
+  --accent-400: #837cff;
+  --accent-500: #5b53f5;
+  --accent-600: #4a3fe0;
+  --accent-700: #3a31b6;
+  --accent-800: #2b248a;
+
+  /* ---------- Supporting hues (gradient meshes, category accents) -------- */
+  --cyan-400: #3ecfff;
+  --cyan-500: #0fb5ec;
+  --violet-400: #b57bff;
+  --violet-500: #9333ea;
+  --teal-400: #2ee6b6;
+  --amber-400: #ffb340;
+  --rose-400: #ff6b81;
+
+  /* ---------- Radii ---------- */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 26px;
+  --radius-2xl: 34px;
+  --radius-pill: 999px;
+
+  /* ---------- Spacing: 4px base ---------- */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+  --space-32: 8rem;
+  --space-40: 10rem;
+
+  /* Vertical rhythm between full-bleed sections — fluid, so the page
+     breathes on desktop without swallowing a phone screen. */
+  --section-y: clamp(4.5rem, 9vw, 9.5rem);
+  --section-y-lg: clamp(6rem, 12vw, 13rem);
+  --section-y-sm: clamp(3rem, 6vw, 6rem);
+
+  /* ---------- Layout ---------- */
+  --container-max: 1290px;
+  --container-narrow: 780px;
+  --container-wide: 1560px;
+  --gutter: clamp(1.25rem, 5vw, 3.5rem);
+  --header-h: 72px;
+
+  /* ---------- Borders ---------- */
+  --border-hairline: 1px;
+  --border-thick: 1.5px;
+
+  /* ---------- Motion ---------- *
+   * ease-out-expo is the signature curve: fast departure, long glide.
+   * It is what makes a transition read as "engineered" rather than "default". */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-linear: linear;
+
+  --dur-instant: 90ms;
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 560ms;
+  --dur-slower: 900ms;
+  --dur-cinematic: 1400ms;
+
+  /* ---------- Z-index scale ---------- */
+  --z-below: -1;
+  --z-base: 0;
+  --z-raised: 10;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-dropdown: 300;
+  --z-overlay: 400;
+  --z-drawer: 500;
+  --z-modal: 600;
+  --z-toast: 700;
+  --z-max: 999;
+
+  /* ---------- Blur ---------- */
+  --blur-sm: 8px;
+  --blur-md: 18px;
+  --blur-lg: 40px;
+  --blur-xl: 90px;
+  --blur-glow: 140px;
+}

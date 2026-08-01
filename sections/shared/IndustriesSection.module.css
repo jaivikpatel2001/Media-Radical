@@ -1,0 +1,170 @@
+.inner {
+  display: grid;
+  gap: clamp(var(--space-10), 6vw, var(--space-20));
+  align-items: start;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.eyebrow::before {
+  content: '';
+  inline-size: 26px;
+  block-size: 1px;
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heading {
+  max-inline-size: 13ch;
+  color: var(--color-text);
+}
+
+.lede {
+  max-inline-size: 44ch;
+}
+
+.actions {
+  margin-block-start: var(--space-2);
+}
+
+/* ---------------------------------------------------------------- list */
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--space-5);
+  padding-block: var(--space-6);
+  border-block-start: 1px solid var(--color-hairline);
+  transition: padding-inline var(--dur-slow) var(--ease-out-expo);
+}
+
+.row:last-child {
+  border-block-end: 1px solid var(--color-hairline);
+}
+
+.row:hover {
+  padding-inline: var(--space-4);
+}
+
+/* A wash that wipes in from the left on hover, clipped to the row. */
+.row::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline: calc(var(--space-4) * -1);
+  border-radius: var(--radius-lg);
+  background-color: var(--accent-wash);
+  opacity: 0;
+  z-index: var(--z-below);
+  transition: opacity var(--dur-base) var(--ease-out-quart);
+}
+
+.row:hover::before {
+  opacity: 1;
+}
+
+.iconTile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 46px;
+  block-size: 46px;
+  border-radius: var(--radius-md);
+  color: var(--accent-colour);
+  background-color: var(--accent-wash);
+  flex-shrink: 0;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.row:hover .iconTile {
+  transform: scale(1.06);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.name {
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.summary {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+  max-inline-size: 62ch;
+}
+
+.proof {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  margin-block-start: var(--space-1);
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--accent-colour);
+  background-color: var(--accent-wash);
+}
+
+.arrow {
+  color: var(--color-text-faint);
+  flex-shrink: 0;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition:
+    opacity var(--dur-base) var(--ease-out-quart),
+    transform var(--dur-base) var(--ease-out-expo),
+    color var(--dur-base) var(--ease-out-quart);
+}
+
+.row:hover .arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--accent-colour);
+}
+
+.stretch::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+
+@media (min-width: 980px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.28fr);
+  }
+
+  /* The heading holds position while the list scrolls past it — the single
+     cheapest way to make a long list feel composed rather than dumped. */
+  .aside {
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + var(--space-12));
+  }
+}

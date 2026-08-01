@@ -1,0 +1,34 @@
+.section {
+  position: relative;
+  padding-block: var(--section-y);
+  background-color: var(--color-bg);
+}
+
+.spacingLarge {
+  padding-block: var(--section-y-lg);
+}
+
+.spacingSmall {
+  padding-block: var(--section-y-sm);
+}
+
+.subtle {
+  background-color: var(--color-bg-subtle);
+}
+
+.inverted {
+  /* .invertedSurface in styles/themes.css remaps the semantic tokens; this
+     only needs to own the geometry. */
+  overflow: hidden;
+}
+
+/* A hairline that fades at both ends, drawn on the leading edge of a section
+   so consecutive sections read as separated without a hard rule. */
+.divided::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: var(--gutter);
+  height: 1px;
+  background: var(--gradient-hairline);
+}
