@@ -48,6 +48,14 @@ html.lenis body {
   overflow: hidden;
 }
 
+/* While the preloader is up the page must not scroll behind it. Set by the
+   inline boot script before first paint and removed when the overlay leaves,
+   so it is never possible to scroll a page you cannot see. */
+html.preloading,
+html.preloading body {
+  overflow: hidden;
+}
+
 /* The header is fixed; anchor targets need to clear it. */
 :target {
   scroll-margin-block-start: calc(var(--header-h) + var(--space-8));

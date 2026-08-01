@@ -4,6 +4,8 @@ import { IBM_Plex_Mono, Inter, Poppins } from 'next/font/google';
 import { AppProviders } from '@/components/providers/AppProviders';
 import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
+import { Preloader } from '@/components/layout/Preloader';
+import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { SkipLink } from '@/components/layout/SkipLink';
 import { site } from '@/data/site';
 
@@ -117,6 +119,11 @@ const bootScript = `
       d.classList.add('js-motion')
     }
   }catch(e){}
+  // Locks scroll behind the overlay. Set before first paint so the page can
+  // never be scrolled while it is covered. Runs on every document load; an
+  // in-app navigation keeps the root layout mounted, so the preloader does
+  // not reappear when moving between pages.
+  d.classList.add('preloading')
 })();
 `;
 
@@ -134,10 +141,14 @@ export default function RootLayout({
       </head>
       <body>
         <AppProviders>
+          {/* Fixed overlay. The page below renders on its normal schedule, so
+              this costs no layout or paint time for the real content. */}
+          <Preloader />
           <SkipLink />
           <Header />
           <main id="main">{children}</main>
           <Footer />
+          <ScrollToTop />
         </AppProviders>
       </body>
     </html>

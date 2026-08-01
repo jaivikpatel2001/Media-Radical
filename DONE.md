@@ -161,6 +161,77 @@ was visible. It is now 73.4px. Swept every text node at 375px and 1440px: no
 element carrying a descender has a line-height ratio under 1.02, and no split
 line overflows its mask.
 
+### Preloader and back-to-top
+
+| Time | What was completed |
+|---|---|
+| 22:50 | **Built the preloader.** The concept is the brand mark drawing itself: the solid core lands, then the three arcs sweep outward in sequence, echoed by an expanding ring. It is the logo from `components/ui/Logo.tsx` at display size, so the first thing on screen is the identity rather than a generic spinner. Pure CSS keyframes with `pathLength="1"` normalising the arcs so one dash rule draws all three. No images, no JS animation loop. |
+| 22:52 | **Deliberately no percentage.** Nothing in the page measures real load progress, and a fake number that snaps to 100 is worse than an honest indeterminate sweep. |
+| 22:55 | **Built to not cost Core Web Vitals**, which is the usual price of a preloader: it is a `position: fixed` overlay so the real page renders underneath on its normal schedule; the markup ships in the server HTML so nothing waits on hydration; dismissal keys off `document.fonts.ready` rather than `window.onload`, so it never waits on below-the-fold images; a hard 2200ms ceiling means it cannot hang; and it is removed from the DOM after leaving so it can never intercept a pointer event. |
+| 22:57 | **Once per session.** The inline boot script checks `sessionStorage` before first paint and sets `data-preload="skip"`, which the stylesheet resolves to `display: none` — so a repeat visit or an in-app navigation never sees it, and it costs no paint or hit-testing when skipped. Scroll is locked while it is up, via a class set in the same pre-paint script. |
+| 23:00 | **Back-to-top control**, bottom right. Scrolls through Lenis when Lenis is running so the trip up has the same easing as the rest of the site; falls back to a native scroll with `behavior` taken from the user's own motion preference when Lenis is absent, which is the case under reduced motion. |
+| 23:02 | The ring around it traces scroll progress as a conic gradient masked to a 2px band, so it is one element rather than an SVG. The scroll listener is rAF-throttled and only writes to the DOM when the rounded percentage actually changes, so a full-page scroll is a few dozen writes rather than hundreds. While hidden it carries `visibility: hidden`, `tabIndex={-1}` and `aria-hidden`, so it cannot be focused or announced before it is available. |
+
+**Reduced motion:** the preloader still appears and still fades, because a hard
+cut is itself a jarring motion, but the arc drawing, the pulse ring and the
+sweep are all disabled and the mark simply sits there.
+
+**Verified:** both components present in the server HTML alongside the hero
+headline, proving the page is not gated on the overlay. The progress ring maths
+checks out (`--progress: 0.6` produces `conic-gradient(… 216deg)`). The
+animation itself could not be watched in this environment, since the preview
+pane does not composite frames.
+
+| Time | What was completed |
+|---|---|
+| 23:10 | **Performance and SEO pass on the above, which caught two of my own mistakes.** First, `aria-label="Back to top"` was a literal string in `ScrollToTop.tsx`, which breaks the settled rule that all copy lives in `/data`. Moved to `site.ui.scrollToTop`. Second, the preloader caption sat inside a `role="status"` region that already carried an accessible name, so a screen reader would hear the brand twice for no reason. The caption is now `aria-hidden`, since it is decoration and the region name already says what is happening. |
+| 23:12 | **Measured rather than assumed.** No new dependency: the arrow glyph comes from `lucide-react`, already used by five other components and tree-shaken per icon. The preloader adds 1.4 KB of markup to a 656 KB document. Neither element can cause layout shift, as both are `position: fixed` and therefore out of flow. Heading order is untouched, still exactly one `h1`, and the structured data is unchanged. |
+
+| Time | What was completed |
+|---|---|
+| 23:30 | **Reported as not visible on refresh, and there were two causes, both mine.** The once-per-session gate meant the overlay showed on exactly one load and never again, so any reload during review showed nothing. Worse, `MIN_VISIBLE_MS` was 700ms while the intro sequence does not finish until about 1360ms: the third arc starts at 440ms and takes 700ms to draw. The mark was being faded out mid-draw, so even on the one load that did show it, the animation never completed. |
+| 23:32 | **Removed the session gate entirely.** It was also close to pointless: the preloader sits in the root layout, so a client-side navigation never remounts it. The gate was only ever suppressing full document loads, which is precisely the case where showing it is correct. Deleted the `sessionStorage` write, the `data-preload="skip"` attribute and the CSS rule that consumed it. |
+| 23:33 | **Raised `MIN_VISIBLE_MS` to 1400** so the mark finishes drawing and the caption settles before the exit begins. The 2200ms hard ceiling is unchanged, so the worst case is still bounded. |
+| 23:35 | Fixed two comments that now contradicted the code, including one on `.leaving` that described the session gate rather than the exit transition it actually sits above. |
+
+**Not verified visually.** The preview pane in this environment does not
+composite, and a tool round-trip takes about 9 seconds against an overlay whose
+maximum lifetime is 2.2 seconds, so there is no way to catch it mid-flight. What
+was confirmed: the dev server serves the preloader markup, the boot script locks
+scroll unconditionally, no trace of the old session gate remains anywhere, and
+the end state is clean with the overlay gone, scroll unlocked and the hero
+rendered. The timing itself is plain `setTimeout` logic. The animation still
+wants a human eye on it.
+
+### Wordmark reveal in the preloader, and why not a morphing text effect
+
+| Time | What was completed |
+|---|---|
+| 23:50 | **Evaluated Magic UI's Morphing Text for the preloader and rejected it**, on the evidence of its source rather than taste. Its constants are `morphTime = 1.5` and `cooldownTime = 0.5`, so two seconds per word. Our whole preloader is 1.4 seconds with a 2.2 second ceiling, so a single morph does not fit, and three words would mean a six second preloader. It also sets `style.filter = blur(...)` on two spans every frame, scaling to `blur(100px)`, under an SVG `feColorMatrix` threshold. Animating a large blur forces a full raster of the layer on the main thread, at exactly the moment the browser is parsing and hydrating the real page. Its rAF loop also never stops, recursing even during cooldown. Aesthetically the gooey melt reads playful, which fights the crisp hairline geometry of the mark. |
+| 23:55 | **Implemented a per-character mask reveal of the wordmark instead.** Each letter of `site.name` rises from behind its own `overflow: hidden` mask, staggered 32ms by index through a `--i` custom property. This is the masked-reveal idea the headlines already use via SplitText `mask: 'lines'`, brought down to the character, so the overlay reads as the first sentence of the site rather than a widget bolted on the front. It also puts the company name on screen, which the preloader previously never did. |
+| 23:57 | Cost: no JavaScript and no new dependency. It is CSS keyframes on `transform` only, so it stays on the compositor, which is the specific thing the blur-morph could not do. The caption was demoted to `--text-sm` at normal weight so the name leads and the tagline supports it. |
+| 23:58 | **Retimed the whole sequence to land inside the exit.** Last character finishes at 1324ms, arcs at 1140ms, caption at 1280ms, rail at 1360ms, against `MIN_VISIBLE_MS` of 1400. Verified by measuring the rendered markup rather than by reading the numbers back. |
+
+**Verified by measurement**, injecting the served markup against the real
+stylesheet: Poppins 600 at 25.6px, a 178px lockup on desktop and 153px at 22px
+on mobile, both inside the viewport with no page overflow. Character start
+transform computes to `translateY(38.25px)` against a 29px character, so every
+glyph begins genuinely below its mask rather than merely appearing to. The
+inter-word gap is a non-breaking space, measured at 6px, so it survives the
+inline-block clipping.
+
+Reduced motion needed an explicit `transform: none` on `.charInner`. Without it
+the characters keep their 130% start offset and the wordmark sits invisible
+below its own mask, which is the exact class of bug the project rule about
+reduced motion leaving nothing hidden exists to catch.
+
+The one thing worth knowing: the preloader caption is now the first text in the
+body, ahead of the skip link. That is deliberate. The overlay has to be early
+in the document to paint before the page it is covering, and moving it later
+would let the page show through first, which defeats it. The cost is five words
+of on-brand tagline ahead of everything else, which no crawler will hold
+against us given the `h1` is still the first heading.
+
 **Contrast pass after the palette swap — 133 failing text nodes → 3**, and all
 three remaining are false positives (white text over a scrim or the accent
 pill, which the measuring walker cannot resolve). Four real defects fixed:

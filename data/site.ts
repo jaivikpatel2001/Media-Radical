@@ -49,6 +49,18 @@ export const site = {
     response: 'We reply within one working day.',
   },
 
+  /** Global chrome strings. Kept here so no literal copy lives in a .tsx. */
+  ui: {
+    preloader: {
+      /** Announced to assistive tech while the first paint settles. */
+      status: 'Loading Media Radical',
+      /** Sits under the mark. Short enough to read in under a second. */
+      caption: 'Digital work that moves the numbers',
+    },
+    /** Accessible name for the back-to-top control. It has no visible label. */
+    scrollToTop: 'Back to top',
+  },
+
   socials: [
     { label: 'LinkedIn', href: 'https://www.linkedin.com/company/media-radical', platform: 'linkedin' },
     { label: 'X', href: 'https://x.com/mediaradical', platform: 'x' },
