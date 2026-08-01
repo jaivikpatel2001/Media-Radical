@@ -60,6 +60,10 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.name,
+  // The SEO audit found no canonical tag on the page. Relative values are
+  // resolved against `metadataBase` above, and each route can override this
+  // with its own path as the remaining page groups land.
+  alternates: { canonical: '/' },
   authors: [{ name: site.legalName, url: site.url }],
   creator: site.legalName,
   openGraph: {

@@ -24,6 +24,88 @@ interface Point {
   z: number;
   logo: TechLogo;
   glyph: Path2D;
+  /** Brand colour, parsed once. */
+  rgb: [number, number, number];
+  /** Brand colour adjusted for the current background. Recomputed on theme change. */
+  fill: string;
+}
+
+/* -------------------------------------------------------------------------
+   Colour helpers.
+
+   Every icon is drawn in its own brand colour. A handful of brands are pure
+   black (Next.js, Vercel) or near-black (Kafka) — correct on the white canvas
+   and invisible on the dark one, where they measure 1.07:1. Rather than drop
+   the branding, the colour is nudged toward the background's opposite only as
+   far as it takes to become visible, so the hue is preserved and the mark
+   stays recognisable.
+   ------------------------------------------------------------------------- */
+
+type Rgb = [number, number, number];
+
+function hexToRgb(hex: string): Rgb {
+  const value = hex.replace('#', '');
+  const full =
+    value.length === 3
+      ? value
+          .split('')
+          .map((c) => c + c)
+          .join('')
+      : value;
+  return [
+    parseInt(full.slice(0, 2), 16),
+    parseInt(full.slice(2, 4), 16),
+    parseInt(full.slice(4, 6), 16),
+  ];
+}
+
+const channelLuminance = (channel: number): number => {
+  const c = channel / 255;
+  return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+};
+
+const luminance = ([r, g, b]: Rgb): number =>
+  0.2126 * channelLuminance(r) +
+  0.7152 * channelLuminance(g) +
+  0.0722 * channelLuminance(b);
+
+const contrast = (a: Rgb, b: Rgb): number => {
+  const la = luminance(a);
+  const lb = luminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+};
+
+const mix = (from: Rgb, to: Rgb, amount: number): Rgb =>
+  [0, 1, 2].map((i) =>
+    Math.round(from[i] + (to[i] - from[i]) * amount),
+  ) as Rgb;
+
+/**
+ * Blends `colour` toward white or black — whichever opposes the background —
+ * in small steps, stopping the moment it clears `minRatio`. Because it steps
+ * in tenths and exits early, a colour that is already visible is returned
+ * untouched, and one that is not is changed as little as possible.
+ *
+ * 2.0 is deliberately low. These are large decorative glyphs, not text, and
+ * the goal is to preserve official branding — a text-grade ratio would wash
+ * every hue out. At this threshold 21 of the 22 hero logos render at their
+ * exact brand hex on the light canvas.
+ *
+ * The exceptions, measured:
+ *   React  #61DAFB  1.62:1 on white — the one light-theme adjustment
+ *   Next.js / Vercel #000000  1.07:1 on the dark canvas
+ *   Kafka  #231F20  1.21:1 on the dark canvas
+ */
+function ensureVisible(colour: Rgb, background: Rgb, minRatio = 2.0): string {
+  const toward: Rgb = luminance(background) > 0.5 ? [0, 0, 0] : [255, 255, 255];
+  let result = colour;
+
+  for (let step = 0; step <= 10; step += 1) {
+    if (contrast(result, background) >= minRatio) break;
+    result = mix(colour, toward, step / 10);
+  }
+
+  return `rgb(${result[0]} ${result[1]} ${result[2]})`;
 }
 
 /** Simple-icons paths are drawn on a 24x24 grid. */
@@ -101,6 +183,9 @@ export function IconCloud({
         z: Math.sin(phi) * radius,
         logo,
         glyph: new Path2D(logo.path),
+        rgb: hexToRgb(logo.hex),
+        // Filled in by refreshFills() below, which also reruns on theme change.
+        fill: logo.hex,
       };
     });
 
@@ -125,12 +210,42 @@ export function IconCloud({
     observer.observe(canvas);
 
     /* ------------------------------------------------------------ colour */
-    // Read once per frame from the live computed style, so the sphere
-    // follows a theme change without being rebuilt.
     const styleOf = getComputedStyle(canvas);
-    const readColours = () => ({
-      base: styleOf.getPropertyValue('--cloud-icon').trim() || '#0b0b0e',
-      accent: styleOf.getPropertyValue('--cloud-icon-front').trim() || '#5b53f5',
+
+    const readBackground = (): Rgb => {
+      const raw = styleOf.getPropertyValue('--cloud-bg').trim();
+      const parts = raw.match(/[\d.]+/g);
+      if (parts && parts.length >= 3) {
+        return [Number(parts[0]), Number(parts[1]), Number(parts[2])];
+      }
+      return [255, 255, 255];
+    };
+
+    // Adjusting every icon costs a few hundred operations, so it runs only
+    // when the background actually changes — on mount and on a theme flip —
+    // rather than on every frame.
+    let lastBackground = '';
+    const refreshFills = () => {
+      const background = readBackground();
+      const key = background.join(',');
+      if (key === lastBackground) return;
+      lastBackground = key;
+      points.forEach((point) => {
+        point.fill = ensureVisible(point.rgb, background);
+      });
+    };
+
+    refreshFills();
+
+    // The theme toggle rewrites data-theme on <html>; watch it so the sphere
+    // re-derives its colours without being rebuilt.
+    const themeObserver = new MutationObserver(() => {
+      lastBackground = '';
+      refreshFills();
+    });
+    themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
     });
 
     /* ------------------------------------------------------------- input */
@@ -189,7 +304,6 @@ export function IconCloud({
       // Stop the sphere tipping past its poles.
       rotation.current.x = Math.max(-1.1, Math.min(1.1, rotation.current.x));
 
-      const { base, accent } = readColours();
       const cx0 = width / 2;
       const cy0 = height / 2;
       const sphereRadius = Math.min(width, height) * 0.38;
@@ -227,10 +341,11 @@ export function IconCloud({
         );
         context.scale(size / GRID, size / GRID);
         context.translate(-GRID / 2, -GRID / 2);
-        context.globalAlpha = 0.2 + depth * 0.8;
-        // The frontmost icons pick up the accent; the rest stay neutral, so
-        // the sphere reads as one object rather than a bag of brand colours.
-        context.fillStyle = depth > 0.82 ? accent : base;
+        // Each icon in its own brand colour. Depth is carried entirely by
+        // scale and alpha, so the far side recedes without desaturating —
+        // the colours stay recognisable all the way round.
+        context.globalAlpha = 0.45 + depth * 0.55;
+        context.fillStyle = item.point.fill;
         context.fill(item.point.glyph);
         context.restore();
       }
@@ -243,6 +358,7 @@ export function IconCloud({
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
+      themeObserver.disconnect();
       canvas.removeEventListener('pointerdown', onPointerDown);
       canvas.removeEventListener('pointermove', onPointerMove);
       canvas.removeEventListener('pointerup', onPointerUp);

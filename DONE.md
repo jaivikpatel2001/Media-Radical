@@ -71,6 +71,47 @@ Times are IST (UTC+05:30).
 | 18:58 | Rewrote **`README.md`** — it was still `create-next-app` boilerplate crediting Geist, a font this project does not use. Replaced with setup, scripts, the documentation map, architecture, the Next.js 16 constraints and current status. |
 | 18:59 | **Fixed a real bug found while verifying:** `.gitignore` had a blanket `.env*` rule, which silently ignored `.env.example` itself — the one env file that must be committed. Added a `!.env.example` negation and confirmed with `git ls-files --others --exclude-standard` that it is now committable. Without this, the template would never have reached the repository. |
 
+### Brand colours for technology logos
+
+| Time | What was completed |
+|---|---|
+| 19:10 | **Hero icon cloud now draws every logo in its official brand colour** instead of monochrome grey + violet. Colours come from the `hex` already stored on each `TECH_LOGOS` entry. Depth is now carried by scale and alpha alone, so the far side of the sphere recedes without desaturating. |
+| 19:12 | Added a contrast guard to the cloud (`ensureVisible` in `IconCloud.tsx`). A few brands are pure black — Next.js and Vercel measure **1.07:1** on the dark canvas, Kafka 1.21:1 — and would simply vanish. The guard blends a colour toward the background's opposite in tenths and stops the moment it clears 2.0:1, so a visible colour is returned untouched and an invisible one is changed as little as possible. Measured result: **21 of 22 hero logos render at their exact brand hex** on the light default. The one exception is React `#61DAFB`, which is 1.62:1 on white and is nudged to `#57c4e2`. Threshold is deliberately low (2.0, not a text-grade 4.5) because these are large decorative glyphs and a text-grade ratio would wash every hue out. |
+| 19:13 | Replaced the `--cloud-icon` / `--cloud-icon-front` tokens with a single `--cloud-bg` (a concrete rgb triple — canvas cannot resolve `var()` at fill time). A `MutationObserver` on `data-theme` re-derives the adjusted colours on a theme flip without rebuilding the sphere. |
+| 19:25 | **Removed the lettermark placeholders from the technology tiles.** Canva, Adobe XD, Photoshop, Illustrator, AWS, Azure and OpenAI were rendering as "CA", "AX", "PH" etc. because simple-icons has removed those marks over trademark policy. Sourced real logos from the CC0 `logos` set (Gil Barbara) and `devicon`, added them as `TECH_COLOR_LOGOS` in `components/icons/techLogos.ts`, and extended `TechTile` with a third render path for full-colour multi-path SVG. Both icon packages were uninstalled after extraction — nothing new is in `package.json`. |
+| 19:26 | Gradient and clip `id`s inside those bodies are namespaced per logo at extraction time (`azure-SVG4V795Kgq`), so two full-colour logos can never collide in one document. Verified in the DOM. |
+| 19:28 | Verified across all 8 tabs: **84 technologies, 0 lettermarks remaining** — 7 full-colour, 77 monochrome. The lettermark branch is kept only so an unrecognised id degrades visibly instead of rendering an empty tile. |
+
+### Colourful tiles, hover lift, and the performance/SEO gate
+
+| Time | What was completed |
+|---|---|
+| 19:40 | **All technology tiles now render in their official brand colours** and at **2× size** (30px → 60px). Grid columns widened to 164px to suit. Extracted the colour maths from `IconCloud.tsx` into `utils/color.ts` so the canvas and the CSS tiles share one implementation instead of drifting. |
+| 19:42 | **Lowered the contrast threshold from 2.0 to 1.25.** At 2.0 the guard was repainting JavaScript `#F7DF1E` (1.35:1 on white) to a muddy `#c6b218` and React `#61DAFB` to `#57c4e2`. At 1.25 **every logo renders at its exact brand hex on the light canvas**, while pure-black marks on the dark canvas (1.07:1) are still corrected. Verified in the DOM: JS, React, HTML5 and TypeScript all match their official values exactly. |
+| 19:44 | Each tile emits four custom properties — `--brand-light`, `--brand-dark` and an rgb pair for the glow. A `[data-theme]` rule picks the right one, so the per-theme correction costs **zero runtime JavaScript**. |
+| 19:46 | **CSS3 switched to the blue `#1572B6` shield.** simple-icons v16 ships only the newer purple CSS mark, so the blue one comes from devicon as a full-colour logo. **Added Git** (`#F03C2E`), which was missing from the stack entirely. |
+| 19:48 | **Hover lift on the logos:** `scale(1.1)` plus a two-layer `drop-shadow` tinted to the brand colour, 240ms. `drop-shadow` follows the glyph's alpha rather than its bounding box, so the glow traces the actual mark. Both properties are composited and neither participates in layout, so there is **no layout shift**. Movement is dropped under reduced motion; the glow stays as the hover cue. |
+| 19:50 | **Fixed the hero copy fading out while still on screen.** The scroll scrub ran `opacity: 0` over the hero, leaving the headline and CTAs hard to read. Now drifts to `0.72` over a longer distance — the fade hints at depth without costing legibility. |
+
+### Mandatory performance and SEO gate
+
+| Time | What was completed |
+|---|---|
+| 19:55 | Added the **performance and SEO review** to `CLAUDE.md` as part of the Definition of Done, with a Next.js optimisation checklist and an SEO/GEO/AEO checklist. **Important:** the rule points at the bundled docs in `node_modules/next/dist/docs/`, not published Next.js 14 guides — 14-era guidance describes APIs this version has renamed or removed and will produce wrong code. |
+| 20:00 | **Ran the review on this change and found two real problems.** First: `TechnologyTabs` was a Client Component importing the logo registry, so a **140 KB chunk of SVG path data shipped to every visitor** for a below-the-fold section. Second: only the active tab existed in the DOM, so **76 of 84 technologies were absent from the rendered HTML** — exactly the factual content an answer engine would want. |
+| 20:05 | **Fixed both with one refactor.** Panels are now rendered on the server and passed to the client component as children; the client half manages visibility only and imports no logo data. Inactive panels use the `hidden` attribute, which is the correct tabpanel pattern and keeps them out of the accessibility tree. Verified: **no logo path data in any client chunk**, and 8 tabpanels / all 85 tiles in the server HTML. |
+| 20:08 | Measured the trade honestly: HTML gzip went 73 KB → 177 KB (80 KB brotli, which is what a CDN serves) while ~100 KB left the JS bundle. Near-neutral on bytes, but JS costs parse and execute on the main thread where static HTML is CDN-cached and parse-only — plus the content became crawlable. |
+| 20:12 | **SEO audit found two defects, both fixed.** No `<link rel="canonical">` anywhere — added via `alternates.canonical` in the root metadata, resolved against `metadataBase`. And no `og:image` or `twitter:image`, so every share rendered as a bare text link — added `app/opengraph-image.tsx` using `next/og`, statically generated at build time and derived from `data/site.ts`. Verified: canonical present, both image tags present with alt text, endpoint returns a real PNG. |
+
+**Audit result for the rest:** title 47 chars, description 161, exactly one
+`h1`, clean h2/h3 order, and structured data covering ProfessionalService,
+WebSite, FAQPage plus 8 Services and Offers — all already in good shape.
+
+**Constraint worth remembering:** the hero icon cloud draws with canvas `Path2D`
+and can therefore only use **single-path** marks. That is why the full-colour
+logos are a separate registry (`TECH_COLOR_LOGOS`) rather than extra fields on
+`TechLogo` — the cloud consumes `TECH_LOGOS` only and is unaffected by them.
+
 ### Notes carried forward from that work
 
 - The Stripe pass found a genuine accessibility issue worth remembering: a

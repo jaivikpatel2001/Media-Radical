@@ -62,6 +62,54 @@ stops the same thing being attempted twice.
 Never rewrite history in `DONE.md`. If something is later undone, add a new
 entry saying so.
 
+---
+
+## Performance and SEO review — also part of Definition of Done
+
+Every code change gets a performance and SEO pass **before** it is called
+complete. Not a follow-up task.
+
+### 1. Next.js optimisation review
+
+Review the optimisation guidance relevant to what you touched and apply what
+fits. **Read it from `node_modules/next/dist/docs/`, not from the web.** This
+project is Next.js 16; published guides for Next.js 14 describe APIs that have
+since changed or been removed (`middleware` → `proxy`, sync → async `params`,
+webpack → Turbopack, `next lint` removed). Using them will produce wrong code.
+
+Check the areas your change actually touches:
+
+| Area | Look at |
+|---|---|
+| Images | `next/image`, `sizes`, `priority` on the LCP image only, AVIF/WebP |
+| Fonts | `next/font` self-hosting, subsetting, weight count, `display: swap` |
+| Scripts | `next/script` strategy, third-party cost |
+| Metadata | Metadata API, `metadataBase`, OG and Twitter, canonical |
+| Static assets | Caching, what belongs in `public/` |
+| Lazy loading | `next/dynamic`, client-bundle size, Server vs Client Components |
+| Bundle | Whether a dependency earns its weight |
+
+Standing rules for this repo: Server Components by default, one `priority`
+image per page, never add a webpack config.
+
+### 2. SEO / GEO / AEO review
+
+Run the `seo-geo-aeo` skill against the affected page and act on what it finds.
+Verify, where the change touches them:
+
+- Metadata, Open Graph, Twitter cards, canonical URLs
+- Structured data (`utils/schema.ts`) — it must describe what is actually on
+  the page, never more
+- `sitemap.ts` and `robots.ts` — only list routes that resolve
+- Semantic HTML and heading order — exactly one `h1` per page
+- Accessibility: contrast, keyboard paths, accessible names, reduced motion
+- Core Web Vitals: LCP element, layout shift, long tasks
+- Internal linking and content discoverability
+- AI and answer-engine readability — is the answer in the server HTML?
+
+**Content must be in the server-rendered HTML.** Anything that only appears
+after hydration is invisible to most crawlers and answer engines.
+
 ### Before you call a task done
 
 1. Code change made and verified.
@@ -69,7 +117,9 @@ entry saying so.
 3. `npm run lint` clean.
 4. `npm run build` clean.
 5. **Every affected document above updated.**
-6. If docs contradict the code, the docs are a bug — fix them now, not later.
+6. **Next.js optimisation review done** for the areas touched.
+7. **SEO / GEO / AEO review done** via the `seo-geo-aeo` skill.
+8. If docs contradict the code, the docs are a bug — fix them now, not later.
 
 ---
 

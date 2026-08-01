@@ -40,15 +40,17 @@ export function heroScene(root: HTMLElement): void {
 
   if (copy) {
     gsap.to(copy, {
-      y: -70,
-      opacity: 0,
+      y: -40,
+      // Was fading to 0 across the hero, which left the headline and CTAs
+      // hard to read while they were still on screen. The drift is the point;
+      // the fade only needs to hint at depth, so it stops well short of
+      // transparent and runs over a longer distance.
+      opacity: 0.72,
       ease: 'none',
       scrollTrigger: {
         trigger: root,
         start: 'top top',
-        // Fully gone by the time the hero is two-thirds scrolled past, so the
-        // next section arrives to a clean stage.
-        end: 'bottom 55%',
+        end: 'bottom top',
         scrub: 0.5,
       },
     });

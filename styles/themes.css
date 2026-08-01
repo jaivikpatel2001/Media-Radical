@@ -82,8 +82,11 @@
   /* Icon cloud. Canvas cannot resolve var() at fill time, so these are read
      per frame from the computed style — they must be concrete colours, not
      references to other custom properties. */
-  --cloud-icon: #3c3c45;
-  --cloud-icon-front: #5b53f5;
+  /* The surface the hero icon cloud is drawn on. Icons render in their own
+     brand colours, and a canvas cannot resolve var() at fill time, so this
+     must be a concrete rgb triple — it is what the contrast guard measures
+     each brand colour against. */
+  --cloud-bg: 255 255 255;
 
   --gradient-accent: linear-gradient(
     135deg,
@@ -158,8 +161,7 @@
   --grid-line: rgb(255 255 255 / 0.05);
   --grain-opacity: 0.05;
 
-  --cloud-icon: #bebec9;
-  --cloud-icon-front: #837cff;
+  --cloud-bg: 11 11 14;
 
   --gradient-accent: linear-gradient(
     135deg,

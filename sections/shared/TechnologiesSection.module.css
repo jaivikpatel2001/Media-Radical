@@ -52,8 +52,15 @@
   opacity: 0.55;
 }
 
-/* ---------------------------------------------------------------- panel */
-.panel {
+/* ---------------------------------------------------------------- panel
+   Every panel is in the DOM; inactive ones carry the `hidden` attribute.
+   `display: flex` would override the browser's default `display: none` for
+   [hidden], so the attribute is honoured explicitly. */
+.panel[hidden] {
+  display: none;
+}
+
+.panelInner {
   display: flex;
   flex-direction: column;
   gap: var(--space-8);
@@ -66,7 +73,7 @@
 /* ---------------------------------------------------------------- tiles */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
   gap: var(--space-3);
 }
 
@@ -75,8 +82,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
-  padding: var(--space-5) var(--space-3);
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
   border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   box-shadow: inset 0 0 0 1px var(--color-border);
@@ -93,36 +100,65 @@
   box-shadow: inset 0 0 0 1px var(--color-border-strong), var(--shadow-md);
 }
 
-/* Monochrome at rest so the grid reads as one set, brand colour on hover for
-   recognition. --brand is set per tile from the logo's own hex. */
+/* Every logo sits in its own brand colour.
+   Single-path marks inherit it from `color`; the seven full-colour marks
+   carry their own fills and ignore this. --brand-light / --brand-dark are set
+   per tile by TechTile and are already contrast-corrected per theme, so a
+   pure-black mark like Next.js stays visible on the dark canvas. */
 .logo {
-  inline-size: 30px;
-  block-size: 30px;
-  color: var(--color-text-muted);
+  inline-size: 60px;
+  block-size: 60px;
+  color: var(--brand-light, var(--color-text-muted));
+  /* Both properties are composited and neither participates in layout, so the
+     hover lift cannot shift the grid. 240ms sits in the 200–300ms band where
+     the movement reads as responsive rather than sluggish. */
   transition:
-    color var(--dur-base) var(--ease-out-quart),
-    transform var(--dur-slow) var(--ease-out-expo);
+    transform 240ms var(--ease-out-quart),
+    filter 240ms var(--ease-out-quart);
 }
 
+:global(:root[data-theme='dark']) .logo {
+  color: var(--brand-dark, var(--color-text-muted));
+}
+
+/* Lift: a small scale plus a drop-shadow tinted to the brand, so the mark
+   reads as floating off the card rather than just growing. drop-shadow
+   follows the glyph's alpha channel — unlike box-shadow, which would draw a
+   rectangle around the SVG box. */
 .tile:hover .logo {
-  color: var(--brand, var(--color-accent));
-  transform: scale(1.08);
+  transform: scale(1.1);
+  filter:
+    drop-shadow(0 6px 10px rgb(var(--brand-rgb-light, 10 10 20) / 0.42))
+    drop-shadow(0 1px 2px rgb(var(--brand-rgb-light, 10 10 20) / 0.28));
 }
 
-/* Fallback for brands with no usable logo — AWS, Azure, Canva, the Adobe
-   suite, OpenAI. A lettermark keeps them in the grid instead of dropping
-   them, and reads as intentional rather than broken. */
+:global(:root[data-theme='dark']) .tile:hover .logo {
+  filter:
+    drop-shadow(0 6px 12px rgb(var(--brand-rgb-dark, 255 255 255) / 0.4))
+    drop-shadow(0 1px 3px rgb(var(--brand-rgb-dark, 255 255 255) / 0.24));
+}
+
+/* The lift is decorative; honour a reduced-motion preference by keeping the
+   glow as the hover cue and dropping the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .tile:hover .logo {
+    transform: none;
+  }
+}
+
+/* Fallback for an id that matches no logo. Nothing hits this today; it exists
+   so a typo degrades visibly instead of leaving an empty tile. */
 .monogram {
   display: flex;
   align-items: center;
   justify-content: center;
-  inline-size: 30px;
-  block-size: 30px;
-  border-radius: var(--radius-sm);
+  inline-size: 60px;
+  block-size: 60px;
+  border-radius: var(--radius-md);
   background-color: var(--color-accent-soft);
   color: var(--color-accent-text);
   font-family: var(--font-display-stack);
-  font-size: var(--text-sm);
+  font-size: var(--text-xl);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.02em;
   transition: transform var(--dur-slow) var(--ease-out-expo);
@@ -156,6 +192,6 @@
 
 @media (min-width: 620px) {
   .grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(164px, 1fr));
   }
 }

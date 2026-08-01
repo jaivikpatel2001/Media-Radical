@@ -1,94 +1,50 @@
 'use client';
 
 import { motion } from 'motion/react';
-import { useId, useState } from 'react';
+import { Children, useId, useState } from 'react';
 
-import { TECH_LOGOS } from '@/components/icons/techLogos';
 import { EASE } from '@/constants/motion';
-import type { Technology, TechnologyGroup } from '@/types/content';
 import { cx } from '@/utils/cx';
 
 import styles from './TechnologiesSection.module.css';
 
+interface TabMeta {
+  label: string;
+  count: number;
+}
+
 interface TechnologyTabsProps {
-  groups: TechnologyGroup[];
-  /** Pre-resolved so this client component never imports the data layer. */
-  technologiesByCategory: Record<string, Technology[]>;
+  tabs: TabMeta[];
+  /** One pre-rendered panel per tab, in the same order. */
+  children: React.ReactNode;
 }
 
 /**
- * Lettermark for brands with no usable logo.
+ * Tab chrome only.
  *
- * A short single word is kept whole so acronyms survive — "AWS" must not
- * become "AW". Longer single words take two letters, and multi-word names
- * take initials: "Adobe XD" reads "AX".
- */
-function monogramOf(name: string): string {
-  const words = name.split(/[\s.]+/).filter(Boolean);
-
-  if (words.length === 1) {
-    const word = words[0].replace(/[^A-Za-z0-9]/g, '');
-    return (word.length <= 3 ? word : word.slice(0, 2)).toUpperCase();
-  }
-
-  return words
-    .slice(0, 3)
-    .map((word) => word[0])
-    .join('')
-    .toUpperCase();
-}
-
-/**
- * One technology tile: brand logo, or a lettermark when no logo exists.
+ * This component deliberately knows nothing about logos. The panels arrive as
+ * children already rendered on the server, which buys two things:
  *
- * Logos are monochrome at rest and take their brand colour on hover — the
- * grid reads as one considered set rather than a wall of competing brand
- * colours, but each mark is still recognisable when you look at it.
- */
-function TechTile({ technology }: { technology: Technology }) {
-  const logo = technology.logoId ? TECH_LOGOS[technology.logoId] : undefined;
-
-  return (
-    <li
-      className={styles.tile}
-      style={logo ? ({ ['--brand' as string]: logo.hex }) : undefined}
-    >
-      {logo ? (
-        <svg
-          className={styles.logo}
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d={logo.path} />
-        </svg>
-      ) : (
-        <span className={styles.monogram} aria-hidden="true">
-          {monogramOf(technology.name)}
-        </span>
-      )}
-      <span className={styles.name}>{technology.name}</span>
-    </li>
-  );
-}
-
-/**
- * Tabbed technology browser.
+ *  1. **Bundle.** Importing the logo registry here put a 140 KB chunk of SVG
+ *     path data into the client bundle for a section below the fold. None of
+ *     it ships now.
+ *  2. **Discoverability.** Previously only the active panel existed in the
+ *     DOM, so 76 of 84 technologies were absent from the rendered HTML — the
+ *     exact factual content a search or answer engine would want. Every panel
+ *     is now in the markup; inactive ones are `hidden`, which is the correct
+ *     tabpanel pattern and keeps them out of the accessibility tree.
  *
- * A real tablist: arrow keys move between tabs, Home and End jump to the
- * ends, and each panel is associated with its tab. Roving `tabIndex` means
- * Tab enters and leaves the group in one step rather than walking all eight.
+ * Keyboard: arrow keys move between tabs, Home and End jump to the ends.
+ * Roving `tabIndex` means Tab enters and leaves the group in one step rather
+ * than walking all eight.
  */
-export function TechnologyTabs({
-  groups,
-  technologiesByCategory,
-}: TechnologyTabsProps) {
+export function TechnologyTabs({ tabs, children }: TechnologyTabsProps) {
   const [active, setActive] = useState(0);
   const baseId = useId();
+  const panels = Children.toArray(children);
 
   const onKeyDown = (event: React.KeyboardEvent) => {
-    const last = groups.length - 1;
+    const last = tabs.length - 1;
     let next = active;
 
     if (event.key === 'ArrowRight') next = active === last ? 0 : active + 1;
@@ -102,9 +58,6 @@ export function TechnologyTabs({
     document.getElementById(`${baseId}-tab-${next}`)?.focus();
   };
 
-  const group = groups[active];
-  const technologies = technologiesByCategory[group.category] ?? [];
-
   return (
     <>
       <div
@@ -113,18 +66,16 @@ export function TechnologyTabs({
         className={styles.tabs}
         onKeyDown={onKeyDown}
       >
-        {groups.map((item, index) => {
+        {tabs.map((tab, index) => {
           const selected = index === active;
-          const count = technologiesByCategory[item.category]?.length ?? 0;
-
           return (
             <button
-              key={item.category}
+              key={tab.label}
               id={`${baseId}-tab-${index}`}
               type="button"
               role="tab"
               aria-selected={selected}
-              aria-controls={`${baseId}-panel`}
+              aria-controls={`${baseId}-panel-${index}`}
               tabIndex={selected ? 0 : -1}
               className={cx(styles.tab, selected && styles.tabActive)}
               onClick={() => setActive(index)}
@@ -137,45 +88,27 @@ export function TechnologyTabs({
                 />
               ) : null}
               <span className={styles.tabLabel}>
-                {item.label}
-                <span className={styles.count}>{count}</span>
+                {tab.label}
+                <span className={styles.count}>{tab.count}</span>
               </span>
             </button>
           );
         })}
       </div>
 
-      <div
-        id={`${baseId}-panel`}
-        role="tabpanel"
-        aria-labelledby={`${baseId}-tab-${active}`}
-        tabIndex={0}
-        className={styles.panel}
-      >
-        {/* Keyed, but deliberately NOT wrapped in AnimatePresence with
-            `mode="wait"`. That would hold the new panel back until the old
-            one finished animating out — which makes the content of the page
-            depend on an animation completing. Changing the key remounts the
-            panel and Motion plays initial → animate; there is no exit to
-            wait on, so the tiles are there the instant the tab is pressed. */}
-        <motion.div
-          key={group.category}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [...EASE.outExpo] }}
+      {panels.map((panel, index) => (
+        <div
+          key={tabs[index]?.label ?? index}
+          id={`${baseId}-panel-${index}`}
+          role="tabpanel"
+          aria-labelledby={`${baseId}-tab-${index}`}
+          tabIndex={0}
+          hidden={index !== active}
           className={styles.panel}
         >
-          <p className={cx(styles.description, 'body-md')}>
-            {group.description}
-          </p>
-
-          <ul className={styles.grid}>
-            {technologies.map((technology) => (
-              <TechTile key={technology.id} technology={technology} />
-            ))}
-          </ul>
-        </motion.div>
-      </div>
+          {panel}
+        </div>
+      ))}
     </>
   );
 }

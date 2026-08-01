@@ -11,17 +11,19 @@ import type { Technology, TechnologyGroup } from '@/types/content';
 export const technologies: Technology[] = [
   /* ---------------------------------------------------------------- design */
   { id: 'figma', name: 'Figma', category: 'design', logoId: 'figma' },
-  { id: 'canva', name: 'Canva', category: 'design', logoId: '' },
-  { id: 'adobe-xd', name: 'Adobe XD', category: 'design', logoId: '' },
-  { id: 'photoshop', name: 'Photoshop', category: 'design', logoId: '' },
-  { id: 'illustrator', name: 'Illustrator', category: 'design', logoId: '' },
+  { id: 'canva', name: 'Canva', category: 'design', logoId: 'canva' },
+  { id: 'adobe-xd', name: 'Adobe XD', category: 'design', logoId: 'adobe-xd' },
+  { id: 'photoshop', name: 'Photoshop', category: 'design', logoId: 'photoshop' },
+  { id: 'illustrator', name: 'Illustrator', category: 'design', logoId: 'illustrator' },
   { id: 'sketch', name: 'Sketch', category: 'design', logoId: 'sketch' },
   { id: 'framer', name: 'Framer', category: 'design', logoId: 'framer' },
   { id: 'storybook', name: 'Storybook', category: 'design', logoId: 'storybook' },
 
   /* -------------------------------------------------------------- frontend */
   { id: 'html', name: 'HTML5', category: 'frontend', logoId: 'html' },
-  { id: 'css', name: 'CSS3', category: 'frontend', logoId: 'css' },
+  // The blue shield, not the newer purple mark — simple-icons v16 ships only
+  // the latter, so this one comes from the full-colour registry.
+  { id: 'css', name: 'CSS3', category: 'frontend', logoId: 'css3' },
   { id: 'javascript', name: 'JavaScript', category: 'frontend', logoId: 'javascript' },
   { id: 'typescript', name: 'TypeScript', category: 'frontend', logoId: 'typescript' },
   { id: 'react', name: 'React', category: 'frontend', logoId: 'react' },
@@ -83,12 +85,13 @@ export const technologies: Technology[] = [
   { id: 'expo', name: 'Expo', category: 'mobile', logoId: 'expo' },
 
   /* ----------------------------------------------------------------- cloud */
-  { id: 'aws', name: 'AWS', category: 'cloud', logoId: '' },
-  { id: 'azure', name: 'Azure', category: 'cloud', logoId: '' },
+  { id: 'aws', name: 'AWS', category: 'cloud', logoId: 'aws' },
+  { id: 'azure', name: 'Azure', category: 'cloud', logoId: 'azure' },
   { id: 'gcp', name: 'Google Cloud', category: 'cloud', logoId: 'gcp' },
   { id: 'docker', name: 'Docker', category: 'cloud', logoId: 'docker' },
   { id: 'kubernetes', name: 'Kubernetes', category: 'cloud', logoId: 'kubernetes' },
   { id: 'terraform', name: 'Terraform', category: 'cloud', logoId: 'terraform' },
+  { id: 'git', name: 'Git', category: 'cloud', logoId: 'git' },
   { id: 'github-actions', name: 'GitHub Actions', category: 'cloud', logoId: 'github-actions' },
   { id: 'jenkins', name: 'Jenkins', category: 'cloud', logoId: 'jenkins' },
   { id: 'nginx', name: 'Nginx', category: 'cloud', logoId: 'nginx' },
@@ -99,7 +102,7 @@ export const technologies: Technology[] = [
   { id: 'grafana', name: 'Grafana', category: 'cloud', logoId: 'grafana' },
 
   /* -------------------------------------------------------------------- ai */
-  { id: 'openai', name: 'OpenAI', category: 'ai', logoId: '' },
+  { id: 'openai', name: 'OpenAI', category: 'ai', logoId: 'openai' },
   { id: 'langchain', name: 'LangChain', category: 'ai', logoId: 'langchain' },
   { id: 'huggingface', name: 'Hugging Face', category: 'ai', logoId: 'huggingface' },
   { id: 'tensorflow', name: 'TensorFlow', category: 'ai', logoId: 'tensorflow' },
@@ -236,6 +239,7 @@ export const technologyGroups: TechnologyGroup[] = [
       'docker',
       'kubernetes',
       'terraform',
+      'git',
       'github-actions',
       'jenkins',
       'nginx',
