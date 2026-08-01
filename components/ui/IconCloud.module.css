@@ -1,0 +1,74 @@
+.wrap {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+/* A soft radial glow behind the sphere so it reads as lit from within rather
+   than as icons floating on a flat background. */
+.wrap::before {
+  content: '';
+  position: absolute;
+  inset: 8%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 42% 38%,
+    var(--mesh-1),
+    transparent 62%
+  );
+  filter: blur(var(--blur-xl));
+  pointer-events: none;
+  z-index: var(--z-below);
+}
+
+.canvas {
+  inline-size: 100%;
+  block-size: 100%;
+  /* Grab affordance: the sphere is draggable. */
+  cursor: grab;
+  touch-action: none;
+}
+
+.canvas:active {
+  cursor: grabbing;
+}
+
+/* WCAG 2.2.2 — any motion that starts automatically and runs longer than five
+   seconds needs a way to pause it. */
+.pause {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  z-index: var(--z-raised);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  opacity: 0;
+  transition:
+    opacity var(--dur-base) var(--ease-out-quart),
+    color var(--dur-fast) var(--ease-out-quart);
+}
+
+/* Visible on hover, and always visible once focused by keyboard. */
+.wrap:hover .pause,
+.pause:focus-visible {
+  opacity: 1;
+}
+
+.pause:hover {
+  color: var(--color-text);
+}

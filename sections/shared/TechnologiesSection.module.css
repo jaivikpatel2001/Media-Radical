@@ -1,23 +1,20 @@
+/* ---------------------------------------------------------------- tabs */
 .tabs {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1);
   margin-block-end: var(--space-8);
   padding: var(--space-1);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xl);
   background-color: var(--color-surface-inset);
   box-shadow: inset 0 0 0 1px var(--color-border);
-  align-self: flex-start;
-  inline-size: fit-content;
-  max-inline-size: 100%;
 }
 
 .tab {
   position: relative;
-  z-index: var(--z-raised);
-  padding: var(--space-2) var(--space-5);
-  border-radius: var(--radius-pill);
+  flex: 1 1 auto;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
   font-family: var(--font-mono-stack);
   font-size: var(--text-xs);
   letter-spacing: var(--tracking-wide);
@@ -35,67 +32,116 @@
   color: var(--color-accent-contrast);
 }
 
-/* The pill is a single element that animates between tabs via Motion's
-   shared layout, so the movement is a real transition rather than two
-   opacity fades pretending to be one. */
+/* One element moved between tabs by Motion's shared layout, so the highlight
+   genuinely travels rather than two opacities cross-fading. */
 .tabPill {
   position: absolute;
   inset: 0;
   z-index: var(--z-base);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-lg);
   background-color: var(--color-accent);
 }
 
+.tabLabel {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+.count {
+  margin-inline-start: var(--space-2);
+  opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------- panel */
 .panel {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: var(--space-8);
 }
 
 .description {
-  max-inline-size: 54ch;
+  max-inline-size: 58ch;
 }
 
-.chips {
+/* ---------------------------------------------------------------- tiles */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(126px, 1fr));
+  gap: var(--space-3);
+}
+
+.tile {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-.chip {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-pill);
+  padding: var(--space-5) var(--space-3);
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface);
   box-shadow: inset 0 0 0 1px var(--color-border);
-  font-size: var(--text-md);
-  font-weight: var(--weight-medium);
-  color: var(--color-text-secondary);
+  text-align: center;
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-quart),
+    background-color var(--dur-base) var(--ease-out-quart);
+}
+
+.tile:hover {
+  transform: translateY(-3px);
+  background-color: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong), var(--shadow-md);
+}
+
+/* Monochrome at rest so the grid reads as one set, brand colour on hover for
+   recognition. --brand is set per tile from the logo's own hex. */
+.logo {
+  inline-size: 30px;
+  block-size: 30px;
+  color: var(--color-text-muted);
   transition:
     color var(--dur-base) var(--ease-out-quart),
-    box-shadow var(--dur-base) var(--ease-out-quart),
-    transform var(--dur-base) var(--ease-out-expo);
+    transform var(--dur-slow) var(--ease-out-expo);
 }
 
-.chip:hover {
+.tile:hover .logo {
+  color: var(--brand, var(--color-accent));
+  transform: scale(1.08);
+}
+
+/* Fallback for brands with no usable logo — AWS, Azure, Canva, the Adobe
+   suite, OpenAI. A lettermark keeps them in the grid instead of dropping
+   them, and reads as intentional rather than broken. */
+.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 30px;
+  block-size: 30px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.02em;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.tile:hover .monogram {
+  transform: scale(1.08);
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text-secondary);
+  transition: color var(--dur-base) var(--ease-out-quart);
+}
+
+.tile:hover .name {
   color: var(--color-text);
-  box-shadow: inset 0 0 0 1px var(--color-border-accent);
-  transform: translateY(-2px);
-}
-
-.chipDot {
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 50%;
-  background-color: var(--color-accent);
-  flex-shrink: 0;
-  opacity: 0.55;
-  transition: opacity var(--dur-base) var(--ease-out-quart);
-}
-
-.chip:hover .chipDot {
-  opacity: 1;
 }
 
 .note {
@@ -106,4 +152,10 @@
   border-block-start: 1px solid var(--color-hairline);
   color: var(--color-text-faint);
   font-size: var(--text-md);
+}
+
+@media (min-width: 620px) {
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
 }

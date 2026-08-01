@@ -20,6 +20,8 @@
   position: relative;
 }
 
+/* Some triggers are <button> (dropdowns) and some are <a> (plain links).
+   Setting the family here keeps them identical. */
 .trigger {
   display: inline-flex;
   align-items: center;
@@ -27,6 +29,7 @@
   block-size: 38px;
   padding-inline: var(--space-4);
   border-radius: var(--radius-pill);
+  font-family: var(--font-display-stack);
   font-size: var(--text-md);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-snug);

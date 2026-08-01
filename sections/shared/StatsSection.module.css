@@ -40,16 +40,20 @@
   border-block-start: 1px solid var(--color-border);
 }
 
+/* These four figures are the one place the body face is used at display size,
+   and it is a functional choice: they animate. Inter ships true tabular
+   figures, so every digit is the same width and the number does not jitter
+   sideways as it counts up. Poppins has no tabular set, so the same counter
+   in the display face would visibly wobble. */
 .value {
   display: flex;
   align-items: baseline;
+  font-family: var(--font-sans-stack);
   font-size: clamp(2.75rem, 6vw, 4.5rem);
   font-weight: var(--weight-semibold);
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
   line-height: var(--leading-none);
   color: var(--color-text);
-  /* Tabular figures keep the digits from shifting sideways while the counter
-     runs — the detail that separates a designed counter from a janky one. */
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }

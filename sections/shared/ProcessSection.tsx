@@ -32,14 +32,19 @@ function Tick() {
 }
 
 /**
- * Process — SHARED, and the page's one pinned scroll sequence.
+ * Process — SHARED.
  *
- * The markup is a plain ordered list. Whether it reads as a horizontal
- * pinned track or a vertical stack is decided entirely by
- * animations/scenes/process.ts, which branches on `gsap.matchMedia`. That
- * means the semantic order is correct for a screen reader and for a crawler
- * in both cases, and `deferPaint` is off because the pin needs to measure the
- * section before it is scrolled into view.
+ * The six steps stack into a deck as you scroll: each card is
+ * `position: sticky` at a slightly lower offset than the one before, so the
+ * previous step stays visible at the top edge while the next slides over it.
+ *
+ * This replaced a pinned horizontal scroll, which jittered against Lenis.
+ * Nothing here is pinned and nothing is transformed on scroll, so the
+ * sequence is handled entirely by the compositor — see the note in
+ * animations/scenes/process.ts.
+ *
+ * The markup is a plain ordered list either way, so the reading order is
+ * correct for a screen reader and a crawler regardless of the presentation.
  */
 export function ProcessSection({
   content,
@@ -53,6 +58,7 @@ export function ProcessSection({
       id={id}
       variant={variant}
       className={styles.section}
+      // The sticky stack must be laid out before it is scrolled into view.
       deferPaint={false}
       aria-labelledby="process-heading"
     >
@@ -64,44 +70,6 @@ export function ProcessSection({
             className={styles.head}
           />
 
-          <div className={styles.viewport} data-process-viewport>
-            <ol className={styles.track} data-process-track>
-              {steps.map((step) => (
-                <li key={step.id} className={styles.card} data-process-card>
-                  <span className={styles.ghostIndex} aria-hidden="true">
-                    {padIndex(step.index)}
-                  </span>
-
-                  <div className={styles.cardHead}>
-                    <span className={styles.step}>{padIndex(step.index)}</span>
-                    {step.durationLabel ? (
-                      <span className={cx(styles.duration, 'label')}>
-                        {step.durationLabel}
-                      </span>
-                    ) : null}
-                  </div>
-
-                  <h3 className={styles.title}>{step.title}</h3>
-                  <p className={styles.summary}>{step.summary}</p>
-
-                  <div className={styles.deliverables}>
-                    <p className={cx(styles.deliverablesTitle, 'label')}>
-                      {content.deliverablesLabel}
-                    </p>
-                    <ul>
-                      {step.deliverables.map((deliverable) => (
-                        <li key={deliverable} className={styles.deliverable}>
-                          <Tick />
-                          {deliverable}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
-
           <div
             className={styles.progressRail}
             role="presentation"
@@ -110,9 +78,46 @@ export function ProcessSection({
             <span className={styles.progressBar} data-process-progress />
           </div>
 
-          <p className={styles.hint} aria-hidden="true">
-            {content.scrollHint}
-          </p>
+          <ol className={styles.track} data-process-track>
+            {steps.map((step, index) => (
+              <li
+                key={step.id}
+                className={styles.card}
+                // Drives the stepped sticky offset that forms the deck.
+                style={{ ['--i' as string]: index }}
+              >
+                <span className={styles.ghostIndex} aria-hidden="true">
+                  {padIndex(step.index)}
+                </span>
+
+                <div className={styles.cardHead}>
+                  <span className={styles.step}>{padIndex(step.index)}</span>
+                  {step.durationLabel ? (
+                    <span className={cx(styles.duration, 'label')}>
+                      {step.durationLabel}
+                    </span>
+                  ) : null}
+                </div>
+
+                <h3 className={styles.title}>{step.title}</h3>
+                <p className={styles.summary}>{step.summary}</p>
+
+                <div className={styles.deliverables}>
+                  <p className={cx(styles.deliverablesTitle, 'label')}>
+                    {content.deliverablesLabel}
+                  </p>
+                  <ul>
+                    {step.deliverables.map((deliverable) => (
+                      <li key={deliverable} className={styles.deliverable}>
+                        <Tick />
+                        {deliverable}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </li>
+            ))}
+          </ol>
         </Container>
       </ScrollScene>
     </Section>

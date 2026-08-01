@@ -48,6 +48,35 @@ export const homePage: HomePageContent = {
       '94% of clients come back',
     ],
     highlight: { label: 'of clients hire us again', value: '94%' },
+    // The rotating logo sphere replaces the hero image. Swap back by deleting
+    // `techCloud` — `media` below is still wired up and takes over.
+    techCloud: {
+      label: 'Technologies we work with:',
+      technologyIds: [
+        'react',
+        'nextjs',
+        'typescript',
+        'node',
+        'python',
+        'go',
+        'swift',
+        'kotlin',
+        'postgres',
+        'redis',
+        'kafka',
+        'docker',
+        'kubernetes',
+        'terraform',
+        'gcp',
+        'vercel',
+        'graphql',
+        'figma',
+        'firebase',
+        'pytorch',
+        'grafana',
+        'github-actions',
+      ],
+    },
     media: {
       src: '/images/hero/hero-ambient.webp',
       // Decorative: the headline beside it carries the meaning.
@@ -159,7 +188,16 @@ export const homePage: HomePageContent = {
     heading: 'We pick tools that last.',
     emphasis: 'that last',
     lede: 'New is not always better. We choose proven technology, because you will live with it for years after launch.',
-    groupIds: ['frontend', 'backend', 'mobile', 'cloud', 'data', 'ai', 'devops'],
+    groupIds: [
+      'design',
+      'frontend',
+      'backend',
+      'database',
+      'cms',
+      'mobile',
+      'cloud',
+      'ai',
+    ],
     note: 'We use every tool here on live projects today, and we can support it for years to come.',
   },
 
@@ -172,7 +210,6 @@ export const homePage: HomePageContent = {
     cta: { label: 'See the full process', href: ROUTES.process, variant: 'link' },
     stepIds: ['discover', 'define', 'design', 'build', 'launch', 'evolve'],
     deliverablesLabel: 'What you get',
-    scrollHint: 'Keep scrolling to see each step',
   },
 
   /* ---------------------------------------------------------- case studies */
@@ -195,7 +232,6 @@ export const homePage: HomePageContent = {
     eyebrow: 'Client feedback',
     heading: 'What clients say after we finish.',
     emphasis: 'after we finish',
-    railHint: 'Scroll for more',
     testimonialIds: [
       'testimonial-northwind',
       'testimonial-helix',

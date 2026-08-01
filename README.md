@@ -1,37 +1,130 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Media Radical
 
-## Getting Started
+Marketing site for an IT services and consulting company. Next.js 16 (App
+Router), TypeScript, custom CSS, GSAP + Lenis + Motion.
 
+**Phase 1 scope: the Home page and the 404 page.** The architecture is built for
+all 17 page groups, so the remaining 16 are added as data and composition rather
+than as a refactor. See `app/ROUTES.md`.
 
-First, run the development server:
+---
+
+## Getting started
+
+```bash
+npm install
+```
+
+```bash
+cp .env.example .env.local
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open <http://localhost:3000>.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The site runs with no configuration — every variable in `.env.example` has a
+working fallback or belongs to a feature that is not built yet.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Scripts
 
-## Learn More
+| Command | What it does |
+|---|---|
+| `npm run dev` | Dev server (Turbopack) |
+| `npm run build` | Production build. Runs the type check too. |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npx tsc --noEmit` | Type check on its own |
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+**Documentation is part of the Definition of Done in this repo.** Any code
+change requires the matching doc change in the same piece of work. The rules and
+the file-by-file mapping are in `CLAUDE.md`.
 
-## Deploy on Vercel
+| File | What it is for |
+|---|---|
+| `DONE.md` | Chronological log of completed work. **Read this first** — it records what exists and which approaches were tried and rejected. |
+| `CLAUDE.md` | Working rules, project constraints, the documentation policy. |
+| `AGENTS.md` | This is Next.js 16 — read the bundled docs before writing code. |
+| `app/ROUTES.md` | How to add one of the 16 unbuilt page groups. |
+| `imagegeneration.md` | The 14 images the design expects: prompts, exact paths and sizes. |
+| `.env.example` | Every environment variable, with placeholders. |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+
+```
+app/            Routes. Only "/" and not-found.tsx are built.
+components/
+  ui/           Atoms — no domain knowledge, no data imports
+  layout/       Header, Footer, search, theme toggle
+  icons/        Hand-drawn SVG icons + extracted brand logo paths
+  providers/    Client boundaries: theme, smooth scroll, ScrollScene
+sections/
+  shared/       Prop-driven, reused across page groups
+  home/         Home-only sections
+styles/         tokens -> themes -> typography/utilities/motion
+animations/     core (GSAP + Lenis bridge), presets, per-section scenes
+data/           ALL copy. entities/ + pages/ + selectors
+types/          Content models
+```
+
+### The decisions that shape everything else
+
+**No Tailwind.** It was removed from the scaffold deliberately. Styling is CSS
+Modules plus custom properties.
+
+**Three-layer design tokens.** Primitives (`styles/tokens.css`) → semantic
+(`styles/themes.css`) → components. A component that references a raw `--ink-*`
+or `--accent-*` token will not survive a theme flip.
+
+**All copy lives in `/data`.** There are no literal user-facing strings in
+`.tsx` files. Entities are normalised and referenced by slug, so one service
+record feeds the nav dropdown, the footer, the Home grid and its own future
+detail page. This is what makes the remaining page groups additive.
+
+**Server Components by default.** Sections render plain markup carrying
+`data-anim` attributes; a thin `ScrollScene` client wrapper runs the GSAP
+scenes. Complex scroll animation, almost no component JavaScript shipped.
+
+**Light is the default theme.** Dark is opt-in via `data-theme="dark"`, set
+before first paint. There is deliberately no `prefers-color-scheme` auto-switch.
+
+**Reduced motion leaves nothing hidden.** Initial hidden states are gated on a
+`.js-motion` class that is withheld when motion is reduced or JS is unavailable,
+so content never depends on a script running.
+
+### Next.js 16 notes
+
+- Turbopack is the default bundler. **Never add a webpack config** — it fails
+  the build.
+- `typedRoutes` is explicitly `false`. It validates every `<Link href>` against
+  routes that exist, and the nav deliberately links ahead of the build. Turn it
+  on once the other page groups land.
+- `params` and `searchParams` are Promises. `middleware.ts` is now `proxy.ts`.
+
+---
+
+## Assets
+
+The 14 images the design expects are **not in the repo**. Every image slot
+resolves file existence on the server at build time and renders a gradient
+placeholder when the file is missing — no broken images, no 404s, no client JS.
+
+Dropping a file at the path given in `imagegeneration.md` is a no-code change.
+
+---
+
+## Status
+
+- **Built:** Home page (14 sections), `not-found.tsx`, sitemap, robots, JSON-LD,
+  site search. Both routes prerender static.
+- **Not built:** the other 16 page groups. Empty route folders exist.
+- **Verified:** type check, lint and build all clean. No horizontal scroll at
+  375px or 1440px. Reduced-motion path leaves no element hidden.

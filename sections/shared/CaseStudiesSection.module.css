@@ -111,6 +111,7 @@
 }
 
 .resultValue {
+  font-family: var(--font-display-stack);
   font-size: var(--text-2xl);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-tight);

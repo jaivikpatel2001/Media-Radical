@@ -1,103 +1,46 @@
 'use client';
 
-import { MEDIA } from '@/constants/breakpoints';
-
-import { gsap, ScrollTrigger } from '../core/gsap';
+import { gsap } from '../core/gsap';
 
 /**
- * Process — pinned horizontal scroll.
+ * Process — sticky stacked cards.
  *
- * On desktop the section pins and vertical wheel input drives the step track
- * sideways. This is the page's one genuinely scroll-driven moment, and it
- * earns its cost: six sequential steps are exactly the content that benefits
- * from being paced by the reader rather than listed.
+ * This section used to pin and scroll horizontally. That was replaced because
+ * pinning is the one ScrollTrigger feature that genuinely fights a smooth
+ * scroller: the pin swaps the element to `position: fixed` and re-measures,
+ * while Lenis is interpolating the scroll position on its own clock. The two
+ * disagree by a frame and the result is visible jitter. Two of the section's
+ * own rules made it worse — `overflow: hidden` on the section broke the
+ * containing block for the pinned element, and the same rule silently
+ * disables `position: sticky` for anything inside it.
  *
- * Below the desktop breakpoint it degrades to a plain vertical list with no
- * pin at all — horizontal pinning on a touch device fights the native scroll
- * axis and always feels broken.
+ * The replacement uses no pin at all. The cards are `position: sticky` with a
+ * stepped offset, so they stack into a deck as you scroll — handled entirely
+ * by the compositor, which is why it stays smooth regardless of what the
+ * scroll position is doing.
  *
- * `gsap.matchMedia` is what makes the two branches safe: it disposes of every
- * tween and trigger in a branch when its query stops matching, so resizing
- * across the breakpoint cannot leave a stale pin behind.
+ * All that is left for JavaScript is the progress rail. That is a `scaleX`
+ * tween — a transform, so it composites too, and it cannot jitter the layout
+ * even if it lags a frame.
  */
 export function processScene(root: HTMLElement): void {
-  const track = root.querySelector<HTMLElement>('[data-process-track]');
-  const viewport = root.querySelector<HTMLElement>('[data-process-viewport]');
   const progress = root.querySelector<HTMLElement>('[data-process-progress]');
+  const track = root.querySelector<HTMLElement>('[data-process-track]');
 
-  if (!track || !viewport) return;
+  if (!progress || !track) return;
 
-  const mm = gsap.matchMedia();
-
-  mm.add(MEDIA.desktop, () => {
-    // Distance the track must travel to bring its last card flush right.
-    const distance = () => track.scrollWidth - viewport.clientWidth;
-    if (distance() <= 0) return;
-
-    const tween = gsap.to(track, {
-      x: () => -distance(),
+  gsap.fromTo(
+    progress,
+    { scaleX: 0 },
+    {
+      scaleX: 1,
       ease: 'none',
       scrollTrigger: {
-        trigger: root,
-        pin: true,
-        // Anti-aliasing on a pinned element differs from an unpinned one;
-        // this keeps text from shifting weight the moment the pin engages.
-        pinSpacing: true,
-        anticipatePin: 1,
-        scrub: 0.7,
-        // Scroll distance is the horizontal distance, so the pace of the
-        // sideways movement matches the wheel one-to-one.
-        end: () => `+=${distance()}`,
-        invalidateOnRefresh: true,
+        trigger: track,
+        start: 'top 65%',
+        end: 'bottom bottom',
+        scrub: 0.4,
       },
-    });
-
-    if (progress) {
-      gsap.fromTo(
-        progress,
-        { scaleX: 0 },
-        {
-          scaleX: 1,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: root,
-            start: 'top top',
-            end: () => `+=${distance()}`,
-            scrub: 0.7,
-            invalidateOnRefresh: true,
-          },
-        },
-      );
-    }
-
-    return () => {
-      tween.kill();
-    };
-  });
-
-  mm.add(MEDIA.mobile, () => {
-    // No pin. Cards stack and reveal individually.
-    const cards = gsap.utils.toArray<HTMLElement>('[data-process-card]', root);
-    gsap.set(track, { clearProps: 'x' });
-
-    const tweens = cards.map((card) =>
-      gsap.fromTo(
-        card,
-        { opacity: 0, y: 28 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.8,
-          scrollTrigger: { trigger: card, start: 'top 88%', once: true },
-        },
-      ),
-    );
-
-    return () => tweens.forEach((tween) => tween.kill());
-  });
-
-  // Card widths depend on the fluid gutter, so a resize changes the travel.
-  ScrollTrigger.addEventListener('refreshInit', () =>
-    gsap.set(track, { x: 0 }),
+    },
   );
 }

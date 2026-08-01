@@ -34,8 +34,22 @@ export interface HeroContent {
    *
    * One asset, not a light/dark pair: dark mode applies a CSS filter to the
    * same file rather than doubling the art direction.
+   *
+   * Ignored when `techCloud` is set; the two occupy the same slot.
    */
   media?: MediaAsset;
+  /**
+   * Rotating sphere of technology logos, shown in place of `media`.
+   *
+   * Only ids present in components/icons/techLogos.ts are drawn — AWS, Azure
+   * and Pinecone have no logo there, so they are skipped rather than leaving
+   * a gap in the sphere.
+   */
+  techCloud?: {
+    technologyIds: string[];
+    /** Sentence a screen reader hears before the logo names. */
+    label: string;
+  };
 }
 
 export interface TrustedByContent {
@@ -76,8 +90,6 @@ export interface ProcessContent extends SectionIntro {
   stepIds: string[];
   /** Heading above each step's deliverable list. */
   deliverablesLabel: string;
-  /** Shown under the progress rail on the pinned desktop layout. */
-  scrollHint: string;
 }
 
 export interface CaseStudiesContent extends SectionIntro {
@@ -87,9 +99,8 @@ export interface CaseStudiesContent extends SectionIntro {
 }
 
 export interface TestimonialsContent extends SectionIntro {
+  /** The first is rendered as the featured quote; the rest form the wall. */
   testimonialIds: string[];
-  /** Affordance label under the scroll-snap rail. */
-  railHint: string;
 }
 
 export interface StatsContent extends SectionIntro {

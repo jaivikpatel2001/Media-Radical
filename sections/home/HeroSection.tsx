@@ -1,9 +1,11 @@
 import Link from 'next/link';
 
+import { TECH_LOGOS } from '@/components/icons/techLogos';
 import { ScrollScene } from '@/components/providers/ScrollScene';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import { Emphasis } from '@/components/ui/Emphasis';
+import { IconCloud } from '@/components/ui/IconCloud';
 import { Media } from '@/components/ui/Media';
 import type { SectionProps } from '@/types/common';
 import type { HeroContent } from '@/types/pages';
@@ -45,6 +47,15 @@ function Tick() {
  * unmasks underneath from animations/scenes/hero.ts.
  */
 export function HeroSection({ content }: SectionProps<HeroContent>) {
+  // Resolved here, on the server, so the logo path data never has to travel
+  // through the client component's props as a hardcoded list. Ids without a
+  // logo are dropped rather than leaving a hole in the sphere.
+  const cloudLogos = content.techCloud
+    ? content.techCloud.technologyIds
+        .map((id) => TECH_LOGOS[id])
+        .filter(Boolean)
+    : [];
+
   return (
     <ScrollScene
       as="section"
@@ -132,7 +143,25 @@ export function HeroSection({ content }: SectionProps<HeroContent>) {
           </ul>
         </div>
 
-        {content.media ? (
+        {content.techCloud && cloudLogos.length > 0 ? (
+          <div className={cx(styles.art, styles.artCloud)} data-hero-art>
+            <IconCloud
+              logos={cloudLogos}
+              label={content.techCloud.label}
+              speed={8}
+            />
+            {content.highlight ? (
+              <div className={styles.floatCard}>
+                <span className={styles.floatValue}>
+                  {content.highlight.value}
+                </span>
+                <span className={styles.floatLabel}>
+                  {content.highlight.label}
+                </span>
+              </div>
+            ) : null}
+          </div>
+        ) : content.media ? (
           <div className={styles.art} data-hero-art>
             <Media
               asset={content.media}

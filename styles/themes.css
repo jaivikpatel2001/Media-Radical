@@ -79,18 +79,17 @@
   --grid-line: rgb(11 11 14 / 0.055);
   --grain-opacity: 0.028;
 
+  /* Icon cloud. Canvas cannot resolve var() at fill time, so these are read
+     per frame from the computed style — they must be concrete colours, not
+     references to other custom properties. */
+  --cloud-icon: #3c3c45;
+  --cloud-icon-front: #5b53f5;
+
   --gradient-accent: linear-gradient(
     135deg,
     var(--accent-500) 0%,
     var(--violet-500) 55%,
     var(--cyan-500) 100%
-  );
-  --gradient-text: linear-gradient(
-    100deg,
-    var(--ink-950) 0%,
-    var(--ink-950) 42%,
-    var(--accent-600) 78%,
-    var(--violet-500) 100%
   );
   --gradient-hairline: linear-gradient(
     90deg,
@@ -159,17 +158,13 @@
   --grid-line: rgb(255 255 255 / 0.05);
   --grain-opacity: 0.05;
 
+  --cloud-icon: #bebec9;
+  --cloud-icon-front: #837cff;
+
   --gradient-accent: linear-gradient(
     135deg,
     var(--accent-400) 0%,
     var(--violet-400) 55%,
-    var(--cyan-400) 100%
-  );
-  --gradient-text: linear-gradient(
-    100deg,
-    var(--ink-25) 0%,
-    var(--ink-25) 42%,
-    var(--accent-300) 78%,
     var(--cyan-400) 100%
   );
 }

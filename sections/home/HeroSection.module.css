@@ -151,6 +151,22 @@
   block-size: 100%;
 }
 
+/* The cloud is its own object, not a framed photo — no card, no shadow, and
+   square so the sphere is not clipped at the sides. */
+.artCloud {
+  aspect-ratio: 1;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  display: grid;
+  place-items: center;
+}
+
+.artCloud .floatCard {
+  inset-block-end: 4%;
+  inset-inline-start: 0;
+}
+
 /* A floating proof card overlapping the art — the detail that stops the hero
    from being two rectangles side by side. */
 .floatCard {
@@ -169,6 +185,7 @@
 }
 
 .floatValue {
+  font-family: var(--font-display-stack);
   font-size: var(--text-2xl);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-tight);
@@ -241,6 +258,16 @@
   .art {
     margin-inline-end: clamp(-160px, calc((100vw - var(--container-max)) / -2), -40px);
   }
+}
+
+/* Cloud overrides, declared last on purpose.
+   The desktop rules above give .art a right-edge bleed and a 5:4 ratio, which
+   suit a photograph running off the viewport but not a sphere: the bleed
+   would push it partly off-screen and the ratio would squash it. Same
+   specificity as .art, so these have to come after to win. */
+.artCloud {
+  aspect-ratio: 1;
+  margin-inline-end: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

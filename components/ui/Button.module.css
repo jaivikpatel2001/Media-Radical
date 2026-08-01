@@ -10,6 +10,10 @@
   height: var(--button-height);
   padding: var(--button-padding);
   border-radius: var(--radius-pill);
+  /* Set explicitly rather than relying on the element: Button renders an <a>
+     when given href and a <button> otherwise, and only the latter picks up
+     the display face from the base rule. */
+  font-family: var(--font-display-stack);
   font-size: var(--text-md);
   font-weight: var(--weight-medium);
   letter-spacing: var(--tracking-snug);

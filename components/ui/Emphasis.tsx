@@ -3,12 +3,12 @@ import { Fragment } from 'react';
 interface EmphasisProps {
   /** Full heading text. */
   text: string;
-  /** Substring within `text` to set in serif italic. */
+  /** Substring within `text` to highlight. */
   emphasis?: string;
 }
 
 /**
- * Sets one phrase of a heading in italic serif.
+ * Highlights one phrase of a heading.
  *
  * The emphasis is expressed in data as a substring rather than as markup, so
  * content files stay plain strings — which matters because the same heading
@@ -27,7 +27,7 @@ export function Emphasis({ text, emphasis }: EmphasisProps) {
   return (
     <Fragment>
       {text.slice(0, index)}
-      <em className="serif">{emphasis}</em>
+      <em className="emphasis">{emphasis}</em>
       {text.slice(index + emphasis.length)}
     </Fragment>
   );

@@ -38,6 +38,7 @@
 }
 
 .name {
+  font-family: var(--font-display-stack);
   font-size: var(--text-base);
   font-weight: var(--weight-semibold);
   letter-spacing: -0.02em;

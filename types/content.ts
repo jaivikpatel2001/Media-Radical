@@ -126,19 +126,26 @@ export interface Testimonial {
    ------------------------------------------------------------------------- */
 
 export type TechCategory =
+  | 'design'
   | 'frontend'
   | 'backend'
+  | 'database'
+  | 'cms'
   | 'mobile'
   | 'cloud'
-  | 'data'
-  | 'ai'
-  | 'devops';
+  | 'ai';
 
 export interface Technology {
   id: string;
   name: string;
   category: TechCategory;
-  /** Inline SVG path data or a wordmark id resolved by the tech logo registry. */
+  /**
+   * Key into TECH_LOGOS (components/icons/techLogos.ts).
+   *
+   * Empty when no logo exists — simple-icons removed AWS, Azure, Canva, the
+   * Adobe suite and OpenAI over trademark policy. Those render as a
+   * lettermark tile rather than being dropped from the grid.
+   */
   logoId: string;
 }
 

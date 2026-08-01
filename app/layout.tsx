@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist_Mono, Instrument_Serif, Inter } from 'next/font/google';
+import { IBM_Plex_Mono, Inter, Poppins } from 'next/font/google';
 
 import { AppProviders } from '@/components/providers/AppProviders';
 import { Footer } from '@/components/layout/Footer';
@@ -13,24 +13,39 @@ import './globals.css';
  * Fonts are self-hosted by next/font — no external request, no layout shift,
  * and the CSS variables below are what styles/typography.css builds its
  * stacks from.
+ *
+ * Three faces, each with one job:
+ *
+ *   Poppins        headings, buttons, nav — geometric, friendly, distinctive.
+ *                  Deliberately NOT used for body copy: its wide, perfectly
+ *                  circular letterforms and short descenders are what make it
+ *                  striking at 60px and tiring at 16px over a full paragraph.
+ *
+ *   Inter          body copy. Neutral on purpose — it stays out of the way so
+ *                  Poppins carries the personality, and it is the best-drawn
+ *                  free face for text at reading sizes.
+ *
+ *   IBM Plex Mono  eyebrows, labels, figures. Slightly warm and rounded,
+ *                  which sits with Poppins better than a colder grotesque
+ *                  mono would.
  */
+const poppins = Poppins({
+  variable: '--font-display',
+  subsets: ['latin'],
+  display: 'swap',
+  // Poppins is not variable, so every weight is a separate file. Four is the
+  // most the design actually uses — do not add more without a reason.
+  weight: ['400', '500', '600', '700'],
+});
+
 const inter = Inter({
   variable: '--font-sans',
   subsets: ['latin'],
   display: 'swap',
-  // Inter is variable; the axis range covers every weight the design uses.
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600'],
 });
 
-const instrumentSerif = Instrument_Serif({
-  variable: '--font-serif',
-  subsets: ['latin'],
-  display: 'swap',
-  weight: '400',
-  style: ['normal', 'italic'],
-});
-
-const geistMono = Geist_Mono({
+const plexMono = IBM_Plex_Mono({
   variable: '--font-mono',
   subsets: ['latin'],
   display: 'swap',
@@ -106,7 +121,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${instrumentSerif.variable} ${geistMono.variable}`}
+      className={`${poppins.variable} ${inter.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>

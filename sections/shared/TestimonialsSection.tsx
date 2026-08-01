@@ -5,8 +5,8 @@ import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { getTestimonials } from '@/data/selectors';
 import type { SectionProps } from '@/types/common';
+import type { Testimonial } from '@/types/content';
 import type { TestimonialsContent } from '@/types/pages';
-import { cx } from '@/utils/cx';
 
 import styles from './TestimonialsSection.module.css';
 
@@ -18,12 +18,12 @@ const initialsOf = (name: string): string =>
     .map((part) => part[0])
     .join('');
 
-function QuoteMark() {
+function QuoteMark({ size = 30 }: { size?: number }) {
   return (
     <svg
       className={styles.mark}
-      width="30"
-      height="24"
+      width={size}
+      height={(size / 30) * 24}
       viewBox="0 0 30 24"
       fill="currentColor"
       aria-hidden="true"
@@ -33,14 +33,37 @@ function QuoteMark() {
   );
 }
 
+/** Shared attribution block. `figcaption` is only valid inside a `figure`. */
+function Author({ author }: { author: Testimonial['author'] }) {
+  return (
+    <figcaption className={styles.author}>
+      {author.avatar ? (
+        <Media asset={author.avatar} className={styles.avatar} sizes="46px" />
+      ) : (
+        <span className={styles.initials} aria-hidden="true">
+          {initialsOf(author.name)}
+        </span>
+      )}
+      <span className={styles.authorText}>
+        <span className={styles.authorName}>{author.name}</span>
+        <span className={styles.authorRole}>
+          {author.role}, {author.company}
+        </span>
+      </span>
+    </figcaption>
+  );
+}
+
 /**
  * Testimonials — SHARED.
  *
- * A native scroll-snap rail rather than a JavaScript carousel: it works with
- * a trackpad, a touch swipe, arrow keys and a screen reader's own navigation
- * without a line of carousel logic, and every quote is in the DOM at once for
- * crawlers. `overscroll-behavior-x: contain` stops the horizontal gesture
- * from bubbling out to the page.
+ * The first quote is featured full width with its metric set large; the rest
+ * form a masonry wall below.
+ *
+ * This replaced a horizontal scroll-snap rail, which had two problems: it
+ * relied on a sideways gesture desktop visitors rarely discover, and four of
+ * the five quotes sat off-screen. Everything is visible here with no
+ * scrolling of its own and no JavaScript.
  */
 export function TestimonialsSection({
   content,
@@ -48,35 +71,44 @@ export function TestimonialsSection({
   variant,
 }: SectionProps<TestimonialsContent>) {
   const testimonials = getTestimonials(content.testimonialIds);
+  if (testimonials.length === 0) return null;
+
+  const [featured, ...rest] = testimonials;
 
   return (
-    <Section
-      id={id}
-      variant={variant}
-      className={styles.section}
-      aria-labelledby="testimonials-heading"
-    >
+    <Section id={id} variant={variant} aria-labelledby="testimonials-heading">
       <ScrollScene>
         <Container>
           <SectionHeading content={content} id="testimonials-heading" />
-        </Container>
 
-        <Container>
-          <ul
-            className={styles.rail}
-            data-lenis-prevent
-            tabIndex={0}
-            role="list"
-            aria-label="Client testimonials"
-            data-anim-stagger="0.06"
-          >
-            {/* figure/figcaption is the correct pairing for an attributed
-                quote — figcaption is only valid inside a figure. */}
-            {testimonials.map((testimonial) => (
-              <li key={testimonial.id}>
+          <figure className={styles.featured} data-anim="fade-up">
+            <div>
+              <QuoteMark size={34} />
+              <blockquote className={styles.featuredQuote}>
+                {featured.quote}
+              </blockquote>
+            </div>
+
+            <div className={styles.featuredAside}>
+              {featured.highlight ? (
+                <p className={styles.bigMetric}>
+                  <span className={styles.bigMetricValue}>
+                    {featured.highlight.value}
+                  </span>
+                  <span className={styles.bigMetricLabel}>
+                    {featured.highlight.label}
+                  </span>
+                </p>
+              ) : null}
+              <Author author={featured.author} />
+            </div>
+          </figure>
+
+          <div className={styles.wall} data-anim-stagger="0.07">
+            {rest.map((testimonial) => (
+              <div key={testimonial.id} className={styles.wallItem}>
                 <figure className={styles.card}>
                   <QuoteMark />
-
                   <blockquote className={styles.quote}>
                     {testimonial.quote}
                   </blockquote>
@@ -92,38 +124,11 @@ export function TestimonialsSection({
                     </p>
                   ) : null}
 
-                  <figcaption className={styles.author}>
-                    {testimonial.author.avatar ? (
-                      <Media
-                        asset={testimonial.author.avatar}
-                        className={styles.avatar}
-                        sizes="46px"
-                      />
-                    ) : (
-                      <span className={styles.initials} aria-hidden="true">
-                        {initialsOf(testimonial.author.name)}
-                      </span>
-                    )}
-
-                    <span className={styles.authorText}>
-                      <span className={styles.authorName}>
-                        {testimonial.author.name}
-                      </span>
-                      <span className={styles.authorRole}>
-                        {testimonial.author.role}, {testimonial.author.company}
-                      </span>
-                    </span>
-                  </figcaption>
+                  <Author author={testimonial.author} />
                 </figure>
-              </li>
+              </div>
             ))}
-          </ul>
-
-          <p className={styles.hint} aria-hidden="true">
-            <span className={styles.hintLine} />
-            <span className={cx('label')}>{content.railHint}</span>
-            <span className={styles.hintLine} />
-          </p>
+          </div>
         </Container>
       </ScrollScene>
     </Section>

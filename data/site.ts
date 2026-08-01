@@ -14,7 +14,13 @@ export const site = {
     'Media Radical is an IT company. We design and build web apps, mobile apps and cloud systems for growing businesses — and we look after them once they are live.',
   founded: 2014,
 
-  url: 'https://www.mediaradical.com',
+  /**
+   * Absolute site origin. Feeds `metadataBase`, the sitemap, robots.txt and
+   * every JSON-LD `@id`, so it must be the real public origin — a hardcoded
+   * production URL makes preview deployments advertise canonical links that
+   * point at production. Set NEXT_PUBLIC_SITE_URL per environment.
+   */
+  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://www.mediaradical.com',
 
   contact: {
     email: 'hello@mediaradical.com',

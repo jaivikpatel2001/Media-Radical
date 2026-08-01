@@ -2,20 +2,26 @@
    Typography
 
    Three families, each with one job:
-     --font-sans   Inter            — everything structural
-     --font-serif  Instrument Serif — emphasis words and pull-quotes only
-     --font-mono   Geist Mono       — eyebrows, labels, numerals, units
+     --font-display  Poppins        — headings, buttons, nav, card titles
+     --font-sans     Inter          — body copy and anything long
+     --font-mono     IBM Plex Mono  — eyebrows, labels, numerals, units
+
+   Poppins is a geometric display face. It is deliberately kept off body
+   copy: the perfectly circular bowls and short descenders that make it
+   striking at 60px are the same things that slow reading at 16px across a
+   full paragraph. Headings get the personality, body gets the legibility.
 
    The scale is fluid: every display step interpolates with the viewport, so
    there is no breakpoint at which the page reads as "the small version".
-   Negative tracking on the display steps is what separates this from a
-   default-settings corporate site — large type must be set tighter.
+   Negative tracking on the display steps matters more with Poppins than with
+   a neutral grotesque — geometric faces set loose by default, and large type
+   must be set tighter.
    ========================================================================== */
 
 :root {
+  --font-display-stack: var(--font-display), 'Segoe UI', system-ui, sans-serif;
   --font-sans-stack: var(--font-sans), -apple-system, BlinkMacSystemFont,
     'Segoe UI', system-ui, sans-serif;
-  --font-serif-stack: var(--font-serif), 'Iowan Old Style', Georgia, serif;
   --font-mono-stack: var(--font-mono), ui-monospace, SFMono-Regular, Menlo,
     monospace;
 
@@ -52,10 +58,13 @@
   --leading-relaxed: 1.62;
   --leading-loose: 1.75;
 
-  /* ---------- Tracking ---------- */
-  --tracking-display: -0.038em;
-  --tracking-tight: -0.022em;
-  --tracking-snug: -0.012em;
+  /* ---------- Tracking ----------
+     Poppins runs wide, so the display steps are pulled tighter than they
+     would be for a neutral grotesque. Body tracking stays near zero — Inter
+     is already spaced correctly for reading. */
+  --tracking-display: -0.032em;
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.008em;
   --tracking-normal: 0;
   --tracking-wide: 0.04em;
   --tracking-widest: 0.14em;
@@ -89,10 +98,25 @@ body {
 .display-sm,
 .display-xs,
 .display-2xs {
+  font-family: var(--font-display-stack);
   font-weight: var(--weight-semibold);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
   text-wrap: balance;
+}
+
+/* Everything else that should carry the display face: headings inside cards,
+   buttons, nav items, stat figures. Applied here rather than in a dozen CSS
+   modules so the display/body split has one owner. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+.display-face {
+  font-family: var(--font-display-stack);
 }
 
 .display-xl { font-size: var(--display-xl); }
@@ -169,30 +193,37 @@ body {
   color: var(--color-text-faint);
 }
 
-/* Serif italic — reserved for the one emphasised word in a headline and for
-   pull-quotes. Used more than twice per screen it stops being special. */
-.serif {
-  font-family: var(--font-serif-stack);
-  font-weight: var(--weight-normal);
-  font-style: italic;
-  letter-spacing: -0.012em;
+/* The emphasised phrase inside a heading.
+   Previously an italic serif. With a geometric face like Poppins that
+   contrast reads as a mismatch rather than a flourish, so the emphasis is
+   now carried by colour and weight within the same family — the treatment
+   Linear and Stripe use, and it survives a theme flip because the gradient
+   is built from semantic tokens. */
+.emphasis {
+  font-style: normal;
+  font-weight: var(--weight-semibold);
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* A gradient clipped to a descender can look cut off; pad the box. */
+  padding-block-end: 0.06em;
+  margin-block-end: -0.06em;
+}
+
+/* Inverted surfaces already sit on the accent glow, so a gradient fill there
+   competes with the background. Solid accent reads cleaner. */
+.invertedSurface .emphasis {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--color-accent-text);
 }
 
 /* Numerals that must not jitter while a counter animates. */
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
-}
-
-/* Gradient-filled text. Kept accessible: the element still contains real text. */
-.gradientText {
-  background: var(--gradient-text);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  /* A gradient clipped to a descender can look cut off; pad the box. */
-  padding-block-end: 0.08em;
-  margin-block-end: -0.08em;
 }
 
 /* Inline link inside prose. */

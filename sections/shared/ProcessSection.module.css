@@ -1,54 +1,80 @@
+/* NOTE: no `overflow` on this section, and none on any ancestor of .card.
+   An overflow value other than `visible` makes that element the scroll
+   container for `position: sticky` descendants, which silently kills the
+   whole stacking effect. */
 .section {
-  /* The pin measures this element, so it must not defer its own paint. */
-  overflow: hidden;
+  position: relative;
 }
 
 .head {
-  margin-block-end: var(--space-12);
+  margin-block-end: var(--space-10);
 }
 
-.viewport {
+/* ---------------------------------------------------------------- progress */
+.progressRail {
   position: relative;
-  /* Bleeds to the viewport edge so cards enter and leave the frame rather
-     than stopping at a container boundary. */
-  margin-inline: calc(var(--gutter) * -1);
-  padding-inline: var(--gutter);
+  block-size: 2px;
+  margin-block-end: var(--space-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-hairline);
   overflow: hidden;
 }
 
+.progressBar {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-accent);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+/* ---------------------------------------------------------------- stack */
 .track {
-  display: grid;
-  grid-auto-flow: row;
-  gap: var(--space-4);
-  will-change: transform;
+  display: flex;
+  flex-direction: column;
+  /* No gap: the cards are meant to meet and stack. Breathing room comes from
+     each card's own height. */
+  gap: 0;
+  padding-block-end: var(--space-16);
 }
 
 .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-7, 1.75rem);
+  position: sticky;
+  /* Each card stops slightly lower than the one before, so the stack shows
+     its own edges instead of one card hiding all the others. --i is set per
+     card in the markup. */
+  inset-block-start: calc(
+    var(--header-h) + var(--space-8) + var(--i, 0) * 14px
+  );
+  display: grid;
+  gap: var(--space-6);
+  padding: clamp(var(--space-6), 4vw, var(--space-10));
+  margin-block-end: var(--space-6);
   border-radius: var(--radius-xl);
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-inset-hairline);
-  overflow: hidden;
+  /* Opaque, not translucent: these overlap each other, and a see-through
+     card would show the one underneath through it. */
+  background-color: var(--color-bg);
+  box-shadow:
+    var(--shadow-lg),
+    inset 0 0 0 1px var(--color-border);
   isolation: isolate;
+  overflow: hidden;
 }
 
-/* An oversized ghost numeral bleeding off the card corner. It reads as
-   editorial art direction rather than a list marker. */
+/* Oversized ghost numeral bleeding off the corner. */
 .ghostIndex {
   position: absolute;
-  inset-block-start: -0.32em;
-  inset-inline-end: -0.06em;
+  inset-block-start: -0.3em;
+  inset-inline-end: -0.04em;
   z-index: var(--z-below);
-  font-size: clamp(7rem, 13vw, 11rem);
+  font-family: var(--font-display-stack);
+  font-size: clamp(6rem, 12vw, 10rem);
   font-weight: var(--weight-bold);
   letter-spacing: -0.06em;
   line-height: 1;
   color: var(--color-text);
-  opacity: 0.045;
+  opacity: 0.04;
   pointer-events: none;
   user-select: none;
 }
@@ -79,7 +105,7 @@
 }
 
 .title {
-  font-size: var(--display-2xs);
+  font-size: var(--display-xs);
   font-weight: var(--weight-semibold);
   letter-spacing: var(--tracking-tight);
   line-height: var(--leading-tight);
@@ -87,19 +113,16 @@
 }
 
 .summary {
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
   line-height: var(--leading-relaxed);
   color: var(--color-text-muted);
-  flex: 1;
+  max-inline-size: 54ch;
 }
 
 .deliverables {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  margin-block-start: var(--space-2);
-  padding-block-start: var(--space-5);
-  border-block-start: 1px solid var(--color-hairline);
 }
 
 .deliverablesTitle {
@@ -125,61 +148,37 @@
   margin-block-start: 5px;
 }
 
-/* ---------------------------------------------------------------- progress */
-.progressRail {
-  position: relative;
-  block-size: 2px;
-  margin-block-start: var(--space-10);
-  border-radius: var(--radius-pill);
-  background-color: var(--color-hairline);
-  overflow: hidden;
-  display: none;
-}
-
-.progressBar {
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-pill);
-  background: var(--gradient-accent);
-  transform-origin: left center;
-  transform: scaleX(0);
-}
-
-.hint {
-  display: none;
-  align-items: center;
-  gap: var(--space-3);
-  margin-block-start: var(--space-4);
-  color: var(--color-text-faint);
-  font-size: var(--text-sm);
-}
-
-@media (min-width: 1024px) {
-  .track {
-    grid-auto-flow: column;
-    grid-auto-columns: minmax(340px, 25vw);
-    gap: var(--space-5);
-  }
-
+/* Two columns from tablet up: copy on the left, deliverables on the right. */
+@media (min-width: 760px) {
   .card {
-    min-block-size: 460px;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+    grid-template-areas:
+      'head    deliverables'
+      'title   deliverables'
+      'summary deliverables';
+    align-content: start;
+    column-gap: clamp(var(--space-8), 5vw, var(--space-16));
+    row-gap: var(--space-4);
+    min-block-size: 340px;
   }
 
-  .progressRail,
-  .hint {
-    display: flex;
+  .cardHead { grid-area: head; }
+  .title { grid-area: title; }
+  .summary { grid-area: summary; }
+
+  .deliverables {
+    grid-area: deliverables;
+    padding-inline-start: clamp(var(--space-6), 3vw, var(--space-10));
+    border-inline-start: 1px solid var(--color-hairline);
   }
 }
 
+/* Sticky stacking depends on scrolling past each card. Under reduced motion
+   the effect is harmless — nothing animates, cards simply rest in place —
+   but honouring the preference by unsticking them keeps the section a plain,
+   predictable list. */
 @media (prefers-reduced-motion: reduce) {
-  /* Without the pin the track must wrap, or six columns run off-screen. */
-  .track {
-    grid-auto-flow: row;
-    grid-auto-columns: auto;
-  }
-
-  .progressRail,
-  .hint {
-    display: none;
+  .card {
+    position: static;
   }
 }
