@@ -122,11 +122,78 @@ so content never depends on a script running.
 
 ## Assets
 
-The 14 images the design expects are **not in the repo**. Every image slot
-resolves file existence on the server at build time and renders a gradient
-placeholder when the file is missing — no broken images, no 404s, no client JS.
+All 11 Home page images are in the repo, optimized and integrated: WebP, sized
+to the slots they actually occupy, filed under `public/images/<section>/`. They
+total 604 KB, down from 19 MB of source PNG.
 
-Dropping a file at the path given in `imagegeneration.md` is a no-code change.
+Every image slot resolves file existence on the server at build time and renders
+a gradient placeholder when a file is missing, so a not-yet-generated asset is
+never a broken image, a 404 or a client-side check. One slot uses this today:
+the Rasoi Fresh case study cover, which belongs to `/portfolio`.
+
+Paths are declared once in `data/images.ts`. See `imagegeneration.md` for the
+prompts, the conversion recipe and how to add a new image.
+
+---
+
+## Deployment (Render)
+
+The repo root is this folder, so `render.yaml` sits beside `package.json` and
+**no Root Directory setting is needed**.
+
+**Deploy:** Render dashboard → **New + → Blueprint** → pick this repo → Apply.
+Then set `NEXT_PUBLIC_SITE_URL` in the dashboard when prompted.
+
+| | |
+|---|---|
+| Service type | **Web Service** (not Static Site, see below) |
+| Build | `npm ci && npm run build` |
+| Start | `npm start` |
+| Health check | `/` |
+| Node | 22, pinned three ways: `.nvmrc`, `engines`, and `NODE_VERSION` |
+
+### Why not a Static Site
+
+Every route prerenders to static HTML, so a Static Site looks like the obvious
+choice. It would break two things:
+
+1. **`app/actions.ts` is a Server Action**, used by the footer newsletter on
+   every page. `output: 'export'` refuses to build when one is present.
+2. **`next/image` optimisation is a server route.** A static export has to
+   disable it, which means sending the full 1536px source to a phone instead of
+   a ~25 KB AVIF, undoing the image work on purpose.
+
+Going static is possible, but it costs the newsletter and responsive images.
+
+**Free-tier caveat:** a free Render Web Service spins down after roughly 15
+minutes of inactivity and cold-starts on the next request. For a marketing site
+where most visits are the first of a session, that is worth paying to avoid.
+
+### Environment
+
+`NEXT_PUBLIC_SITE_URL` is the only variable the code reads. It is declared in
+`render.yaml` with `sync: false`, so Render prompts for it rather than storing
+it in git.
+
+It has a production fallback, which is exactly why it must be set: an unset
+deployment does not fail, it quietly publishes canonical URLs and sitemap
+entries pointing at production. Being a `NEXT_PUBLIC_*` variable it is inlined
+at **build** time, so changing it needs a redeploy, not a restart.
+
+### Response headers
+
+Set in `next.config.ts` rather than the Render dashboard, so they are versioned
+with the code and survive a service being recreated. Verified against a
+production server:
+
+| Path | `Cache-Control` |
+|---|---|
+| `/_next/static/*` | `public, max-age=31536000, immutable` (content-hashed) |
+| `/images/*` | `public, max-age=2592000` (stable names, so bounded) |
+| HTML | short-lived, so deploys appear immediately |
+
+`X-Content-Type-Options: nosniff` and `Referrer-Policy` are sent on everything.
+`X-Powered-By` is off. Compression is handled at Render's edge.
 
 ---
 

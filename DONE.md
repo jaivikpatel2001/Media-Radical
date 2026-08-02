@@ -350,3 +350,38 @@ image to about 25 KB at 640px wide. All 11 carry a blur placeholder.
 `h1` at 181px. The hero renders the icon cloud rather than a photograph, so this
 page has no above-the-fold image to prioritise. Adding `priority` would have
 fought the LCP element rather than helping it.
+
+---
+
+### Made deployable on Render
+
+| Time | What was completed |
+|---|---|
+| 02:05 | **Established the service type on evidence, not preference.** Every route prerenders static, so a Render Static Site looks correct. It is not: `app/actions.ts` is a Server Action used by the footer newsletter on every page, and `output: 'export'` refuses to build when one is present. Separately, `next/image` optimisation is a server route, so a static export would mean sending the full 1536px source to a phone instead of a 25 KB AVIF, undoing the image work deliberately. **Web Service.** |
+| 02:08 | **Verified `next start` needs no changes for Render.** Ran it with `PORT=10000` and confirmed it binds `0.0.0.0:10000`, which is exactly the "no open ports detected" failure mode Render deployments usually hit. No wrapper, no explicit host or port flags. |
+| 02:10 | Pinned Node 22 three ways: `.nvmrc`, `engines` in `package.json`, and `NODE_VERSION` in the blueprint. |
+| 02:12 | **Added response headers to `next.config.ts`** rather than the Render dashboard, so they are versioned with the code and survive the service being recreated. `/images/*` gets a bounded 30 day cache because those filenames are not content-hashed; `/_next/static` already gets an immutable year from Next. Added `X-Content-Type-Options: nosniff` and `Referrer-Policy`. |
+| 02:14 | Wrote `render.yaml`, region `singapore` as the closest to the audience. `NEXT_PUBLIC_SITE_URL` is declared `sync: false` rather than committed, because it has a production fallback: an unset deployment does not fail, it quietly publishes canonical URLs and sitemap entries pointing at production. |
+
+**Corrected my own mistake:** I first reported this was not a git repository.
+That was wrong. I had checked the parent folder; the repo is this folder, with
+8 commits and a GitHub remote at `jaivikpatel2001/Media-Radical`. It also means
+the repo root is here, so `render.yaml` sits beside `package.json` and no Root
+Directory setting is needed. The `git init` I ran was a harmless no-op re-init
+on the existing repository; log, remote and history are intact.
+
+**Two documentation bugs found and fixed while checking configuration.**
+`.env.example` claimed the `NEXT_PUBLIC_SITE_URL` fallback was
+`https://www.mediaradical.com`, but the code falls back to
+`https://mediaradical.in`, and it listed Vercel preview URLs for a project being
+deployed to Render. `README.md` still said the 14 images were not in the repo.
+
+**Verified against a real production server**, not assumed: `npm ci` accepts the
+lockfile, the build is clean, `/` returns 200, `/_next/static` sends
+`immutable`, `/images/*` sends `max-age=2592000`, the optimizer serves
+`image/avif`, `robots.txt` and `sitemap.xml` both return 200, and no
+`X-Powered-By` header is sent.
+
+**Not done, because it is the user's call:** nothing has been committed or
+pushed. The working tree has 5 changed files. The current branch is `home-page`,
+not `main`, which is the branch Render will ask to deploy from.

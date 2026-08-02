@@ -22,6 +22,33 @@ const nextConfig: NextConfig = {
 
   poweredByHeader: false,
 
+  /**
+   * Response headers. These live here rather than in the host's dashboard so
+   * they are versioned with the code and survive a rebuild of the service.
+   *
+   * Next already sends an immutable, one-year cache for /_next/static, whose
+   * filenames are content-hashed. Files in public/ are not hashed, so they get
+   * a bounded max-age instead: long enough to help repeat visits, short enough
+   * that replacing an image is visible within a month.
+   */
+  async headers() {
+    return [
+      {
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=2592000' },
+        ],
+      },
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+        ],
+      },
+    ];
+  },
+
   // OFF for Phase 1, and it must be explicit. Typed routes validate every
   // <Link href> against the routes that actually exist — and the header and
   // footer deliberately link to the 16 page groups not yet built, so leaving
