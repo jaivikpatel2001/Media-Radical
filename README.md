@@ -25,8 +25,10 @@ npm run dev
 
 Open <http://localhost:3000>.
 
-The site runs with no configuration — every variable in `.env.example` has a
-working fallback or belongs to a feature that is not built yet.
+Locally the site runs with no configuration at all. `.env.example` lists the
+only two variables any code reads, and both have working defaults. On Render,
+`NEXT_PUBLIC_SITE_URL` must be set or the build fails on purpose; see the
+deployment section below.
 
 ### Scripts
 
@@ -180,9 +182,13 @@ unsupported list is in
 Two variables, both declared in `render.yaml` with `sync: false` so Render
 prompts rather than storing them in git.
 
-`NEXT_PUBLIC_SITE_URL` has a production fallback, which is exactly why it must
-be set: an unset deployment does not fail, it quietly publishes canonical URLs
-and sitemap entries pointing at production.
+`NEXT_PUBLIC_SITE_URL` **fails the build on Render when unset**, on purpose. It
+used to fall back to the production URL, and that caused a real incident: the
+staging site deployed without it, did not fail, and served
+`<link rel="canonical" href="https://mediaradical.in">` plus a sitemap pointing
+at production. A wrong canonical is invisible until it has already cost you
+indexing, so it is now a loud build failure with the fix in the error message.
+Local builds are unaffected and default to `http://localhost:3000`.
 
 `NEXT_PUBLIC_NEWSLETTER_ENDPOINT` is where the footer form posts. Unset is a
 supported state. Because there is no server, this request happens in the

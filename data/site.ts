@@ -11,6 +11,45 @@
  * See DONE.md for which is which.
  */
 
+/**
+ * Resolves the public origin, and refuses to guess it on a real deployment.
+ *
+ * This used to be `process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mediaradical.in'`.
+ * That fallback caused a live incident: the Render staging site built with the
+ * variable unset, did not fail, and served
+ * `<link rel="canonical" href="https://mediaradical.in">` plus a sitemap
+ * pointing at production. A staging site claiming to be production is how a
+ * domain gets deduplicated out of an index.
+ *
+ * A wrong canonical URL is invisible until it has already done damage, so the
+ * fallback is gone and a misconfigured deploy now fails at build instead.
+ *
+ * `RENDER` is set to "true" on every Render service, which is what separates
+ * "deploying" from "someone running npm run build on a laptop". Local builds
+ * keep working without any .env file.
+ */
+function resolveSiteUrl(): string {
+  const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+
+  // Trailing slash stripped: `${site.url}/sitemap.xml` must not produce a
+  // double slash, and canonical URLs have to match byte for byte.
+  if (configured) return configured.replace(/\/+$/, '');
+
+  if (process.env.RENDER) {
+    throw new Error(
+      'NEXT_PUBLIC_SITE_URL is not set.\n\n' +
+        'Set it in the Render dashboard under Environment, then redeploy:\n' +
+        '  production  https://mediaradical.in\n' +
+        '  staging     https://mediaradical.onrender.com\n\n' +
+        'It is inlined at build time, so a restart will not pick it up. ' +
+        'This build was stopped on purpose: without it the site would publish ' +
+        'canonical URLs and a sitemap pointing at the wrong domain.',
+    );
+  }
+
+  return 'http://localhost:3000';
+}
+
 export const site = {
   name: 'Media Radical',
   legalName: 'Media Radical',
@@ -21,12 +60,10 @@ export const site = {
   founded: 2013,
 
   /**
-   * Absolute site origin. Feeds `metadataBase`, the sitemap, robots.txt and
-   * every JSON-LD `@id`, so it must be the real public origin — a hardcoded
-   * production URL makes preview deployments advertise canonical links that
-   * point at production. Set NEXT_PUBLIC_SITE_URL per environment.
+   * Absolute site origin. Feeds `metadataBase`, the canonical link, the
+   * sitemap, robots.txt and every JSON-LD `@id`.
    */
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mediaradical.in',
+  url: resolveSiteUrl(),
 
   contact: {
     email: 'contact@mediaradical.in',
