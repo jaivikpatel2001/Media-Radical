@@ -16,6 +16,12 @@ import { site } from '@/data/site';
  *
  * so a new service appears here without anyone remembering to add it.
  */
+/**
+ * Required by `output: 'export'`. Without it the build fails outright: a route
+ * handler is dynamic by default, and there is no server to run it on.
+ */
+export const dynamic = 'force-static';
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();
 

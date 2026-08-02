@@ -1,45 +1,37 @@
 # =============================================================================
 # Render Blueprint — Media Radical
 #
-# WHY A WEB SERVICE AND NOT A STATIC SITE
+# Static Site. `next build` runs with `output: 'export'` and emits out/, a
+# folder of plain files with index.html at its root. No server runs.
 #
-# Every route on this site prerenders to static HTML, so a Static Site looks
-# like the obvious choice. It is not, for two concrete reasons:
+# WHAT THIS COSTS, recorded here because the constraints are invisible from
+# the dashboard and will otherwise be rediscovered by whoever adds a feature:
 #
-#   1. app/actions.ts is a Server Action, used by the footer newsletter on
-#      every page. Server Actions need a running server; `output: 'export'`
-#      refuses to build with one present.
-#   2. next/image optimisation is a server route. Under a static export it has
-#      to be turned off, which means shipping the full 1536px source to a phone
-#      instead of a ~25 KB AVIF. That undoes the image work deliberately.
+#   - No Server Actions. The footer newsletter validates and submits in the
+#     browser, and needs NEXT_PUBLIC_NEWSLETTER_ENDPOINT to reach anywhere.
+#   - No next/image optimization. Every device receives the original file,
+#     which is why public/images was sized to real display slots.
+#   - No headers() or redirects() in next.config.ts. They are silently ignored
+#     under export, so the rules live in the `headers:` block below.
 #
-# Switching to a Static Site is possible, but it costs the newsletter and the
-# responsive images. See the deployment section of README.md before doing it.
+# Adding any dynamic feature later means moving back to a Web Service. The
+# unsupported list is in node_modules/next/dist/docs/01-app/02-guides/
+# static-exports.md.
 #
 # NOTE: Render only reads this file for Blueprint-managed services. A service
-# created by hand in the dashboard ignores it.
+# created by hand in the dashboard ignores it, so set the same values there.
 # =============================================================================
 
 services:
   - type: web
-    runtime: node
+    runtime: static
     # Matches the hostname already in use: mediaradical.onrender.com
     name: mediaradical
-    plan: free
-    # Set this to the region nearest the audience. The audience is in India.
-    region: singapore
 
     # npm ci, not npm install: it installs exactly what package-lock.json says
     # and fails loudly if the two have drifted, which is what CI should do.
     buildCommand: npm ci && npm run build
-    # `next start` already reads PORT and binds 0.0.0.0, verified locally
-    # against PORT=10000. No wrapper or explicit flags needed.
-    startCommand: npm start
-
-    # The home page is the health check. There is no /api/health because
-    # adding a route purely to be polled is not worth an extra endpoint on a
-    # site this size.
-    healthCheckPath: /
+    staticPublishPath: out
 
     envVars:
       - key: NODE_VERSION
@@ -49,13 +41,46 @@ services:
       # sitemap and every JSON-LD @id.
       #
       # sync: false on purpose. It has a hardcoded production fallback, so if
-      # this were left unset a preview deployment would quietly advertise
+      # this were left unset a staging deployment would quietly advertise
       # https://mediaradical.in as its canonical URL and invite Google to
-      # deduplicate the preview away. Set it per environment in the dashboard:
+      # deduplicate the staging site away. Set it per service:
       #   production  https://mediaradical.in
       #   staging     https://mediaradical.onrender.com
       - key: NEXT_PUBLIC_SITE_URL
         sync: false
+
+      # Where the footer newsletter posts. Any endpoint accepting a POST works
+      # (FormSubmit, Formspree, a provider's own URL). Leaving it unset is a
+      # supported state: the form then says signup is not connected and points
+      # at the contact address, rather than thanking someone for a
+      # subscription that went nowhere.
+      - key: NEXT_PUBLIC_NEWSLETTER_ENDPOINT
+        sync: false
+
+    headers:
+      # Content-hashed by the build, so the bytes can never change under a
+      # given name. Safe to cache permanently.
+      - path: /_next/static/*
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+
+      # Not content-hashed. A bounded cache instead, so replacing an image is
+      # visible within a month rather than never.
+      - path: /images/*
+        name: Cache-Control
+        value: public, max-age=2592000
+
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+# No `routes:` rewrite. That is for single-page apps served from one
+# index.html. This export pre-renders a real .html file per route, so a
+# catch-all rewrite would mask genuine 404s and serve the home page in their
+# place. Render serves out/404.html for unknown paths on its own.
 
 # No databases block: this site has no database. Content is local TypeScript
 # under /data and the whole site prerenders at build time.

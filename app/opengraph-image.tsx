@@ -17,6 +17,13 @@ import { site } from '@/data/site';
  * No custom font is loaded on purpose: reading a font file here would add a
  * build-time dependency on an asset for a surface nobody views at full size.
  */
+/**
+ * Required by `output: 'export'`. Without it the build fails outright: the
+ * generated image is a route handler, dynamic by default, and there is no
+ * server to run it on. With it, the PNG is rendered once at build time.
+ */
+export const dynamic = 'force-static';
+
 export const alt = `${site.name}: ${site.tagline}`;
 
 export const size = { width: 1200, height: 630 };
