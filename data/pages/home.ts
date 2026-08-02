@@ -1,4 +1,5 @@
 import { ROUTES } from '@/constants/routes';
+import { images } from '@/data/images';
 import type { HomePageContent } from '@/types/pages';
 
 import { site } from '../site';
@@ -80,13 +81,9 @@ export const homePage: HomePageContent = {
         'github-actions',
       ],
     },
-    media: {
-      src: '/images/hero/hero-ambient.webp',
-      // Decorative: the headline beside it carries the meaning.
-      alt: '',
-      width: 2400,
-      height: 1400,
-    },
+    // No `media` here on purpose. HeroSection renders the icon cloud whenever
+    // `techCloud` has logos, so a hero image would be unreachable data and a
+    // prompt somebody would waste time generating. See imagegeneration.md.
   },
 
   /* ------------------------------------------------------------- trusted by */
@@ -120,12 +117,7 @@ export const homePage: HomePageContent = {
       'Design, development and marketing sit in one team. That matters more than it sounds: the person running your ads can walk over to the person who built the landing page, and a problem gets fixed the same day instead of the next sprint.',
     ],
     cta: { label: 'More about us', href: ROUTES.about, variant: 'link' },
-    media: {
-      src: '/images/intro-workspace.webp',
-      alt: 'Our team working together in the studio',
-      width: 1600,
-      height: 1200,
-    },
+    media: images.studioTeam,
     highlights: [
       { label: 'Working since', value: '2013' },
       { label: 'Based in', value: 'Ahmedabad' },
@@ -136,25 +128,25 @@ export const homePage: HomePageContent = {
   /* -------------------------------------------------------------- services */
   services: {
     eyebrow: 'What we do',
-    heading: 'Fourteen services. One team.',
+    heading: 'Eight services. One team.',
     emphasis: 'One team',
     lede: 'Build and marketing in the same place, which means the people running your ads can talk to the people who built the page they point at.',
     cta: { label: 'See all services', href: ROUTES.services, variant: 'secondary' },
+    /**
+     * The home page shows the eight services Media Radical leads with. The
+     * other six still exist in data/entities/services.ts and still appear in
+     * navigation, the sitemap and on /services. This is a display slice, not
+     * a catalogue change, which is exactly what the serviceSlugs list is for.
+     */
     serviceSlugs: [
       'web-development',
       'mobile-app-development',
-      'ui-ux-design',
-      'ecommerce-and-crm',
       'seo',
       'ppc-and-google-ads',
       'social-media-marketing',
-      'custom-software-development',
-      'cloud-and-devops',
-      'ai-and-automation',
       'domain-and-hosting',
       'email-solutions',
-      'it-consulting',
-      'maintenance-and-support',
+      'ecommerce-and-crm',
     ],
   },
 
@@ -189,12 +181,7 @@ export const homePage: HomePageContent = {
       'value-security',
       'value-handover',
     ],
-    media: {
-      src: '/images/why-choose-us.webp',
-      alt: 'A desk with a laptop and design tools',
-      width: 1400,
-      height: 1000,
-    },
+    media: images.planningMeeting,
   },
 
   /* ----------------------------------------------------------- technologies */

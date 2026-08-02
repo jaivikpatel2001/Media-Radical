@@ -1,3 +1,4 @@
+import { images, plannedImages } from '@/data/images';
 import type { CaseStudy } from '@/types/content';
 
 /* =============================================================================
@@ -22,12 +23,7 @@ export const caseStudies: CaseStudy[] = [
       'A Surat textile wholesaler selling direct to retailers. Checkout took eleven seconds on a mid-range phone and most carts never made it through.',
     industrySlug: 'retail-and-ecommerce',
     serviceSlugs: ['ecommerce-and-crm', 'web-development', 'ui-ux-design'],
-    cover: {
-      src: '/images/case-studies/retail-commerce.webp',
-      alt: 'Fabric rolls stacked in a textile warehouse',
-      width: 1600,
-      height: 1000,
-    },
+    cover: images.textileStore,
     challenge:
       'Nearly all their buyers shop on a phone over patchy 4G. The old store loaded slowly, the payment step failed often on UPI, and stock counts on the site rarely matched the godown.',
     solution:
@@ -56,12 +52,7 @@ export const caseStudies: CaseStudy[] = [
       'A diagnostics chain across Ahmedabad and Gandhinagar. Every appointment was a phone call, and the phones were busy all morning.',
     industrySlug: 'healthcare',
     serviceSlugs: ['web-development', 'mobile-app-development', 'maintenance-and-support'],
-    cover: {
-      src: '/images/case-studies/health-cloud.webp',
-      alt: 'A clean diagnostics reception with a tablet on the counter',
-      width: 1600,
-      height: 1000,
-    },
+    cover: images.diagnosticsBooking,
     challenge:
       'Six centres shared one booking phone line. Patients gave up waiting, slots went unfilled, and reports were collected in person because there was nowhere to read them online.',
     solution:
@@ -90,12 +81,7 @@ export const caseStudies: CaseStudy[] = [
       'A Rajkot valve manufacturer whose enquiries came almost entirely from trade fairs and word of mouth.',
     industrySlug: 'manufacturing',
     serviceSlugs: ['seo', 'web-development', 'ppc-and-google-ads'],
-    cover: {
-      src: '/images/case-studies/logistics-control.webp',
-      alt: 'Machined valve components on a workbench',
-      width: 1600,
-      height: 1000,
-    },
+    cover: images.engineeringSeo,
     challenge:
       'Buyers searching for their exact product category found competitors first. The site had no product pages worth ranking, and nothing was tracked, so nobody knew which enquiries came from where.',
     solution:
@@ -124,12 +110,8 @@ export const caseStudies: CaseStudy[] = [
       'A Pune grocery delivery business running three vehicle partners. Customers usually reported a late order before the team knew about it.',
     industrySlug: 'logistics-and-supply-chain',
     serviceSlugs: ['custom-software-development', 'ai-and-automation', 'cloud-and-devops'],
-    cover: {
-      src: '/images/case-studies/fintech-platform.webp',
-      alt: 'A delivery dispatch screen showing routes across a city',
-      width: 1600,
-      height: 1000,
-    },
+    // Not generated yet, so this slot renders a placeholder. See data/images.ts.
+    cover: plannedImages.groceryDelivery,
     challenge:
       'Each delivery partner sent updates in a different format, some by WhatsApp. Nobody had one view of the day, and late orders were discovered by complaint.',
     solution:

@@ -72,14 +72,22 @@ sections/
   home/         Home-only sections
 styles/         tokens -> themes -> typography/utilities/motion
 animations/     core (GSAP + Lenis bridge), presets, per-section scenes
-data/           ALL copy. entities/ + pages/ + selectors
+data/           ALL copy. entities/ + pages/ + selectors + images.ts
 types/          Content models
+public/images/  Optimized WebP, filed by section
 ```
 
 ### The decisions that shape everything else
 
 **No Tailwind.** It was removed from the scaffold deliberately. Styling is CSS
 Modules plus custom properties.
+
+**Every image is declared once, in `data/images.ts`.** Entities reference
+`images.someKey` rather than writing a path inline, so renaming or resizing a
+file is one edit. Each entry carries its real dimensions, which is what keeps
+layout shift at zero, and an inlined base64 blur placeholder. Assets that are
+referenced but not yet generated live in `plannedImages` in the same file and
+render a placeholder instead of breaking. See `imagegeneration.md`.
 
 **Three-layer design tokens.** Primitives (`styles/tokens.css`) → semantic
 (`styles/themes.css`) → components. A component that references a raw `--ink-*`

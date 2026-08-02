@@ -1,270 +1,264 @@
 # Image Generation Brief — Media Radical
 
-Everything the site needs from you, in one place. **14 images.** Each entry below gives the exact save path, the exact pixel size, a full prompt, a negative prompt, and notes on what the layout does to the image.
+**Status: the 11 Home page images have been generated, optimized and
+integrated.** This file is now both the record of what is on disk and the brief
+for regenerating any of it.
 
-Nothing here is blocking. Every slot already renders a generated gradient placeholder, so the site is complete without these files — dropping a file at the given path is a no-code change that swaps the placeholder for the real thing.
+Media Radical is an Ahmedabad agency, and the images have to say that on sight.
+This brief was rewritten because the previous version described a generic
+Western tech company, and it also described the wrong subjects: it asked for a
+fintech trading desk and a robotic warehouse for case studies whose real
+clients are an engineering manufacturer, a diagnostics lab and a textile
+business.
 
 ---
 
-## 1. The rule that matters most
+## Where the paths live
 
-**The site is light-themed by default.** Near-white backgrounds, generous whitespace, dark text. Every image must be composed for that page — **bright, airy, high-key.**
+**Do not hardcode an image path.** Every asset is defined once in
+[`data/images.ts`](data/images.ts) and referenced by name:
 
-A dark, moody image dropped onto this page reads as a hole punched in it. What you want instead is an image that looks like it belongs on the same sheet of paper as the text: **light background, mid-tone subject, one accent colour, plenty of empty space.**
+```ts
+import { images } from '@/data/images';
+cover: images.textileStore,
+```
 
-Dark mode exists as an opt-in and applies a small CSS brightness adjustment to these same files. You do **not** need to generate dark variants.
+Each entry carries `src`, `alt`, real `width`/`height` and an inlined base64
+`blurDataURL`. Renaming or resizing a file is therefore one edit in that file,
+not a hunt through the entity files.
 
-### The four things every prompt below enforces
+`plannedImages` in the same file holds assets that are referenced but not yet
+generated. They render a placeholder rather than breaking.
+
+---
+
+## What is on disk
+
+Generated at 1536px or 1400px wide for the photographic slots, 1200px for the
+abstract covers, 256px for the portraits. WebP at quality 82. All metadata is
+stripped by the conversion; the sources carried no EXIF or ICC to begin with.
+
+| File | Size | Source subject |
+|---|---|---|
+| `images/about/digital-agency-team-ahmedabad.webp` | 1536×1024 · 100 KB | Intro section |
+| `images/about/project-planning-meeting-india.webp` | 1400×933 · 73 KB | Why choose us |
+| `images/case-studies/engineering-manufacturer-seo-india.webp` | 1400×933 · 95 KB | Vardhman Engineering |
+| `images/case-studies/diagnostics-centre-booking-india.webp` | 1400×876 · 70 KB | Anand Diagnostics |
+| `images/case-studies/textile-showroom-ecommerce-india.webp` | 1400×876 · 121 KB | Shreeji Textiles |
+| `images/testimonials/anjali-anand-clinic-owner.webp` | 256×256 · 7 KB | Testimonial portrait |
+| `images/testimonials/karan-joshi-business-owner.webp` | 256×256 · 8 KB | Testimonial portrait |
+| `images/testimonials/neha-desai-marketing-lead.webp` | 256×256 · 7 KB | Testimonial portrait |
+| `images/insights/ai-testing-abstract.webp` | 1200×675 · 39 KB | Insight cover |
+| `images/insights/cloud-cost-abstract.webp` | 1200×675 · 23 KB | Insight cover |
+| `images/insights/design-systems-abstract.webp` | 1200×675 · 35 KB | Insight cover |
+
+**19.11 MB of PNG became 0.56 MB of WebP, 97% smaller**, with no visible
+quality loss at the sizes these are displayed. The originals were deleted after
+conversion.
+
+The portraits are displayed at 46px. They are stored at 256px, which covers 3x
+retina with headroom for a future team page, and costs single digit kilobytes.
+Everything else was sized from the live layout measured at 1280px, doubled for
+retina and rounded up for wider viewports.
+
+### The conversion
+
+```
+sharp(src)
+  .resize({ width, withoutEnlargement: true })
+  .webp({ quality: 82, effort: 6 })
+```
+
+The `blurDataURL` for each is a 16px-wide WebP at quality 45, inlined as base64.
+Each is roughly 100 to 230 bytes, small enough to cost no extra request while
+still giving `next/image` a real low-quality placeholder.
+
+Next.js re-encodes on demand from these files and serves AVIF where the browser
+accepts it, which takes the largest of them down to about 25 KB at 640px wide.
+Nothing further is needed at build time.
+
+---
+
+## Three prompts that were dropped
+
+| Dropped | Why |
+|---|---|
+| `hero/hero-ambient.webp` | The hero renders the interactive icon cloud, not a photograph. `HeroSection` only falls back to `media` when `techCloud` has no logos, which never happens, so the entry was unreachable. Removed from `data/pages/home.ts`. |
+| `hero/hero-ambient-light.webp` | Same reason, and a light/dark pair is moot now that light is the only baseline. |
+| `og/og-default.webp` | `app/opengraph-image.tsx` draws the social card at build time with `next/og`. No file needed. |
+
+---
+
+## The two rules that matter most
+
+**The site is light-themed by default.** Near-white backgrounds, generous
+whitespace, dark text. Every image must be composed for that page: bright,
+airy, high-key. A dark, moody image dropped onto this page reads as a hole
+punched in it. Dark mode is an opt-in that applies a small CSS brightness
+adjustment to these same files, so you do **not** need dark variants.
+
+**Indian, and specifically contemporary Indian.** Say "Indian" in the subject
+line of every prompt. Generators drift Caucasian by default, and when you only
+say "India" they drift toward heritage tourism. What you want is an Ahmedabad
+technology office in 2026, not a spice market. No flags, no monuments, no
+clichéd cultural props.
+
+### The five things every prompt below enforces
 
 | | |
 |---|---|
-| **Bright, high-key** | Light dominates. Shadows are soft and grey, never black. Think a studio with white walls at midday, not a bar at night. |
-| **One accent colour** | Electric indigo, `#5B53F5`. It appears as a glow, a highlight or a single object. Never as the background. |
-| **Real negative space** | Each entry names where the empty area must be. Text or a card sits there in the layout. An edge-to-edge busy image breaks the composition. |
-| **No text, ever** | Generators produce garbled lettering, and the layout supplies all real text. No words, no logos, no UI labels, no signage. |
+| **Bright, high-key** | Light dominates. Shadows are soft and grey, never black. |
+| **Recognisably Indian** | Indian people, Indian workplaces, contemporary business dress. |
+| **One accent colour** | Media Radical blue, `#008DD2`. A screen, a sign, a lit edge, clothing. Never the background. |
+| **Real negative space** | Each entry names where the empty area must be. Text or a card sits there. |
+| **No text, ever** | Generators produce garbled lettering, and the layout supplies all real text. |
 
 ---
 
-## 2. Global settings
+## Shared style suffix
 
-Prepend or append this to every prompt (most tools accept it inline; if yours has a separate "style" field, put it there):
+**Append this to every prompt below.**
 
-> Bright high-key photography, light and airy, near-white background, soft diffused daylight, gentle grey shadows, clean minimal composition, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, sharp focus on subject, 8k, highly detailed.
+> Premium Indian corporate photography. Photorealistic, full-frame camera at
+> f/2.0, cinematic but natural lighting. Bright, airy, light-first palette:
+> warm off-white and soft grey architecture, generous daylight, with a single
+> confident accent of blue #008DD2 somewhere in the frame. Clean minimal
+> composition with real negative space. Modern Indian professionals in smart
+> contemporary business dress. No text, no logos, no watermarks, no visible
+> brand names. Enterprise-grade and understated. Never stocky, never staged
+> handshakes, never a group pointing at one monitor. 8k.
 
-**Negative prompt** — use on every image:
+**Negative prompt**, for tools that take one:
 
-> dark, black background, moody, low-key lighting, night, neon, cyberpunk, heavy vignette, oversaturated, cluttered, busy, text, words, letters, typography, logos, watermarks, signage, UI labels, numbers, charts with labels, distorted hands, extra fingers, deformed faces, blurry, low resolution, jpeg artifacts, stock-photo cheesiness, fisheye distortion.
+> text, letters, words, logos, watermark, signage, UI labels, dark, moody, low
+> key, night, neon, cluttered, busy background, distorted hands, extra fingers,
+> deformed faces, oversaturated, HDR, fisheye, Caucasian models, Western office,
+> New York skyline, London skyline, stock photo pose
 
-**Palette to steer toward**
+---
 
-| Role | Hex | Where it should appear |
+## The prompts
+
+### `about/digital-agency-team-ahmedabad.webp` · Intro section
+
+Negative space: left third. Heading beside it: "A digital partner that feels
+like your own team."
+
+> A bright modern Indian digital agency studio in Ahmedabad during the working
+> day. Four Indian colleagues, a mix of men and women in their late twenties
+> and thirties, working along a long light-oak desk with dual monitors. One
+> stands at a glass wall marked up with wireframes and site structure diagrams,
+> mid-explanation. Large windows, abundant natural daylight, whitewashed walls,
+> potted plants, pale exposed concrete ceiling. Wide architectural framing with
+> the left third comfortably empty. Candid working atmosphere, nobody posing.
+
+### `about/project-planning-meeting-india.webp` · Why choose us
+
+Negative space: right third. Heading: "Six promises we put in writing."
+
+> Two Indian professionals in a bright meeting room in an Indian office,
+> reviewing a printed project plan and a laptop between them. A woman in her
+> thirties in a smart blouse points at a line on the page while a man in his
+> forties in a light shirt annotates it. Warm daylight from a window to the
+> right, pale wood table, soft white walls. Slightly side-on at eye level,
+> shallow depth of field, generous clean space on the right third.
+
+### `case-studies/engineering-manufacturer-seo-india.webp` · Vardhman Engineering
+
+Engineering manufacturer, search visibility work.
+
+> The front office of a modern Indian precision engineering company. An Indian
+> man in his forties in a clean light-blue shirt stands at a standing desk
+> reviewing a website analytics dashboard on a large monitor, with the bright,
+> orderly machine floor visible through a glass partition behind him. Daylight
+> from high windows, pale industrial surfaces, everything clean and well kept.
+> Wide shot, calm and precise, no clutter.
+
+### `case-studies/diagnostics-centre-booking-india.webp` · Anand Diagnostics
+
+Diagnostics lab, online booking.
+
+> The reception of a modern Indian diagnostics centre, bright and spotlessly
+> clean. An Indian woman in her late twenties in professional medical-office
+> attire helps a patient check in at a counter with a tablet showing an
+> appointment booking screen. Soft even daylight, white and pale blue surfaces,
+> frosted glass, a calm waiting area softly out of focus behind. No patient
+> faces in sharp focus, no medical procedures, no distress.
+
+### `case-studies/textile-showroom-ecommerce-india.webp` · Shreeji Textiles
+
+Textile business, online store.
+
+> A contemporary Indian textile showroom, bright and beautifully organised.
+> Bolts of fabric in rich colours stacked on pale wooden shelving. An Indian
+> woman in her thirties in a modern kurta photographs a folded fabric sample on
+> a small lit table with a phone on a tripod, packing an online order beside
+> her. Large windows, natural daylight, clean uncluttered composition.
+
+### The three testimonial portraits
+
+Square crop. Generate all three in one sitting and reject any that does not
+match the others' light. Consistency across the three matters more than any
+single one of them.
+
+> Corporate headshot of an Indian professional, natural warm daylight from a
+> large window at 45 degrees, softly blurred bright neutral office interior
+> behind. Relaxed genuine expression, looking at the camera, head and
+> shoulders, square crop. Modern contemporary Indian business dress. Not a
+> studio backdrop, not harsh flash, not an over-retouched corporate portrait.
+
+| File | Person | Direction |
 |---|---|---|
-| Background | `#FBFBFD` – `#F5F5F7` | The dominant field of the image |
-| Mid grey | `#D8D8E0` | Surfaces, edges, soft shadow |
-| Deep ink | `#1D1D23` | The darkest point — sparing, for contrast only |
-| **Accent indigo** | `#5B53F5` | Glow, highlight, one object. Never dominant |
-| Support cyan | `#0FB5EC` | Optional secondary highlight |
-| Support violet | `#9333EA` | Optional secondary highlight |
+| `testimonials/anjali-anand-clinic-owner.webp` | Dr. Anjali Anand | Indian woman, late forties, doctor and clinic owner. Composed, warm, quietly authoritative. |
+| `testimonials/karan-joshi-business-owner.webp` | Karan Joshi | Indian man, mid thirties, business owner. Approachable and direct. Plain shirt, no tie. |
+| `testimonials/neha-desai-marketing-lead.webp` | Neha Desai | Indian woman, early thirties, marketing lead. Bright, confident, modern. |
 
-**Export settings**
+### The three insight covers
 
-- Format **WebP**, quality **82–88**. If your tool only exports PNG or JPG, generate at the listed size and convert — [Squoosh](https://squoosh.app) does this in the browser.
-- Generate at the listed pixel size or larger, then downscale. Never upscale.
-- Filenames and folders below are exact and case-sensitive. Create the folders under `public/`.
+These are the one place to stay abstract. They head opinion articles, so a
+photograph of people would over-promise a case study that is not there.
 
----
+For these three only, replace "Premium Indian corporate photography" in the
+style suffix with **"Premium abstract 3D render, soft studio lighting"**.
 
-## 3. The images
-
-### Group A — Hero and page features (3)
-
----
-
-#### 1. Hero ambient
-
-- **Save as** `public/images/hero/hero-ambient.webp`
-- **Size** 2400 × 1400 (landscape, 12:7)
-- **Appears** Behind and to the right of the main headline, at the very top of the home page. The largest image on the site.
-- **Layout note** The headline, paragraph and two buttons sit over the **left 45%**. That area must be near-empty and very light, or the text becomes unreadable. Put all visual interest in the **right third**.
-
-> Abstract architectural composition of translucent frosted glass planes floating in bright white space, arranged in a layered stepped formation receding into soft haze. Thin luminous edge-lighting in electric indigo traces the outer contours of each plane. Pale grey soft shadows fall beneath. The left third of the frame is almost entirely empty bright white atmosphere with only faint haze; all structure is concentrated in the right third. Extremely clean, weightless, precise. Bright high-key photography, light and airy, near-white background, soft diffused daylight, gentle grey shadows, clean minimal composition, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
-**Check before saving:** cover the left 45% with your thumb — is what remains still a complete composition? Is the left side light enough that dark text would sit comfortably on it?
+| File | Article | Prompt |
+|---|---|---|
+| `insights/ai-testing-abstract.webp` | "Test your AI before you ship it" | Abstract lattice of fine luminous filaments converging into a dense bright core, floating in a bright off-white field. Soft depth of field, delicate blue #008DD2 light along the filaments. |
+| `insights/cloud-cost-abstract.webp` | "The third of your cloud bill nobody owns" | Isometric arrangement of floating matte off-white cubes in a descending stepped formation against a bright background, a few cubes drifting away. Cool blue #008DD2 under-lighting. |
+| `insights/design-systems-abstract.webp` | "Why most design systems fall apart" | Overlapping translucent interface panels and component swatches arranged as a neat grid in bright dimensional space, one panel lifting cleanly out of alignment. |
 
 ---
 
-#### 2. Company introduction — the studio
+## Still outstanding
 
-- **Save as** `public/images/intro-workspace.webp`
-- **Size** 1600 × 1200 (portrait-ish landscape, 4:3)
-- **Appears** Beside the "Who we are" paragraphs, roughly a third of the way down.
-- **Layout note** Displayed in a rounded rectangle, cropped to fill. Keep the subject centred — the extreme edges may be trimmed.
+**`images/case-studies/grocery-delivery-fulfilment-india.webp`** · 1400×876 ·
+Rasoi Fresh, a grocery delivery business. Declared in `plannedImages` in
+`data/images.ts` and referenced by its case study, but that case study is not
+on the Home page, so it only becomes visible when `/portfolio` is built. Until
+then the slot renders a placeholder.
 
-> Bright modern consulting studio interior in daytime. A floor-to-ceiling glass wall covered in abstract system diagrams drawn in thin indigo marker, backlit by large windows filled with soft white daylight. Two people stand in soft focus in the middle distance, out of focus enough that faces are not readable, gesturing toward the glass. Pale oak floors, white walls, light grey furniture, one indigo chair as the accent. Wide architectural framing, calm and uncluttered. Bright high-key photography, light and airy, soft diffused daylight, gentle grey shadows, generous negative space, premium editorial technology aesthetic, subtle film grain, professional commercial photography, 8k, highly detailed.
-
-**Check before saving:** no readable text on the glass — abstract marks only. Faces indistinct.
-
----
-
-#### 3. Why choose us — the desk
-
-- **Save as** `public/images/why-choose-us.webp`
-- **Size** 1400 × 1000 (landscape, 7:5)
-- **Appears** Beside the six commitments.
-- **Layout note** Empty space must be on the **right half** — a card overlaps it.
-
-> Overhead flat-lay on a pale warm-grey desk surface. An open laptop sits in the upper left, its screen showing a soft indigo glow with no readable content. Beside it: a brushed aluminium ruler, two precision drafting pencils arranged at a clean angle, a white ceramic cup of black coffee, and a closed grey notebook. The entire right half of the frame is empty desk surface. Soft directional daylight from the upper left casts long gentle grey shadows. Minimal, precise, expensive. Bright high-key photography, light and airy, clean minimal composition, generous negative space, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
-**Check before saving:** right half genuinely empty. Laptop screen glowing but blank — no interface.
+> A bright modern Indian grocery fulfilment operation. An Indian man in his
+> late twenties in a clean uniform polo checks a tablet showing a delivery
+> route while fresh produce is packed into crates on a stainless steel bench
+> behind him. Daylight, spotless pale surfaces, crates of vegetables adding
+> natural colour. Organised and fast, not industrial or grim.
 
 ---
 
-### Group B — Case study covers (4)
-
-All four are **1600 × 1000** (landscape, 8:5), shown in a card with rounded corners. Keep the subject centred; edges may be cropped. These should feel like a matched set — same brightness, same treatment.
-
----
-
-#### 4. Financial services — Northwind Capital
-
-- **Save as** `public/images/case-studies/fintech-platform.webp`
-
-> Bright modern financial trading desk in a white-walled office flooded with daylight. A large curved monitor displays abstract data visualisation — smooth indigo and cyan gradient line graphs and soft node networks, with no readable text or numbers. Light reflects off a pale glass desk surface. A second monitor sits out of focus behind. Clean, calm, precise, almost clinical. Bright high-key photography, light and airy, near-white background, soft diffused daylight, gentle grey shadows, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
----
-
-#### 5. Healthcare — Helix Health
-
-- **Save as** `public/images/case-studies/health-cloud.webp`
-
-> Bright clinical technology environment with white surfaces and pale grey equipment, lit by soft even daylight. A tablet lies on a white counter displaying an abstract translucent data visualisation in soft indigo and cyan — flowing curves and gentle waveforms, no readable text or numbers. A single small green plant sits at the edge of frame. Calm, precise, reassuring, spotlessly clean. Bright high-key photography, light and airy, near-white background, soft diffused daylight, gentle grey shadows, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
----
-
-#### 6. Retail & e-commerce — Meridian
-
-- **Save as** `public/images/case-studies/retail-commerce.webp`
-
-> Bright modern retail fulfilment facility with white walls and pale concrete floors, flooded with daylight from high skylights. Clean white and light grey conveyor systems curve through the frame carrying plain unbranded pale cardboard boxes. A robotic arm in brushed aluminium sits in soft focus in the middle distance. One indigo indicator light glows as the single accent. Spacious, orderly, calm. Bright high-key photography, light and airy, soft diffused daylight, gentle grey shadows, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
----
-
-#### 7. Logistics — Atlas Freight
-
-- **Save as** `public/images/case-studies/logistics-control.webp`
-
-> Bright logistics control room with white walls and pale desks, lit by large windows. A wide wall display shows an abstract network map — smooth indigo and cyan connection lines over a very light grey field, with soft glowing nodes and no readable text, labels or place names. An empty ergonomic chair in light grey sits in the foreground. Spacious, quiet, well ordered. Bright high-key photography, light and airy, near-white background, soft diffused daylight, gentle grey shadows, generous negative space, premium editorial technology aesthetic, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, professional commercial photography, 8k, highly detailed.
-
----
-
-### Group C — Insight article covers (3)
-
-All three are **1600 × 900** (16:9), shown as small cards. **Abstract, not photographic** — these need to read instantly at roughly 400px wide, so keep them bold and simple. Treat them as a matched trio.
-
----
-
-#### 8. AI & automation
-
-- **Save as** `public/images/insights/ai-automation.webp`
-
-> Abstract 3D render on a bright white background. Delicate luminous filaments in electric indigo and soft cyan branch and converge toward a single bright glowing core slightly right of centre. Filaments are thin, precise and evenly lit, casting no hard shadows. The outer thirds fade to clean white emptiness. Weightless, scientific, elegant. Bright high-key render, light and airy, near-white background, clean minimal composition, generous negative space, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, 8k, highly detailed.
-
----
-
-#### 9. Cloud cost
-
-- **Save as** `public/images/insights/cloud-cost.webp`
-
-> Abstract isometric 3D render on a bright white background. Matte white and pale grey cubes float in a descending stepped arrangement from upper left to lower right, evenly spaced with soft grey contact shadows beneath each. Three cubes glow faintly indigo from within. Clean, architectural, weightless, plenty of white space around the arrangement. Bright high-key render, light and airy, near-white background, clean minimal composition, generous negative space, single electric indigo accent (#5B53F5), subtle film grain, 8k, highly detailed.
-
----
-
-#### 10. Design systems
-
-- **Save as** `public/images/insights/design-systems.webp`
-
-> Abstract 3D render on a bright white background. Translucent frosted glass panels in various rectangular sizes float in a loose overlapping grid, each catching soft daylight at a slightly different angle. Two panels carry a faint indigo tint; the rest are clear and pale. Soft grey shadows fall between layers. Geometric, editorial, calm, with clean white space at the edges. Bright high-key render, light and airy, near-white background, clean minimal composition, generous negative space, single electric indigo accent (#5B53F5), subtle film grain, shallow depth of field, 8k, highly detailed.
-
----
-
-### Group D — Testimonial portraits (3)
-
-All three are **400 × 400**, square, displayed as a small circle roughly 56px across. Detail is lost at that size — what survives is the silhouette and the background tone, so keep backgrounds pale and the framing tight.
-
-These are attributed to invented people; they are illustrative placeholders and should be replaced with real client photographs before launch.
-
----
-
-#### 11. Portrait — Elena Vasquez, CTO
-
-- **Save as** `public/images/team/avatar-01.webp`
-
-> Professional corporate headshot of a woman in her mid-thirties with dark hair worn back, wearing a charcoal knit top, against a plain pale grey studio backdrop. Soft large key light from the front left, gentle fill, no harsh shadows. Calm confident expression, slight smile, looking directly at camera. Head and shoulders, tightly framed, centred, square crop. Bright high-key studio photography, light and airy, clean seamless background, natural skin tones, sharp focus on eyes, professional commercial portrait photography, 8k.
-
----
-
-#### 12. Portrait — Dr. Marcus Chen, VP Clinical Systems
-
-- **Save as** `public/images/team/avatar-02.webp`
-
-> Professional corporate headshot of a man in his forties with short dark hair and glasses, wearing a charcoal blazer over a white shirt, against a plain warm pale grey studio backdrop. Soft large key light from the front right, gentle fill, no harsh shadows. Composed, approachable expression, looking directly at camera. Head and shoulders, tightly framed, centred, square crop. Bright high-key studio photography, light and airy, clean seamless background, natural skin tones, sharp focus on eyes, professional commercial portrait photography, 8k.
-
----
-
-#### 13. Portrait — Priya Raghunathan, Director of Digital
-
-- **Save as** `public/images/team/avatar-03.webp`
-
-> Professional corporate headshot of a woman in her late twenties with long dark hair, wearing a crisp light blue shirt, against a plain bright off-white studio backdrop. Soft even frontal lighting, minimal shadow. Warm confident expression, looking directly at camera. Head and shoulders, tightly framed, centred, square crop. Bright high-key studio photography, light and airy, clean seamless background, natural skin tones, sharp focus on eyes, professional commercial portrait photography, 8k.
-
----
-
-### Group E — Social sharing card (1)
-
----
-
-#### 14. Default Open Graph image
-
-- **Save as** `public/images/og/og-default.webp`
-- **Size** 1200 × 630 (exactly — this is the ratio LinkedIn, Slack and X expect)
-- **Appears** As the preview thumbnail whenever a page is shared.
-- **Layout note** The site name and page title are overlaid in code across the **lower two-thirds**. That region must be near-empty and light.
-
-> Abstract composition on a bright near-white field. A soft luminous gradient mesh in electric indigo, cyan and violet blooms across the upper right corner and dissolves smoothly into clean white. Very faint thin grey geometric grid lines run beneath. The lower two-thirds of the frame is almost entirely empty bright white space. Extremely minimal, premium, spacious. Bright high-key render, light and airy, near-white background, clean minimal composition, generous negative space, single electric indigo accent (#5B53F5), subtle film grain, 8k.
-
-**Check before saving:** the bottom two-thirds must be light and empty enough that dark text placed there is legible.
-
----
-
-## 4. Not needed — these are drawn in code
-
-Do **not** generate these. They already exist as vector graphics, which stay razor-sharp at any size, adapt to the theme, and cost nothing to load. AI generators also mangle lettering, so logos in particular come out wrong.
-
-- The **Media Radical logo** and mark
-- The **eight client logos** in the "trusted by" strip
-- All **service and industry icons** (24 hand-drawn SVG icons)
-- All **technology logos** (React, AWS, Terraform, and the rest)
-- The **hero background gradient**, grid and grain — CSS, and theme-aware
-
----
-
-## 5. Where the files go
-
-```
-public/
-└── images/
-    ├── hero/
-    │   └── hero-ambient.webp              2400 × 1400
-    ├── intro-workspace.webp               1600 × 1200
-    ├── why-choose-us.webp                 1400 × 1000
-    ├── case-studies/
-    │   ├── fintech-platform.webp          1600 × 1000
-    │   ├── health-cloud.webp              1600 × 1000
-    │   ├── retail-commerce.webp           1600 × 1000
-    │   └── logistics-control.webp         1600 × 1000
-    ├── insights/
-    │   ├── ai-automation.webp             1600 × 900
-    │   ├── cloud-cost.webp                1600 × 900
-    │   └── design-systems.webp            1600 × 900
-    ├── team/
-    │   ├── avatar-01.webp                 400 × 400
-    │   ├── avatar-02.webp                 400 × 400
-    │   └── avatar-03.webp                 400 × 400
-    └── og/
-        └── og-default.webp                1200 × 630
-```
-
-Drop the files in and refresh — no code change, no rebuild step, no configuration. If a file is missing, that slot keeps its gradient placeholder and everything else still works.
-
----
-
-## 6. Final check on every image
-
-1. Would this look at home on a white page? If it darkens the layout, regenerate it brighter.
-2. Is there any text, lettering or logo anywhere in it? Regenerate — this is the most common failure.
-3. Is the named empty area actually empty?
-4. Is indigo an accent rather than the background?
-5. Does it sit at the exact path and pixel size listed?
-6. Do the four case-study covers look like a set? Do the three insight covers?
-
-If you want a different look overall — warmer, more photographic, more abstract — tell me and I will rewrite the whole set to match. Consistency across the fourteen matters far more than any single image.
+## Adding a new image
+
+1. Generate it with the style suffix above.
+2. Convert and resize with the recipe in "The conversion", sized from the slot
+   it will actually occupy, not from the source.
+3. Save under `public/images/<section>/<seo-friendly-kebab-name>.webp`.
+4. Add an entry to `data/images.ts` with its real dimensions and blur string.
+5. Reference it as `images.yourKey`. Never write the path inline.
+
+### Checklist
+
+- [ ] `.webp`, sized to the real slot, no larger.
+- [ ] The image is bright and does not read as a dark rectangle on a light page.
+- [ ] The people are recognisably Indian and contemporary.
+- [ ] No text, no logos, no watermarks anywhere in the frame.
+- [ ] Alt text says what the image shows rather than repeating the heading.
+- [ ] Hands and faces are not distorted. Regenerate rather than retouch.

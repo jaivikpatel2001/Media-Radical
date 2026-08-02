@@ -1,3 +1,4 @@
+import { images } from '@/data/images';
 import type { Post } from '@/types/content';
 
 /**
@@ -17,12 +18,7 @@ export const posts: Post[] = [
       'A good demo proves nothing. Here is how we check an AI feature is actually accurate, and why we do it before writing the feature.',
     category: 'AI & Automation',
     tags: ['AI', 'Testing', 'How we work'],
-    cover: {
-      src: '/images/insights/ai-automation.webp',
-      alt: 'Abstract illustration of connected nodes',
-      width: 1600,
-      height: 900,
-    },
+    cover: images.aiTesting,
     author: 'Ananya Gupta',
     publishedAt: '2026-06-18',
     readingMinutes: 8,
@@ -40,12 +36,7 @@ export const posts: Post[] = [
       'Unused servers, oversized machines and forgotten backups. What we usually find in two weeks of looking, and how to stop it coming back.',
     category: 'Cloud & DevOps',
     tags: ['Cloud', 'Costs', 'AWS'],
-    cover: {
-      src: '/images/insights/cloud-cost.webp',
-      alt: 'Abstract illustration of stacked blocks',
-      width: 1600,
-      height: 900,
-    },
+    cover: images.cloudCost,
     author: 'Rohan Mehta',
     publishedAt: '2026-05-27',
     readingMinutes: 6,
@@ -63,12 +54,7 @@ export const posts: Post[] = [
       'Most stop being used within six months of the agency leaving. The ones that survive share three things, and none of them are about the design.',
     category: 'UI/UX Design',
     tags: ['Design', 'Handover'],
-    cover: {
-      src: '/images/insights/design-systems.webp',
-      alt: 'Abstract illustration of layered panels',
-      width: 1600,
-      height: 900,
-    },
+    cover: images.designSystems,
     author: 'Priya Shah',
     publishedAt: '2026-04-09',
     readingMinutes: 7,

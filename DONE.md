@@ -282,9 +282,71 @@ logos are a separate registry (`TECH_COLOR_LOGOS`) rather than extra fields on
   pass clean. No horizontal scroll at 375px or 1440px.
 - **Configuration:** only `NEXT_PUBLIC_SITE_URL` is read by code. Everything
   else in `.env.example` is marked PLANNED. The site runs with no `.env` file.
-- **Outstanding:** the 14 images in `imagegeneration.md` have not been supplied,
-  so those slots render gradient placeholders. Dropping a file at the documented
-  path is a no-code change.
+- **Images:** all 11 Home page images are supplied, optimized and integrated.
+  One slot (`grocery-delivery-fulfilment-india.webp`, Rasoi Fresh) is still
+  outstanding and renders a placeholder; it belongs to `/portfolio`, not Home.
+
+---
+
+### Home services trimmed, technologies section aligned, image brief rewritten
+
+| Time | What was completed |
+|---|---|
+| 00:20 | **Home services section now shows eight, not fourteen**, matching the eight the real mediaradical.in leads with: web development, mobile apps, SEO, PPC, social media, domain and hosting, email, ecommerce and CRM. This is a display slice in `data/pages/home.ts`, not a catalogue change. The other six services still exist as entities and still appear in navigation, the footer and the sitemap, which is exactly what `serviceSlugs` is for. |
+| 00:21 | Heading changed from "Fourteen services. One team." to "Eight services. One team." Leaving the old heading would have been a plain lie about what is on the page. |
+| 00:26 | **Technology tiles now centre.** The grid used `repeat(auto-fill, minmax(148px, 1fr))`, and CSS grid cannot centre a partial last row: `1fr` tracks are fixed columns, so four tiles in a row built for seven always hug the left edge. Replaced with flex wrap plus `justify-content: center` and a fixed `flex: 0 1 148px` basis. Fixed basis with no grow matters, because letting tiles stretch would make the last row wider than the rows above it. |
+| 00:30 | Panel description and the closing note centred, and `margin-block-start: var(--space-6)` added to the note so the hairline rule is not crowded against the last row of tiles. |
+| 00:34 | **Removed the dead hero image reference.** `data/pages/home.ts` still carried `media: '/images/hero/hero-ambient.webp'`, but `HeroSection` only falls back to `media` when `techCloud` has no logos, which never happens. Unreachable data, and a prompt somebody would have wasted time generating. |
+| 00:40 | **Rewrote `imagegeneration.md` from 14 prompts to 11**, for Indian market context. |
+
+**Why the image brief needed rewriting, beyond the Indian context.** The old
+prompts described the wrong subjects. `logistics-control.webp` asked for a
+robotic fulfilment warehouse, but its case study is Vardhman Engineering, an
+engineering manufacturer that came for search visibility.
+`retail-commerce.webp` asked for the same warehouse idea again, but its client
+is Shreeji Textiles. `fintech-platform.webp` asked for a trading desk, but its
+client is Rasoi Fresh, a grocery delivery business. The shared style suffix was
+also stale: it specified a dark charcoal palette with an electric-indigo accent
+`#5B53F5`, from before the light-first baseline and the Media Radical blue
+`#008DD2`.
+
+Three prompts were dropped rather than rewritten: both hero images, because the
+hero renders the icon cloud, and the OG image, because `app/opengraph-image.tsx`
+draws it at build time with `next/og`. `fintech-platform.webp` is documented
+separately, since it belongs to `/portfolio` rather than the Home page.
+
+**Verified by measurement, not by eye:** the eight chosen services appear twice
+in the served HTML (navigation plus card) while the other six appear once
+(navigation only), which is what proves the section renders exactly eight. Tile
+rows measured symmetric at 57px each side for a full row and 409px each side
+for a partial one, with a uniform 164px tile width across both. Description
+margins 239px each side, note 56px each side, 24px of new space above the rule.
 - **Outstanding:** the newsletter Server Action (`app/actions.ts`) validates the
   address and returns — it does not send anywhere yet. There is a TODO on the
   line where the provider call belongs.
+
+---
+
+### Images delivered, optimized and integrated
+
+| Time | What was completed |
+|---|---|
+| 01:10 | **11 PNGs arrived in `public/` root.** Converted to WebP, resized, renamed and filed under `public/images/<section>/`. **19.11 MB became 0.56 MB, 97% smaller**, with no visible loss at the sizes these are actually displayed. Originals deleted after conversion. |
+| 01:12 | **Sized from the live layout, not from the source.** Slots were measured in the running page at 1280px, doubled for retina and rounded up for wider viewports. The portraits were the notable case: 1254×1254 files for a 46px slot, roughly 27x oversized. Stored at 256px, which covers 3x retina with headroom for a future team page, and dropped 1.8 MB each to about 7 KB. |
+| 01:14 | **SEO-friendly kebab-case names.** `avatar-01.png` became `anjali-anand-clinic-owner.webp`, `logistics-control` became `engineering-manufacturer-seo-india`, and so on. Three filenames were actively misleading before this: `logistics-control` and `retail-commerce` both described a warehouse, and `fintech-platform` described a trading desk, none of which match their real clients. |
+| 01:18 | **Created `data/images.ts` as the single source for every asset.** Paths used to be written inline across four files, so a rename was a hunt and nothing stopped a path drifting from what was on disk. Entities now reference `images.textileStore` and similar. `plannedImages` holds assets that are referenced but not yet generated, so outstanding work is visible rather than hidden in an entity file. |
+| 01:20 | The file is **generated from the actual converted files**, not hand-written, so its dimensions and blur strings cannot drift from disk. |
+| 01:22 | **Added `blurDataURL` to every asset**, which nothing had before although `Media.tsx` already supported it. Each is a 16px WebP inlined as base64 at roughly 100 to 230 bytes, so it costs no request. |
+| 01:24 | **Fixed the alt text while rewiring.** Three testimonial portraits read "Placeholder portrait", and two case study covers described the wrong scene entirely (machined valve components for what is now a front-office analytics shot). Alt is visitor-facing copy, so it lives in `data/images.ts` with everything else. |
+| 01:26 | Fixed `.claude/launch.json` at the repo root, which declared only a `url` and so could never start the dev server, only attach to one already running. It now runs `npm --prefix media-radical run dev`. |
+
+**Verified, not assumed:** 11 `img` elements render, zero placeholders remain,
+zero broken paths. Every image is lazy with a real `sizes` attribute and 9 to 15
+srcset variants. The optimizer serves AVIF where accepted, taking the largest
+image to about 25 KB at 640px wide. All 11 carry a blur placeholder.
+
+**No `priority` on any image, deliberately.** The first image sits 1160px down a
+720px viewport, so nothing is above the fold, and the LCP candidate is the hero
+`h1` at 181px. The hero renders the icon cloud rather than a photograph, so this
+page has no above-the-fold image to prioritise. Adding `priority` would have
+fought the LCP element rather than helping it.

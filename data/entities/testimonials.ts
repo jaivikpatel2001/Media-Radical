@@ -1,3 +1,4 @@
+import { images } from '@/data/images';
 import type { Testimonial } from '@/types/content';
 
 /* =============================================================================
@@ -30,12 +31,7 @@ export const testimonials: Testimonial[] = [
       name: 'Dr. Anjali Anand',
       role: 'Director',
       company: 'Anand Diagnostics, Ahmedabad',
-      avatar: {
-        src: '/images/team/avatar-01.webp',
-        alt: 'Placeholder portrait',
-        width: 400,
-        height: 400,
-      },
+      avatar: images.anjaliAnand,
     },
     highlight: { label: 'of bookings now online', value: '54%' },
   },
@@ -47,12 +43,7 @@ export const testimonials: Testimonial[] = [
       name: 'Karan Joshi',
       role: 'Managing Director',
       company: 'Vardhman Engineering, Rajkot',
-      avatar: {
-        src: '/images/team/avatar-02.webp',
-        alt: 'Placeholder portrait',
-        width: 400,
-        height: 400,
-      },
+      avatar: images.karanJoshi,
     },
     highlight: { label: 'cost per enquiry', value: '₹340' },
   },
@@ -64,12 +55,7 @@ export const testimonials: Testimonial[] = [
       name: 'Neha Desai',
       role: 'Business Head',
       company: 'Shreeji Textiles, Surat',
-      avatar: {
-        src: '/images/team/avatar-03.webp',
-        alt: 'Placeholder portrait',
-        width: 400,
-        height: 400,
-      },
+      avatar: images.nehaDesai,
     },
     highlight: { label: 'faster checkout', value: '3.2x' },
   },
