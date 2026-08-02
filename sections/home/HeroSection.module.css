@@ -1,0 +1,344 @@
+/* A column, not a row: the copy/art split and the proof band beneath it are
+   two stacked in-flow children. */
+.hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-block-size: min(100svh, 900px);
+  padding-block: calc(var(--header-h) + var(--space-12)) var(--space-16);
+  overflow: hidden;
+  background-color: var(--color-bg);
+}
+
+/* ---------------------------------------------------------------- ambience
+   The hero used to carry three blurred colour blooms behind the artwork.
+   They were removed: once the technology logos took their own brand colours,
+   the blue bloom sat directly behind them and read as a smudge competing
+   with the marks rather than as ambient light.
+
+   Texture now comes from the faint grid and grain alone, which suits a
+   light-first design. If ambient colour is ever wanted back, restore a single
+   very low-opacity bloom on the COPY side, well away from the cloud. */
+.mesh {
+  display: none;
+}
+
+.inner {
+  position: relative;
+  z-index: var(--z-raised);
+  display: grid;
+  gap: clamp(var(--space-12), 7vw, var(--space-20));
+  inline-size: 100%;
+}
+
+/* ---------------------------------------------------------------- copy */
+.copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  max-inline-size: 640px;
+}
+
+.announcement {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-subtle);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-base) var(--ease-out-quart);
+}
+
+.announcement:hover {
+  background-color: var(--color-hover-wash);
+  box-shadow: inset 0 0 0 1px var(--color-border-accent);
+}
+
+.pulse {
+  position: relative;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  animation: pulse 2.4s var(--ease-out-quart) infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.55; }
+  70%, 100% { transform: scale(3.2); opacity: 0; }
+}
+
+.announcementArrow {
+  opacity: 0.5;
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}
+
+.announcement:hover .announcementArrow {
+  transform: translateX(3px);
+}
+
+.headline {
+  color: var(--color-text);
+  max-inline-size: 14ch;
+}
+
+.lede {
+  max-inline-size: 52ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-2);
+}
+
+/* ---------------------------------------------------------------- proof band
+   Full width under both hero columns. Stacks on small screens; on desktop it
+   becomes an evenly divided row, which reads as a summary line for the whole
+   section rather than a list belonging to the copy. */
+.proofBand {
+  position: relative;
+  z-index: var(--z-raised);
+  margin-block-start: clamp(var(--space-10), 5vw, var(--space-16));
+}
+
+.proof {
+  display: grid;
+  gap: var(--space-4);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.proofItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+}
+
+/* The tick sits in its own soft accent chip, which gives the row a rhythm at
+   full width where a bare tick would look lost. */
+.proofTickWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 30px;
+  block-size: 30px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent-soft);
+  flex-shrink: 0;
+}
+
+.proofTick {
+  color: var(--color-accent-text);
+  flex-shrink: 0;
+}
+
+@media (min-width: 760px) {
+  .proof {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0;
+  }
+
+  /* Hairline dividers between the three, not around them. */
+  .proofItem + .proofItem {
+    padding-inline-start: clamp(var(--space-5), 3vw, var(--space-10));
+    border-inline-start: 1px solid var(--color-hairline);
+  }
+
+  .proofItem:not(:last-child) {
+    padding-inline-end: clamp(var(--space-5), 3vw, var(--space-10));
+  }
+}
+
+/* ---------------------------------------------------------------- art */
+.art {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  aspect-ratio: 4 / 3;
+}
+
+.artMedia {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* The cloud is its own object, not a framed photo — no card, no shadow, and
+   square so the sphere is not clipped at the sides. */
+.artCloud {
+  aspect-ratio: 1;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+  display: grid;
+  place-items: center;
+}
+
+.artCloud .floatCard {
+  inset-block-end: 4%;
+  inset-inline-start: 0;
+}
+
+/* Same specificity as the rule above, so it has to come after to win —
+   otherwise the top card gets dragged back to the bottom-left corner. */
+.artCloud .floatCardTop {
+  inset-block-start: 2%;
+  inset-block-end: auto;
+  inset-inline-start: auto;
+  inset-inline-end: 0;
+}
+
+/* A floating proof card overlapping the art — the detail that stops the hero
+   from being two rectangles side by side. */
+.floatCard {
+  position: absolute;
+  inset-block-end: var(--space-5);
+  inset-inline-start: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  /* Hairline ring only. --shadow-lg is a dark drop shadow, which read as a
+     grey smudge under the card once it sat on the near-white hero rather
+     than on a photograph. The ring plus the frosted backdrop is enough to
+     separate it from the logos behind. */
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* Second card, top-right. Mirrors the bottom-left one so the sphere sits
+   between two anchors instead of leaning on one corner. */
+.floatCardTop {
+  inset-block-start: var(--space-5);
+  inset-block-end: auto;
+  inset-inline-start: auto;
+  inset-inline-end: var(--space-5);
+  text-align: end;
+}
+
+.floatValue {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.floatLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------- cue */
+.cue {
+  position: absolute;
+  inset-block-end: var(--space-8);
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-faint);
+  z-index: var(--z-raised);
+}
+
+.cueLine {
+  inline-size: 1px;
+  block-size: 38px;
+  background: linear-gradient(to bottom, var(--color-border-strong), transparent);
+  position: relative;
+  overflow: hidden;
+}
+
+.cueLine::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  block-size: 12px;
+  background-color: var(--color-accent);
+  animation: cueTravel 2.2s var(--ease-in-out-quint) infinite;
+}
+
+@keyframes cueTravel {
+  0% { transform: translateY(-14px); opacity: 0; }
+  40% { opacity: 1; }
+  100% { transform: translateY(38px); opacity: 0; }
+}
+
+/* ---------------------------------------------------------------- layout */
+@media (min-width: 900px) {
+  /* Even 50/50 split. minmax(0, …) rather than a bare 1fr so a long unbroken
+     word in the copy cannot push the column past half the container. */
+  .inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(var(--space-10), 5vw, var(--space-16));
+  }
+
+  .art {
+    /* Bleeds past the container's right gutter so the image runs to the edge
+       of the viewport — the composition reads as a spread, not a card. */
+    margin-inline-end: calc(var(--gutter) * -1);
+    aspect-ratio: 5 / 4;
+  }
+
+  .cue {
+    display: flex;
+  }
+}
+
+@media (min-width: 1400px) {
+  .art {
+    margin-inline-end: clamp(-160px, calc((100vw - var(--container-max)) / -2), -40px);
+  }
+}
+
+/* Cloud overrides, declared last on purpose.
+   The desktop rules above give .art a right-edge bleed and a 5:4 ratio, which
+   suit a photograph running off the viewport but not a sphere: the bleed
+   would push it partly off-screen and the ratio would squash it. Same
+   specificity as .art, so these have to come after to win. */
+.artCloud {
+  aspect-ratio: 1;
+  margin-inline-end: 0;
+  /* Grid items default to min-width:auto and can push past their own track.
+     Pinning these keeps the cloud inside its half of the 50/50 split no
+     matter how wide its contents get. (Note: the entry animation scales the
+     element to 1.12, so getBoundingClientRect reads ~12% wider than the
+     layout box while that tween runs — that is the transform, not overflow.) */
+  inline-size: 100%;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse::after,
+  .cueLine::after {
+    animation: none;
+  }
+}

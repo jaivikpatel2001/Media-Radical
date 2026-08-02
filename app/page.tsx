@@ -1,65 +1,86 @@
-import Image from "next/image";
+import type { Metadata } from 'next';
 
+import { JsonLd } from '@/components/ui/JsonLd';
+import { HOME_ANCHORS } from '@/constants/routes';
+import { homePage } from '@/data/pages/home';
+import { getFaqs, getServices } from '@/data/selectors';
+import { faqSchema, organizationSchema, websiteSchema } from '@/utils/schema';
+import { HeroSection } from '@/sections/home/HeroSection';
+import { InsightsSection } from '@/sections/home/InsightsSection';
+import { IntroSection } from '@/sections/home/IntroSection';
+import { TrustedBySection } from '@/sections/home/TrustedBySection';
+import { WhyChooseUsSection } from '@/sections/home/WhyChooseUsSection';
+import { CaseStudiesSection } from '@/sections/shared/CaseStudiesSection';
+import { CtaSection } from '@/sections/shared/CtaSection';
+import { FaqSection } from '@/sections/shared/FaqSection';
+import { IndustriesSection } from '@/sections/shared/IndustriesSection';
+import { ProcessSection } from '@/sections/shared/ProcessSection';
+import { ServicesGrid } from '@/sections/shared/ServicesGrid';
+import { StatsSection } from '@/sections/shared/StatsSection';
+import { TechnologiesSection } from '@/sections/shared/TechnologiesSection';
+import { TestimonialsSection } from '@/sections/shared/TestimonialsSection';
+
+export const metadata: Metadata = {
+  title: homePage.seo.title,
+  description: homePage.seo.description,
+  keywords: homePage.seo.keywords,
+};
+
+/**
+ * Home page — pure composition.
+ *
+ * Each section takes its own typed slice of `homePage` and nothing else. No
+ * copy is written in this file, or in any section file.
+ *
+ * Nine of these fourteen sections live in /sections/shared and are already
+ * prop-driven: a future /services or /industries/[slug] page composes the
+ * same components from a different slice, which is what keeps page groups
+ * 2–17 additive rather than a refactor.
+ *
+ * The `subtle` / default / `inverted` alternation is deliberate — it gives
+ * the page a light-to-dark rhythm rather than fourteen identical bands.
+ */
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <>
+      {/* Built from the same records the page renders, so the structured data
+          cannot drift from what a visitor actually sees. */}
+      <JsonLd data={organizationSchema(getServices(homePage.services.serviceSlugs))} />
+      <JsonLd data={websiteSchema()} />
+      <JsonLd data={faqSchema(getFaqs(homePage.faq.faqIds))} />
+
+      <HeroSection content={homePage.hero} />
+      <TrustedBySection content={homePage.trustedBy} />
+      <IntroSection content={homePage.intro} />
+
+      <ServicesGrid
+        content={homePage.services}
+        id={HOME_ANCHORS.services.slice(1)}
+        variant="subtle"
+      />
+      <IndustriesSection
+        content={homePage.industries}
+        id={HOME_ANCHORS.industries.slice(1)}
+      />
+      <WhyChooseUsSection content={homePage.whyChooseUs} />
+
+      <TechnologiesSection content={homePage.technologies} />
+      <ProcessSection
+        content={homePage.process}
+        id={HOME_ANCHORS.process.slice(1)}
+        variant="subtle"
+      />
+      <CaseStudiesSection
+        content={homePage.caseStudies}
+        id={HOME_ANCHORS.work.slice(1)}
+      />
+
+      <TestimonialsSection content={homePage.testimonials} variant="subtle" />
+      <StatsSection content={homePage.stats} />
+      <InsightsSection content={homePage.insights} />
+
+      <FaqSection content={homePage.faq} id={HOME_ANCHORS.faq.slice(1)} />
+      <CtaSection content={homePage.cta} id={HOME_ANCHORS.contact.slice(1)} />
+    </>
   );
 }

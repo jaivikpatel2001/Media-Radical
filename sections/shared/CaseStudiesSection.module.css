@@ -1,0 +1,152 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(var(--space-16), 9vw, var(--space-32));
+}
+
+.item {
+  display: grid;
+  gap: clamp(var(--space-8), 5vw, var(--space-16));
+  align-items: center;
+}
+
+.mediaFrame {
+  position: relative;
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 8 / 5;
+}
+
+.mediaInner {
+  position: absolute;
+  inset-block: -8%;
+  inset-inline: 0;
+}
+
+.media {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.year {
+  position: absolute;
+  inset-block-start: var(--space-5);
+  inset-inline-end: var(--space-5);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.client {
+  color: var(--color-accent-text);
+}
+
+.metaDot {
+  inline-size: 3px;
+  block-size: 3px;
+  border-radius: 50%;
+  background-color: var(--color-text-faint);
+}
+
+.title {
+  font-size: var(--display-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  max-inline-size: 20ch;
+  text-wrap: balance;
+}
+
+.summary {
+  max-inline-size: 54ch;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.tag {
+  padding: 4px var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* ---------------------------------------------------------------- results */
+.results {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.result {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.resultValue {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.resultLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.resultDetail {
+  font-size: var(--text-xs);
+  color: var(--color-text-faint);
+}
+
+.actions {
+  margin-block-start: var(--space-2);
+}
+
+@media (min-width: 900px) {
+  .item {
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+  }
+
+  /* Alternating sides. The image leads on odd rows and follows on even ones,
+     which is what keeps three long rows from reading as a stack. */
+  .item:nth-child(even) .mediaFrame {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .item:nth-child(even) .content {
+    grid-column: 1;
+    grid-row: 1;
+  }
+}

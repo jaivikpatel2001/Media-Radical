@@ -1,0 +1,125 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
+  gap: var(--space-4);
+}
+
+/* The media occupies one cell of the grid rather than sitting beside it, so
+   the section does not repeat the copy-plus-image layout used by the intro. */
+.mediaCell {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  min-block-size: 260px;
+  box-shadow: var(--shadow-md);
+}
+
+.media {
+  position: absolute;
+  inset: 0;
+}
+
+.mediaOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-6);
+  /* Deliberately NOT a theme token. This is a scrim over a photograph, and
+     it has to stay dark in both themes or the white text on top of it
+     becomes unreadable the moment the theme flips. Same reason the colour
+     below is a fixed white rather than --color-text. */
+  background: linear-gradient(
+    to top,
+    rgb(11 11 14 / 0.72) 0%,
+    rgb(11 11 14 / 0.28) 44%,
+    transparent 78%
+  );
+  color: var(--ink-0);
+}
+
+.mediaValue {
+  font-size: var(--display-2xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+}
+
+.mediaLabel {
+  font-size: var(--text-md);
+  opacity: 0.82;
+}
+
+/* ---------------------------------------------------------------- cards */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-subtle);
+  box-shadow: var(--shadow-inset-hairline);
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-block-end: var(--space-1);
+}
+
+.iconTile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
+}
+
+.index {
+  color: var(--color-text-faint);
+}
+
+.cardTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+.cardBody {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 780px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mediaCell {
+    grid-row: span 2;
+    min-block-size: 100%;
+  }
+}

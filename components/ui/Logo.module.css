@@ -1,0 +1,54 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text);
+  border-radius: var(--radius-sm);
+}
+
+.mark {
+  flex-shrink: 0;
+  color: var(--color-accent);
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.logo:hover .mark {
+  transform: rotate(45deg);
+}
+
+/* The radiating arcs animate outward on hover — one small, deliberate
+   interaction on the element people click most. */
+.arc {
+  transform-origin: 12px 12px;
+  transition: opacity var(--dur-slow) var(--ease-out-expo);
+}
+
+.logo:hover .arcOuter {
+  opacity: 1;
+}
+
+.arcOuter {
+  opacity: 0.45;
+}
+
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+}
+
+.name {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.02em;
+}
+
+.suffix {
+  font-weight: var(--weight-normal);
+  color: var(--color-text-muted);
+}
+
+.compact .wordmark {
+  display: none;
+}

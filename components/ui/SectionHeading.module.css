@@ -1,0 +1,79 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  margin-block-end: clamp(var(--space-10), 5vw, var(--space-16));
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* A short accent rule before the eyebrow text — a small, consistent signal
+   that a new section has started. */
+.eyebrow::before {
+  content: '';
+  inline-size: 26px;
+  block-size: 1px;
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heading {
+  color: var(--color-text);
+  max-inline-size: 20ch;
+}
+
+.lede {
+  max-inline-size: 56ch;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block-start: var(--space-2);
+}
+
+/* ---------- align: split ----------
+   Heading on the left, lede and CTA on the right. The editorial layout that
+   stops every section from being a stack of centred text. */
+@media (min-width: 900px) {
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    grid-template-areas:
+      'eyebrow eyebrow'
+      'heading body';
+    column-gap: clamp(var(--space-10), 6vw, var(--space-24));
+    row-gap: var(--space-6);
+    align-items: end;
+  }
+
+  .split .eyebrow { grid-area: eyebrow; }
+  .split .heading { grid-area: heading; max-inline-size: 16ch; }
+  .split .body { grid-area: body; }
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+/* ---------- align: centre ---------- */
+.centred {
+  align-items: center;
+  text-align: center;
+}
+
+.centred .heading,
+.centred .lede {
+  margin-inline: auto;
+}
+
+.centred .lede {
+  max-inline-size: 52ch;
+}

@@ -1,0 +1,200 @@
+/* Replaced a horizontal scroll-snap rail. Two reasons: the rail forced a
+   sideways gesture that desktop visitors rarely discover, and it hid four of
+   five quotes off-screen. This layout shows every quote at once — one
+   featured, the rest in a masonry wall — with no scrolling of its own. */
+
+.featured {
+  position: relative;
+  display: grid;
+  gap: var(--space-6);
+  padding: clamp(var(--space-7, 1.75rem), 5vw, var(--space-12));
+  margin-block-end: var(--space-5);
+  border-radius: var(--radius-2xl);
+  background-color: var(--color-accent-soft);
+  overflow: hidden;
+}
+
+.featuredQuote {
+  font-size: var(--display-2xs);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  text-wrap: pretty;
+  max-inline-size: 30ch;
+}
+
+.featuredAside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  justify-content: space-between;
+}
+
+.bigMetric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.bigMetricValue {
+  font-family: var(--font-display-stack);
+  font-size: clamp(2.5rem, 5vw, 3.75rem);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.04em;
+  line-height: var(--leading-none);
+  color: var(--color-accent-text);
+}
+
+.bigMetricLabel {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+}
+
+/* ---------------------------------------------------------------- masonry
+   CSS columns rather than grid: quotes are different lengths, and columns
+   let each card take its natural height with no gaps to fill. Reading order
+   runs down each column, which is fine for a set of independent quotes. */
+.wall {
+  columns: 1;
+  column-gap: var(--space-5);
+}
+
+.wallItem {
+  break-inside: avoid;
+  margin-block-end: var(--space-5);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-inset-hairline);
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-slow) var(--ease-out-expo),
+    transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  background-color: var(--color-surface-raised);
+  box-shadow: var(--shadow-md);
+}
+
+.mark {
+  color: var(--color-accent);
+  opacity: 0.45;
+  flex-shrink: 0;
+}
+
+.quote {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-text);
+  text-wrap: pretty;
+}
+
+.highlight {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-accent-soft);
+}
+
+.highlightValue {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-accent-text);
+}
+
+.highlightLabel {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------- author */
+.author {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-block-start: auto;
+  padding-block-start: var(--space-5);
+  border-block-start: 1px solid var(--color-hairline);
+}
+
+.featured .author {
+  border-block-start-color: var(--color-border);
+}
+
+.avatar,
+.initials {
+  inline-size: 46px;
+  block-size: 46px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.avatar {
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* Fallback when there is no portrait — initials on the accent wash. Reads as
+   a deliberate choice rather than a missing image. */
+.initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+}
+
+.authorText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-inline-size: 0;
+}
+
+.authorName {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+}
+
+.authorRole {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 700px) {
+  .wall {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1040px) {
+  .featured {
+    grid-template-columns: minmax(0, 1.55fr) minmax(0, 0.45fr);
+    column-gap: clamp(var(--space-8), 5vw, var(--space-16));
+    align-items: center;
+  }
+
+  .wall {
+    columns: 2;
+  }
+}

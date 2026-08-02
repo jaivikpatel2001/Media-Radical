@@ -1,0 +1,254 @@
+/* =============================================================================
+   Preloader
+
+   The concept is the brand mark drawing itself: a solid core, then three arcs
+   sweeping outward in sequence, like a signal being broadcast. It is the
+   logo from components/ui/Logo.tsx at display size, so the first thing a
+   visitor sees is the identity rather than a generic spinner.
+
+   PERFORMANCE NOTES — this is a fixed overlay, so it deliberately does NOT
+   block the real page:
+   • The page renders underneath immediately. Nothing is gated on this.
+   • No images, no JavaScript animation loop, no layout-affecting properties.
+     Everything animated is transform, opacity or stroke-dashoffset.
+   • It is removed from the DOM entirely once it has left, so it can never
+     intercept a pointer event.
+   • Shown on a document load, not on every page view. Moving between pages is
+     a client-side navigation that keeps the root layout mounted, so the
+     component never remounts and the overlay does not come back.
+   ============================================================================= */
+
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-max);
+  display: grid;
+  place-items: center;
+  background-color: var(--color-bg);
+  /* Both are composited, so the exit runs on the GPU. */
+  transition:
+    opacity 420ms var(--ease-out-expo),
+    transform 420ms var(--ease-out-expo);
+}
+
+/* The exit. Scaling up very slightly as it fades reads as the overlay pulling
+   away from the viewer, rather than a light being switched off. */
+.leaving {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* Faint grid, the same texture the hero uses, so the two read as one system. */
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 76px 76px;
+  mask-image: radial-gradient(ellipse 60% 50% at 50% 50%, #000 10%, transparent 100%);
+  pointer-events: none;
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-6);
+  padding-inline: var(--gutter);
+}
+
+/* ---------------------------------------------------------------- mark */
+.markWrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 84px;
+  block-size: 84px;
+}
+
+.mark {
+  inline-size: 84px;
+  block-size: 84px;
+  color: var(--color-accent);
+  overflow: visible;
+}
+
+/* The core lands first, then the arcs radiate from it. */
+.core {
+  transform-origin: 12px 12px;
+  animation: coreIn 520ms var(--ease-out-expo) both;
+}
+
+/* `pathLength="1"` in the markup normalises every arc to a length of 1, so one
+   dash rule draws all three regardless of their real geometry. */
+.arc {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: drawArc 700ms var(--ease-out-expo) both;
+}
+
+.arc1 { animation-delay: 160ms; }
+.arc2 { animation-delay: 300ms; }
+.arc3 { animation-delay: 440ms; }
+
+/* A single ring that expands and fades, echoing the arcs outward. One element,
+   transform and opacity only. */
+.pulse {
+  position: absolute;
+  inline-size: 84px;
+  block-size: 84px;
+  border-radius: 50%;
+  border: 1px solid var(--color-accent);
+  opacity: 0;
+  animation: pulseOut 2600ms var(--ease-out-quart) 900ms infinite;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- wordmark
+
+   The company name, each character rising from behind its own mask.
+
+   This is the same masked-reveal idea the headlines already use (GSAP
+   SplitText with `mask: 'lines'`), brought down to the character. That is the
+   point: the overlay should read as the first sentence of the site, not as a
+   separate widget bolted on the front.
+
+   Deliberately NOT a gooey blur-morph. Animating `filter` per frame forces a
+   full raster of the layer on the main thread, at precisely the moment the
+   browser is parsing and hydrating the real page. Everything here is transform
+   and opacity, so it stays on the compositor and costs no JavaScript. */
+.wordmark {
+  display: flex;
+  font-family: var(--font-display-stack);
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+  /* Preserves the space between the two words, which is rendered as its own
+     character so the stagger stays even across the whole name. */
+  white-space: pre;
+}
+
+.char {
+  display: inline-block;
+  overflow: hidden;
+  /* Breathing room so the mask can never clip an ascender or a descender.
+     Same trick .splitLine uses in motion.css, for the same reason. */
+  padding-block-end: 0.14em;
+  margin-block-end: -0.14em;
+}
+
+.charInner {
+  display: inline-block;
+  /* Starts below the mask edge. 130% rather than 100% so the padding above
+     cannot let a tall character peek through before its turn. */
+  transform: translateY(130%);
+  animation: charRise 620ms var(--ease-out-expo) forwards;
+  animation-delay: calc(320ms + var(--i) * 32ms);
+}
+
+/* ---------------------------------------------------------------- caption */
+.caption {
+  font-family: var(--font-display-stack);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-normal);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-text-secondary);
+  text-align: center;
+  text-wrap: balance;
+  opacity: 0;
+  animation: riseIn 500ms var(--ease-out-expo) 780ms both;
+}
+
+/* ---------------------------------------------------------------- rail */
+.rail {
+  position: relative;
+  inline-size: min(180px, 46vw);
+  block-size: 2px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-hairline);
+  overflow: hidden;
+  opacity: 0;
+  animation: riseIn 500ms var(--ease-out-expo) 860ms both;
+}
+
+/* Indeterminate on purpose. A percentage would be a lie: nothing here is
+   measuring real progress, and a fake number that jumps to 100 is worse than
+   an honest sweep. */
+.railFill {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 45%;
+  border-radius: var(--radius-pill);
+  background: var(--gradient-accent);
+  animation: sweep 1400ms var(--ease-in-out-quint) infinite;
+}
+
+/* ---------------------------------------------------------------- keyframes */
+@keyframes coreIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes drawArc {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes pulseOut {
+  0% { transform: scale(0.75); opacity: 0.45; }
+  70% { opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+
+@keyframes charRise {
+  from { transform: translateY(130%); }
+  to { transform: translateY(0); }
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes sweep {
+  0% { transform: translateX(-110%); }
+  100% { transform: translateX(320%); }
+}
+
+/* ---------------------------------------------------------------- a11y
+   Under reduced motion the mark is simply present: no drawing, no pulse, no
+   sweep. The overlay still appears and still fades, because a hard cut would
+   itself be a jarring motion. */
+@media (prefers-reduced-motion: reduce) {
+  .core,
+  .arc,
+  .charInner,
+  .caption,
+  .rail {
+    animation: none;
+    opacity: 1;
+    /* Critical for .charInner: without this it keeps its 130% start offset and
+       the wordmark sits invisible below its own mask. */
+    transform: none;
+    stroke-dashoffset: 0;
+  }
+
+  .pulse {
+    display: none;
+  }
+
+  .railFill {
+    animation: none;
+    inline-size: 100%;
+    opacity: 0.5;
+  }
+
+  .root {
+    transition-duration: 200ms;
+  }
+}

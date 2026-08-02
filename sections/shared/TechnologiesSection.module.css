@@ -1,0 +1,214 @@
+/* ---------------------------------------------------------------- tabs */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  margin-block-end: var(--space-8);
+  padding: var(--space-1);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.tab {
+  position: relative;
+  flex: 1 1 auto;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  transition: color var(--dur-base) var(--ease-out-quart);
+}
+
+.tab:hover {
+  color: var(--color-text);
+}
+
+.tabActive {
+  color: var(--color-accent-contrast);
+}
+
+/* One element moved between tabs by Motion's shared layout, so the highlight
+   genuinely travels rather than two opacities cross-fading. */
+.tabPill {
+  position: absolute;
+  inset: 0;
+  z-index: var(--z-base);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-accent-strong);
+}
+
+.tabLabel {
+  position: relative;
+  z-index: var(--z-raised);
+}
+
+.count {
+  margin-inline-start: var(--space-2);
+  opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------- panel
+   Every panel is in the DOM; inactive ones carry the `hidden` attribute.
+   `display: flex` would override the browser's default `display: none` for
+   [hidden], so the attribute is honoured explicitly. */
+.panel[hidden] {
+  display: none;
+}
+
+.panelInner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.description {
+  max-inline-size: 58ch;
+  /* Centred to sit with the tile grid below it. The measure cap stays, so the
+     line length is still readable rather than running the full container. */
+  margin-inline: auto;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------- tiles
+
+   Flex wrap rather than grid, specifically so a partial last row centres.
+   CSS grid cannot do this: `1fr` tracks are fixed columns, so four tiles in a
+   row built for seven will always hug the left edge and leave a ragged gap.
+   Fixed basis with no grow keeps every tile the same width across all rows,
+   which stretching would break. */
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.tile {
+  flex: 0 1 148px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-4);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  text-align: center;
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    box-shadow var(--dur-base) var(--ease-out-quart),
+    background-color var(--dur-base) var(--ease-out-quart);
+}
+
+.tile:hover {
+  transform: translateY(-3px);
+  background-color: var(--color-surface-raised);
+  box-shadow: inset 0 0 0 1px var(--color-border-strong), var(--shadow-md);
+}
+
+/* Every logo sits in its own brand colour.
+   Single-path marks inherit it from `color`; the seven full-colour marks
+   carry their own fills and ignore this. --brand-light / --brand-dark are set
+   per tile by TechTile and are already contrast-corrected per theme, so a
+   pure-black mark like Next.js stays visible on the dark canvas. */
+.logo {
+  inline-size: 60px;
+  block-size: 60px;
+  color: var(--brand-light, var(--color-text-muted));
+  /* Both properties are composited and neither participates in layout, so the
+     hover lift cannot shift the grid. 240ms sits in the 200–300ms band where
+     the movement reads as responsive rather than sluggish. */
+  transition:
+    transform 240ms var(--ease-out-quart),
+    filter 240ms var(--ease-out-quart);
+}
+
+:global(:root[data-theme='dark']) .logo {
+  color: var(--brand-dark, var(--color-text-muted));
+}
+
+/* Lift: a small scale plus a drop-shadow tinted to the brand, so the mark
+   reads as floating off the card rather than just growing. drop-shadow
+   follows the glyph's alpha channel — unlike box-shadow, which would draw a
+   rectangle around the SVG box. */
+.tile:hover .logo {
+  transform: scale(1.1);
+  filter:
+    drop-shadow(0 6px 10px rgb(var(--brand-rgb-light, 10 10 20) / 0.42))
+    drop-shadow(0 1px 2px rgb(var(--brand-rgb-light, 10 10 20) / 0.28));
+}
+
+:global(:root[data-theme='dark']) .tile:hover .logo {
+  filter:
+    drop-shadow(0 6px 12px rgb(var(--brand-rgb-dark, 255 255 255) / 0.4))
+    drop-shadow(0 1px 3px rgb(var(--brand-rgb-dark, 255 255 255) / 0.24));
+}
+
+/* The lift is decorative; honour a reduced-motion preference by keeping the
+   glow as the hover cue and dropping the movement. */
+@media (prefers-reduced-motion: reduce) {
+  .tile:hover .logo {
+    transform: none;
+  }
+}
+
+/* Fallback for an id that matches no logo. Nothing hits this today; it exists
+   so a typo degrades visibly instead of leaving an empty tile. */
+.monogram {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 60px;
+  block-size: 60px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-accent-soft);
+  color: var(--color-accent-text);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.02em;
+  transition: transform var(--dur-slow) var(--ease-out-expo);
+}
+
+.tile:hover .monogram {
+  transform: scale(1.08);
+}
+
+.name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  line-height: var(--leading-snug);
+  color: var(--color-text-secondary);
+  transition: color var(--dur-base) var(--ease-out-quart);
+}
+
+.tile:hover .name {
+  color: var(--color-text);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--space-3);
+  /* Space above the rule as well as below it, so the hairline is not crowded
+     against the last row of tiles. */
+  margin-block-start: var(--space-6);
+  padding-block-start: var(--space-8);
+  border-block-start: 1px solid var(--color-hairline);
+  color: var(--color-text-faint);
+  font-size: var(--text-md);
+}
+
+@media (min-width: 620px) {
+  .tile {
+    flex-basis: 164px;
+  }
+}

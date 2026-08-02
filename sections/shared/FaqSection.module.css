@@ -1,0 +1,71 @@
+.inner {
+  display: grid;
+  gap: clamp(var(--space-10), 6vw, var(--space-16));
+  align-items: start;
+}
+
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.eyebrow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.eyebrow::before {
+  content: '';
+  inline-size: 26px;
+  block-size: 1px;
+  background-color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.heading {
+  max-inline-size: 14ch;
+  color: var(--color-text);
+}
+
+/* "Still have questions?" — a panel rather than another paragraph, so the
+   escape hatch is visible without scrolling past every answer. */
+.fallback {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-block-start: var(--space-6);
+  padding: var(--space-6);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-accent-soft);
+}
+
+.fallbackTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.fallbackBody {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+.fallbackAction {
+  margin-block-start: var(--space-2);
+  align-self: flex-start;
+}
+
+@media (min-width: 980px) {
+  .inner {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  }
+
+  .aside {
+    position: sticky;
+    inset-block-start: calc(var(--header-h) + var(--space-12));
+  }
+}

@@ -1,0 +1,30 @@
+.viewport {
+  position: relative;
+  overflow: hidden;
+  /* Fade both ends so items enter and leave rather than being cut off. */
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  inline-size: max-content;
+  gap: var(--gap, var(--space-16));
+  will-change: transform;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--gap, var(--space-16));
+  flex-shrink: 0;
+}
+
+/* Without JavaScript the track simply sits still and shows the first copy —
+   a static logo row, which is a perfectly good outcome. */

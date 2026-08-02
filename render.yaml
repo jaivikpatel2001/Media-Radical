@@ -1,0 +1,60 @@
+# =============================================================================
+# Render Blueprint — Media Radical
+#
+# WHY A WEB SERVICE AND NOT A STATIC SITE
+#
+# Every route on this site prerenders to static HTML, so a Static Site looks
+# like the obvious choice. It is not, for two concrete reasons:
+#
+#   1. app/actions.ts is a Server Action, used by the footer newsletter on
+#      every page. Server Actions need a running server; `output: 'export'`
+#      refuses to build with one present.
+#   2. next/image optimisation is a server route. Under a static export it has
+#      to be turned off, which means shipping the full 1536px source to a phone
+#      instead of a ~25 KB AVIF. That undoes the image work deliberately.
+#
+# Switching to a Static Site is possible, but it costs the newsletter and the
+# responsive images. See the deployment section of README.md before doing it.
+#
+# NOTE: Render only reads this file for Blueprint-managed services. A service
+# created by hand in the dashboard ignores it.
+# =============================================================================
+
+services:
+  - type: web
+    runtime: node
+    name: media-radical
+    plan: free
+    # Set this to the region nearest the audience. The audience is in India.
+    region: singapore
+
+    # npm ci, not npm install: it installs exactly what package-lock.json says
+    # and fails loudly if the two have drifted, which is what CI should do.
+    buildCommand: npm ci && npm run build
+    # `next start` already reads PORT and binds 0.0.0.0, verified locally
+    # against PORT=10000. No wrapper or explicit flags needed.
+    startCommand: npm start
+
+    # The home page is the health check. There is no /api/health because
+    # adding a route purely to be polled is not worth an extra endpoint on a
+    # site this size.
+    healthCheckPath: /
+
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+      # Read by data/site.ts and feeds metadataBase, the canonical link, the
+      # sitemap and every JSON-LD @id.
+      #
+      # sync: false on purpose. It has a hardcoded production fallback, so if
+      # this were left unset a preview deployment would quietly advertise
+      # https://mediaradical.in as its canonical URL and invite Google to
+      # deduplicate the preview away. Set it per environment in the dashboard:
+      #   production  https://mediaradical.in
+      #   preview     https://media-radical.onrender.com
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false
+
+# No databases block: this site has no database. Content is local TypeScript
+# under /data and the whole site prerenders at build time.

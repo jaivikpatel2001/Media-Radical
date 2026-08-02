@@ -1,0 +1,230 @@
+/* ==========================================================================
+   Design tokens — LAYER 2: semantic
+   Components consume ONLY these. If a component references --ink-* or
+   --accent-* directly it will not survive a theme flip — that is the rule the
+   Stage 7 theme audit checks for.
+
+   LIGHT IS THE DEFAULT AND THE DESIGN BASELINE. The site is authored light
+   first; dark is a supported alternative, not a coin flip. There is
+   deliberately no `prefers-color-scheme` auto-switch — a visitor whose OS is
+   dark still gets the light design until they choose otherwise, so the
+   imagery and contrast the site was composed around are what everyone sees
+   first.
+
+   Dark applies through exactly one trigger: :root[data-theme='dark'], set
+   pre-paint by the inline script in app/layout.tsx from the stored choice.
+   ========================================================================== */
+
+/* -------------------------------------------------------------------------
+   LIGHT — the baseline
+   ------------------------------------------------------------------------- */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --color-bg: var(--ink-0);
+  --color-bg-subtle: var(--ink-50);
+  --color-bg-contrast: var(--ink-950);
+  --color-surface: var(--ink-0);
+  --color-surface-subtle: var(--ink-50);
+  --color-surface-raised: var(--ink-0);
+  --color-surface-inset: var(--ink-50);
+  --color-scrim: rgb(11 11 14 / 0.42);
+  --color-glass: rgb(255 255 255 / 0.72);
+  --color-glass-strong: rgb(255 255 255 / 0.92);
+
+  /* Text */
+  /* `faint` was ink-400 (#9797A5), which measures 2.88:1 on white — under the
+     4.5:1 AA floor for small text and even under the 3:1 large-text floor.
+     It carried real content (the client wordmarks, the scroll cue), so it now
+     resolves to ink-500 at 4.8:1. ink-400 is kept in the ramp for non-text
+     use such as icon tints and separators. */
+  --color-text: var(--ink-950);
+  --color-text-secondary: var(--ink-600);
+  --color-text-muted: var(--ink-500);
+  --color-text-faint: var(--ink-500);
+  --color-text-inverse: var(--ink-0);
+  --color-text-on-contrast: var(--ink-50);
+
+  /* Lines */
+  --color-hairline: rgb(11 11 14 / 0.07);
+  --color-border: rgb(11 11 14 / 0.11);
+  --color-border-strong: rgb(11 11 14 / 0.2);
+  --color-border-accent: rgb(0 141 210 / 0.36);
+
+  /* Accent — Media Radical blue.
+     Three roles, because one blue cannot do all three accessibly:
+       --color-accent         brand blue. Icons, borders, decoration. Never
+                              behind white text (3.66:1 would fail AA).
+       --color-accent-strong  fills that DO carry white text — buttons, the
+                              active tab pill, the newsletter submit. 4.83:1.
+       --color-accent-text    links and small text on white. 5.9:1. */
+  --color-accent: var(--accent-500);
+  --color-accent-strong: var(--accent-600);
+  --color-accent-hover: var(--accent-700);
+  --color-accent-text: var(--accent-700);
+  --color-accent-soft: rgb(0 141 210 / 0.09);
+  --color-accent-soft-hover: rgb(0 141 210 / 0.16);
+  --color-accent-contrast: #ffffff;
+  --color-accent-glow: rgb(0 141 210 / 0.28);
+
+  /* Secondary brand colour. Decorative only. */
+  --color-secondary: var(--rose-400);
+  --color-secondary-soft: var(--rose-100);
+
+  /* Interaction */
+  --color-focus: var(--accent-500);
+  --color-selection-bg: rgb(0 141 210 / 0.2);
+  --color-selection-text: var(--ink-950);
+  --color-hover-wash: rgb(11 11 14 / 0.04);
+
+  /* Elevation — light mode uses genuine layered shadows */
+  --shadow-xs: 0 1px 2px rgb(11 11 14 / 0.05);
+  --shadow-sm: 0 1px 2px rgb(11 11 14 / 0.05), 0 2px 6px rgb(11 11 14 / 0.05);
+  --shadow-md: 0 2px 4px rgb(11 11 14 / 0.04), 0 8px 20px rgb(11 11 14 / 0.07);
+  --shadow-lg: 0 4px 8px rgb(11 11 14 / 0.04), 0 18px 44px rgb(11 11 14 / 0.1);
+  --shadow-xl: 0 8px 16px rgb(11 11 14 / 0.05), 0 34px 80px rgb(11 11 14 / 0.14);
+  --shadow-glow: 0 12px 40px rgb(0 141 210 / 0.3);
+  --shadow-inset-hairline: inset 0 0 0 1px rgb(11 11 14 / 0.06);
+
+  /* Ambient art */
+  --mesh-1: rgb(0 141 210 / 0.20);
+  --mesh-2: rgb(95 189 234 / 0.18);
+  --mesh-3: rgb(234 105 129 / 0.16);
+  --mesh-base: transparent;
+  --grid-line: rgb(11 11 14 / 0.055);
+  --grain-opacity: 0.028;
+
+  /* Icon cloud. Canvas cannot resolve var() at fill time, so these are read
+     per frame from the computed style — they must be concrete colours, not
+     references to other custom properties. */
+  /* The surface the hero icon cloud is drawn on. Icons render in their own
+     brand colours, and a canvas cannot resolve var() at fill time, so this
+     must be a concrete rgb triple — it is what the contrast guard measures
+     each brand colour against. */
+  --cloud-bg: 255 255 255;
+
+  --gradient-accent: linear-gradient(
+    100deg,
+    var(--accent-500) 0%,
+    var(--accent-300) 45%,
+    var(--rose-400) 100%
+  );
+  --gradient-hairline: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border-strong) 22%,
+    var(--color-border-strong) 78%,
+    transparent
+  );
+}
+
+/* -------------------------------------------------------------------------
+   DARK — opt-in only
+   ------------------------------------------------------------------------- */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: var(--ink-950);
+  --color-bg-subtle: var(--ink-900);
+  --color-bg-contrast: var(--ink-0);
+  --color-surface: rgb(255 255 255 / 0.035);
+  --color-surface-subtle: rgb(255 255 255 / 0.02);
+  --color-surface-raised: rgb(255 255 255 / 0.07);
+  --color-surface-inset: rgb(0 0 0 / 0.35);
+  --color-scrim: rgb(0 0 0 / 0.66);
+  --color-glass: rgb(11 11 14 / 0.66);
+  --color-glass-strong: rgb(11 11 14 / 0.9);
+
+  --color-text: var(--ink-25);
+  --color-text-secondary: var(--ink-300);
+  --color-text-muted: var(--ink-400);
+  /* ink-500 is a mid grey — 3.69:1 on this ground. Light surfaces need a
+     light faint tone, not the same one the light theme uses. */
+  --color-text-faint: var(--ink-300);
+  --color-text-inverse: var(--ink-950);
+  --color-text-on-contrast: var(--ink-900);
+
+  --color-hairline: rgb(255 255 255 / 0.06);
+  --color-border: rgb(255 255 255 / 0.1);
+  --color-border-strong: rgb(255 255 255 / 0.2);
+  --color-border-accent: rgb(38 163 221 / 0.45);
+
+  --color-accent: var(--accent-400);
+  /* Light fill + dark label. White on the mid accent measures 3.66:1; this
+     way round is 9.32:1. */
+  --color-accent-strong: var(--accent-300);
+  --color-accent-hover: var(--accent-300);
+  --color-accent-text: var(--accent-300);
+  --color-accent-soft: rgb(38 163 221 / 0.16);
+  --color-accent-soft-hover: rgb(38 163 221 / 0.24);
+  --color-accent-contrast: var(--ink-950);
+  --color-accent-glow: rgb(38 163 221 / 0.4);
+
+  --color-secondary: var(--rose-300);
+  --color-secondary-soft: rgb(234 105 129 / 0.16);
+
+  --color-focus: var(--accent-300);
+  --color-selection-bg: rgb(38 163 221 / 0.32);
+  --color-selection-text: var(--ink-0);
+  --color-hover-wash: rgb(255 255 255 / 0.05);
+
+  /* Dark mode: shadows read as mud. Depth comes from hairline rings + glow. */
+  --shadow-xs: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  --shadow-sm: inset 0 0 0 1px rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.5);
+  --shadow-md: inset 0 0 0 1px rgb(255 255 255 / 0.07), 0 8px 24px rgb(0 0 0 / 0.5);
+  --shadow-lg: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 20px 52px rgb(0 0 0 / 0.6);
+  --shadow-xl: inset 0 0 0 1px rgb(255 255 255 / 0.1), 0 36px 90px rgb(0 0 0 / 0.7);
+  --shadow-glow: 0 12px 48px rgb(38 163 221 / 0.4);
+  --shadow-inset-hairline: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+
+  --mesh-1: rgb(0 141 210 / 0.38);
+  --mesh-2: rgb(95 189 234 / 0.24);
+  --mesh-3: rgb(234 105 129 / 0.26);
+  --mesh-base: transparent;
+  --grid-line: rgb(255 255 255 / 0.05);
+  --grain-opacity: 0.05;
+
+  --cloud-bg: 11 11 14;
+
+  --gradient-accent: linear-gradient(
+    100deg,
+    var(--accent-500) 0%,
+    var(--accent-300) 45%,
+    var(--rose-400) 100%
+  );
+}
+
+/* Inverted island — a dark block inside the light page. Used by the closing
+   CTA and the footer to bookend the page the way an Apple product page does.
+   It stays dark in both themes, which is what makes it read as a deliberate
+   surface rather than an inverted accident. */
+.invertedSurface {
+  color-scheme: dark;
+  --color-bg: var(--ink-950);
+  --color-bg-subtle: var(--ink-900);
+  --color-surface: rgb(255 255 255 / 0.05);
+  --color-surface-raised: rgb(255 255 255 / 0.09);
+  --color-text: var(--ink-25);
+  --color-text-secondary: var(--ink-300);
+  --color-text-muted: var(--ink-400);
+  --color-text-faint: var(--ink-300);
+  --color-hairline: rgb(255 255 255 / 0.07);
+  --color-border: rgb(255 255 255 / 0.12);
+  --color-border-strong: rgb(255 255 255 / 0.22);
+  --color-accent: var(--accent-400);
+  --color-accent-hover: var(--accent-300);
+  --color-accent-text: var(--accent-300);
+  --color-accent-soft: rgb(38 163 221 / 0.18);
+  /* Buttons on this dark island use a light fill with a dark label. */
+  --color-accent-strong: var(--accent-300);
+  --color-accent-contrast: var(--ink-950);
+  --color-focus: var(--accent-300);
+  --color-hover-wash: rgb(255 255 255 / 0.06);
+  --grid-line: rgb(255 255 255 / 0.06);
+  --mesh-1: rgb(0 141 210 / 0.4);
+  --mesh-2: rgb(95 189 234 / 0.24);
+  --mesh-3: rgb(234 105 129 / 0.28);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}

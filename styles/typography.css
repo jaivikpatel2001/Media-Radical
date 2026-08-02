@@ -1,0 +1,259 @@
+/* ==========================================================================
+   Typography
+
+   Three families, each with one job:
+     --font-display  Poppins        — headings, buttons, nav, card titles
+     --font-sans     Inter          — body copy and anything long
+     --font-mono     IBM Plex Mono  — eyebrows, labels, numerals, units
+
+   Poppins is a geometric display face. It is deliberately kept off body
+   copy: the perfectly circular bowls and short descenders that make it
+   striking at 60px are the same things that slow reading at 16px across a
+   full paragraph. Headings get the personality, body gets the legibility.
+
+   The scale is fluid: every display step interpolates with the viewport, so
+   there is no breakpoint at which the page reads as "the small version".
+   Negative tracking on the display steps matters more with Poppins than with
+   a neutral grotesque — geometric faces set loose by default, and large type
+   must be set tighter.
+   ========================================================================== */
+
+:root {
+  --font-display-stack: var(--font-display), 'Segoe UI', system-ui, sans-serif;
+  --font-sans-stack: var(--font-sans), -apple-system, BlinkMacSystemFont,
+    'Segoe UI', system-ui, sans-serif;
+  --font-mono-stack: var(--font-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
+
+  /* ---------- Body steps ---------- */
+  --text-2xs: 0.6875rem;
+  --text-xs: 0.75rem;
+  --text-sm: 0.8125rem;
+  --text-md: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.0625rem, 0.2vw + 1rem, 1.1875rem);
+  --text-xl: clamp(1.1875rem, 0.5vw + 1.05rem, 1.375rem);
+  --text-2xl: clamp(1.375rem, 0.9vw + 1.15rem, 1.75rem);
+
+  /* ---------- Display steps ---------- */
+  --display-2xs: clamp(1.5rem, 0.9vw + 1.28rem, 1.9375rem);
+  --display-xs: clamp(1.75rem, 1.6vw + 1.36rem, 2.5rem);
+  --display-sm: clamp(2.125rem, 2.6vw + 1.5rem, 3.25rem);
+  --display-md: clamp(2.5rem, 4.2vw + 1.5rem, 4.25rem);
+  /* Hero headline only. Pulled down from a 92px ceiling: with the hero split
+     50/50 the copy column is narrower, and the old size wrapped to four lines
+     and crowded the CTAs. 40px → 68px. */
+  --display-lg: clamp(2.5rem, 4.2vw + 1.15rem, 4.25rem);
+  --display-xl: clamp(3.125rem, 8vw + 1.2rem, 7.25rem);
+
+  /* ---------- Weights ---------- */
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---------- Leading ---------- */
+  /* `--leading-none` is for numerals only (counters, the ghost step index).
+     Digits have no descenders, so a line box equal to the font size is safe
+     there and nowhere else. */
+  --leading-none: 1;
+  /* Was 0.98. Anything below 1 makes the line box SHORTER than the em box, so
+     descenders (g, y, p, j, q) fall outside it and get clipped — visibly so
+     inside the overflow-hidden masks the headline reveal creates. 1.08 still
+     reads as tight editorial display type but contains the whole glyph. */
+  --leading-display: 1.08;
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.62;
+  --leading-loose: 1.75;
+
+  /* ---------- Tracking ----------
+     Poppins runs wide, so the display steps are pulled tighter than they
+     would be for a neutral grotesque. Body tracking stays near zero — Inter
+     is already spaced correctly for reading. */
+  --tracking-display: -0.032em;
+  --tracking-tight: -0.02em;
+  --tracking-snug: -0.008em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-widest: 0.14em;
+
+  /* ---------- Measure ---------- */
+  --measure-narrow: 34ch;
+  --measure: 62ch;
+  --measure-wide: 78ch;
+}
+
+html {
+  font-family: var(--font-sans-stack);
+  font-size: 100%;
+}
+
+body {
+  font-size: var(--text-base);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-relaxed);
+  letter-spacing: var(--tracking-snug);
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  font-variant-ligatures: common-ligatures contextual;
+}
+
+/* --------------------------------------------------------------------------
+   Display roles
+   -------------------------------------------------------------------------- */
+.display-xl,
+.display-lg,
+.display-md,
+.display-sm,
+.display-xs,
+.display-2xs {
+  font-family: var(--font-display-stack);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+/* Everything else that should carry the display face: headings inside cards,
+   buttons, nav items, stat figures. Applied here rather than in a dozen CSS
+   modules so the display/body split has one owner. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+.display-face {
+  font-family: var(--font-display-stack);
+}
+
+.display-xl { font-size: var(--display-xl); }
+.display-lg { font-size: var(--display-lg); }
+.display-md { font-size: var(--display-md); }
+
+.display-sm {
+  font-size: var(--display-sm);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.display-xs {
+  font-size: var(--display-xs);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.display-2xs {
+  font-size: var(--display-2xs);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+}
+
+/* --------------------------------------------------------------------------
+   Body roles
+   -------------------------------------------------------------------------- */
+.body-xl {
+  font-size: var(--text-2xl);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text-secondary);
+}
+
+.body-lg {
+  font-size: var(--text-xl);
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-text-secondary);
+}
+
+.body-md {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+}
+
+.body-sm {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   Accent roles
+   -------------------------------------------------------------------------- */
+
+/* Monospaced, letterspaced, uppercase — the section eyebrow. */
+.eyebrow {
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.label {
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-2xs);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--color-text-faint);
+}
+
+/* The emphasised phrase inside a heading.
+   Previously an italic serif. With a geometric face like Poppins that
+   contrast reads as a mismatch rather than a flourish, so the emphasis is
+   now carried by colour and weight within the same family — the treatment
+   Linear and Stripe use, and it survives a theme flip because the gradient
+   is built from semantic tokens. */
+.emphasis {
+  font-style: normal;
+  font-weight: var(--weight-semibold);
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  /* `background-clip: text` paints the gradient only within the element's
+     padding box. A descender (the y in "your", the g in "digital") reaches
+     roughly 0.2em below the baseline, so with too little padding the tail of
+     the glyph falls outside the painted area and simply disappears. The
+     equal negative margin keeps the extra padding out of the layout. */
+  padding-block-end: 0.22em;
+  margin-block-end: -0.22em;
+}
+
+/* Inverted surfaces already sit on the accent glow, so a gradient fill there
+   competes with the background. Solid accent reads cleaner. */
+.invertedSurface .emphasis {
+  background: none;
+  -webkit-background-clip: border-box;
+  background-clip: border-box;
+  color: var(--color-accent-text);
+}
+
+/* Numerals that must not jitter while a counter animates. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
+/* Inline link inside prose. */
+.prose a {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--color-border-accent);
+  transition: text-decoration-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.prose a:hover {
+  text-decoration-color: currentColor;
+}
+
+.prose p + p {
+  margin-block-start: var(--space-5);
+}

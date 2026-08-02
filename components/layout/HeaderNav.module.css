@@ -1,0 +1,185 @@
+/* Desktop only. Below 1080px the mobile drawer takes over — the breakpoint is
+   set by the six top-level items plus the actions cluster, not by a device. */
+.nav {
+  display: none;
+}
+
+@media (min-width: 1080px) {
+  .nav {
+    display: block;
+  }
+}
+
+.list {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.item {
+  position: relative;
+}
+
+/* Some triggers are <button> (dropdowns) and some are <a> (plain links).
+   Setting the family here keeps them identical. */
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  block-size: 38px;
+  padding-inline: var(--space-4);
+  border-radius: var(--radius-pill);
+  font-family: var(--font-display-stack);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--tracking-snug);
+  color: var(--color-text-secondary);
+  transition:
+    color var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.trigger:hover,
+.triggerOpen {
+  color: var(--color-text);
+  background-color: var(--color-hover-wash);
+}
+
+.chevron {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+  opacity: 0.6;
+}
+
+.triggerOpen .chevron {
+  transform: rotate(180deg);
+}
+
+/* ---------------------------------------------------------------- panel */
+.panel {
+  position: absolute;
+  inset-block-start: calc(100% + var(--space-3));
+  inline-size: max-content;
+  max-inline-size: min(780px, calc(100vw - var(--gutter) * 2));
+  padding: var(--space-3);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-lg)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(180%);
+  box-shadow: var(--shadow-xl), inset 0 0 0 1px var(--color-border);
+  z-index: var(--z-dropdown);
+}
+
+.panelStart { inset-inline-start: 0; }
+.panelEnd { inset-inline-end: 0; }
+
+.panelInner {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(var(--column-count, 1), minmax(220px, 1fr));
+  gap: var(--space-1) var(--space-3);
+}
+
+.columnTitle {
+  padding: var(--space-3) var(--space-4) var(--space-2);
+}
+
+.link {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.link:hover {
+  background-color: var(--color-hover-wash);
+}
+
+.linkIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 32px;
+  block-size: 32px;
+  border-radius: var(--radius-sm);
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
+  transition: background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.link:hover .linkIcon {
+  background-color: var(--color-accent-soft-hover);
+}
+
+.linkText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-inline-size: 0;
+}
+
+.linkLabel {
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-text);
+  letter-spacing: var(--tracking-snug);
+}
+
+.linkDescription {
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-muted);
+}
+
+/* ---------------------------------------------------------------- feature */
+.feature {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-accent-soft);
+  transition: background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.feature:hover {
+  background-color: var(--color-accent-soft-hover);
+}
+
+.featureTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
+}
+
+.featureDescription {
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-secondary);
+  max-inline-size: 46ch;
+}
+
+.featureCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-block-start: var(--space-2);
+  font-size: var(--text-md);
+  font-weight: var(--weight-medium);
+  color: var(--color-accent-text);
+}
+
+.feature:hover .featureArrow {
+  transform: translateX(4px);
+}
+
+.featureArrow {
+  transition: transform var(--dur-base) var(--ease-out-expo);
+}

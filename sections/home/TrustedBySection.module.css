@@ -1,0 +1,46 @@
+.section {
+  padding-block: var(--space-12) var(--space-16);
+  background-color: var(--color-bg);
+}
+
+.heading {
+  margin-block-end: var(--space-10);
+  text-align: center;
+  color: var(--color-text-muted);
+}
+
+.marquee {
+  --gap: clamp(var(--space-10), 6vw, var(--space-20));
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  /* Greyed until hover, which is what makes a logo strip read as restrained
+     rather than as a wall of competing brand colours. */
+  color: var(--color-text-faint);
+  transition: color var(--dur-base) var(--ease-out-quart);
+}
+
+.logo:hover {
+  color: var(--color-text);
+}
+
+.wordmark {
+  font-size: clamp(var(--text-lg), 2vw, var(--text-2xl));
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.16em;
+  white-space: nowrap;
+}
+
+.descriptor {
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  opacity: 0.62;
+  white-space: nowrap;
+}

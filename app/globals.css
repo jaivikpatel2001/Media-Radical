@@ -1,26 +1,76 @@
-@import "tailwindcss";
+/* ==========================================================================
+   Global entry point — the only stylesheet imported by the root layout.
+   Everything else is either one of the layers below or a co-located
+   *.module.css next to its component.
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+   Import order is the cascade order. Do not reorder casually.
+   ========================================================================== */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@import '../styles/tokens.css';
+@import '../styles/themes.css';
+@import '../styles/reset.css';
+@import '../styles/typography.css';
+@import '../styles/utilities.css';
+@import '../styles/motion.css';
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* --------------------------------------------------------------------------
+   Base document
+   -------------------------------------------------------------------------- */
+html {
+  background-color: var(--color-bg);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: clip;
+  transition:
+    background-color var(--dur-base) var(--ease-out-quart),
+    color var(--dur-base) var(--ease-out-quart);
+}
+
+/* Lenis drives scrolling from a rAF loop. These are the two rules its
+   transform-based mode requires; without them the page double-scrolls. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* While the preloader is up the page must not scroll behind it. Set by the
+   inline boot script before first paint and removed when the overlay leaves,
+   so it is never possible to scroll a page you cannot see. */
+html.preloading,
+html.preloading body {
+  overflow: hidden;
+}
+
+/* The header is fixed; anchor targets need to clear it. */
+:target {
+  scroll-margin-block-start: calc(var(--header-h) + var(--space-8));
+}
+
+main {
+  display: block;
+  isolation: isolate;
+}
+
+/* Fallback for browsers that ignore text-wrap: balance on long headings. */
+@supports not (text-wrap: balance) {
+  h1,
+  h2,
+  h3 {
+    max-width: var(--measure-wide);
+  }
 }

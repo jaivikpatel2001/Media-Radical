@@ -1,0 +1,123 @@
+/* ==========================================================================
+   Motion — declarative initial states + the reduced-motion backstop
+
+   Why the initial states live in CSS and not in a gsap.set() call:
+   if JavaScript hid these elements, the browser would paint them visible for
+   one frame first and the page would flash. Gating on .js-motion means a
+   no-JS visitor — and a reduced-motion visitor — is served fully painted,
+   correctly positioned content that never depends on a script running.
+
+   The .js-motion class is added to <html> by the inline head script in
+   app/layout.tsx, and only when JS is available AND the user has not asked
+   for reduced motion.
+   ========================================================================== */
+
+.js-motion [data-anim] {
+  will-change: transform, opacity;
+}
+
+.js-motion [data-anim='fade'] {
+  opacity: 0;
+}
+
+.js-motion [data-anim='fade-up'] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+}
+
+.js-motion [data-anim='fade-up-sm'] {
+  opacity: 0;
+  transform: translate3d(0, 14px, 0);
+}
+
+.js-motion [data-anim='fade-down'] {
+  opacity: 0;
+  transform: translate3d(0, -20px, 0);
+}
+
+.js-motion [data-anim='fade-left'] {
+  opacity: 0;
+  transform: translate3d(28px, 0, 0);
+}
+
+.js-motion [data-anim='fade-right'] {
+  opacity: 0;
+  transform: translate3d(-28px, 0, 0);
+}
+
+.js-motion [data-anim='scale-in'] {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+/* Media reveal: the image sits still while a mask lifts off it. */
+.js-motion [data-anim='clip-up'] {
+  clip-path: inset(100% 0 0 0);
+}
+
+.js-motion [data-anim='clip-right'] {
+  clip-path: inset(0 100% 0 0);
+}
+
+/* Each child of a [data-anim-stagger] container animates in sequence. The
+   scene reads this attribute; the CSS only needs to hide them. */
+.js-motion [data-anim-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+}
+
+/* Headline line-reveal.
+
+   The whole block is hidden rather than the individual lines: SplitText only
+   exists after hydration, so there are no line elements to target at first
+   paint. Once split, the scene raises the container to opacity 1 while the
+   lines still sit translated outside their masks — so nothing flashes — and
+   then slides them up. GSAP's `mask: 'lines'` builds the clipping wrappers,
+   which is why there is no hand-rolled .line/.lineInner scaffolding here. */
+.js-motion [data-anim='lines'] {
+  opacity: 0;
+}
+
+/* SplitText's `mask: 'lines'` wraps every line in an overflow-hidden box so
+   the line can slide up out of view. That box is sized to the line, which
+   means any glyph reaching past the line box — descenders on g, y, p, j, q,
+   and the tail of a gradient-filled character — is clipped.
+ *
+ * The padding gives the mask that room back, and the equal negative margin
+ * stops it changing the spacing between lines. Applied to the class
+ * `linesClass` sets in animations/presets/splitLines.ts, so it only affects
+ * split headings. */
+.splitLine {
+  padding-block-end: 0.18em;
+  margin-block-end: -0.18em;
+}
+
+/* ==========================================================================
+   Reduced motion
+
+   Layer 4 of 4. The other three are:
+     1. gsap.matchMedia() branches that snap timelines to their end state
+     2. <MotionConfig reducedMotion="user"> for every Motion component
+     3. Lenis is never instantiated
+   This block catches anything purely declarative that the three above miss,
+   and — critically — restores the initial states above so nothing is left
+   invisible if a script fails midway.
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  [data-anim],
+  [data-anim-stagger] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    will-change: auto !important;
+  }
+}

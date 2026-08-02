@@ -1,0 +1,145 @@
+.header {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--z-header);
+  transition:
+    transform var(--dur-slow) var(--ease-out-expo),
+    background-color var(--dur-base) var(--ease-out-quart),
+    box-shadow var(--dur-base) var(--ease-out-quart),
+    backdrop-filter var(--dur-base) var(--ease-out-quart);
+}
+
+/* At the top of the page the header sits directly on the hero with no
+   surface of its own. */
+.atTop {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.scrolled {
+  background-color: var(--color-glass);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  box-shadow: inset 0 -1px 0 var(--color-hairline);
+}
+
+/* Reading downward reclaims the viewport; the header returns the instant the
+   visitor scrolls back up. */
+.hidden {
+  transform: translateY(-100%);
+}
+
+/* A menu must never be dismissed by the header sliding away underneath it. */
+.menuOpen {
+  transform: none;
+  background-color: var(--color-glass-strong);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  block-size: var(--header-h);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-inline-start: auto;
+}
+
+.phone {
+  display: none;
+  align-items: center;
+  gap: var(--space-2);
+  padding-inline: var(--space-3);
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  border-radius: var(--radius-pill);
+  block-size: 38px;
+  transition: color var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.phone:hover {
+  color: var(--color-text);
+  background-color: var(--color-hover-wash);
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 38px;
+  block-size: 38px;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-secondary);
+  transition:
+    color var(--dur-fast) var(--ease-out-quart),
+    background-color var(--dur-fast) var(--ease-out-quart);
+}
+
+.iconButton:hover {
+  color: var(--color-text);
+  background-color: var(--color-hover-wash);
+}
+
+.ctaDesktop {
+  display: none;
+}
+
+.burger {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  inline-size: 38px;
+  block-size: 38px;
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+}
+
+.burger:hover {
+  background-color: var(--color-hover-wash);
+}
+
+/* Three bars pinned to the centre, offset by transform only — so the open
+   state is a pure rotation about the same origin and the cross lands square. */
+.burgerBar {
+  position: absolute;
+  inset-inline-start: 11px;
+  inset-block-start: calc(50% - 1px);
+  inline-size: 16px;
+  block-size: 1.5px;
+  border-radius: 2px;
+  background-color: currentColor;
+  transition:
+    transform var(--dur-base) var(--ease-out-expo),
+    opacity var(--dur-fast) var(--ease-out-quart);
+}
+
+.burgerBar:first-child { transform: translateY(-5px); }
+.burgerBar:last-child  { transform: translateY(5px); }
+
+.burgerOpen .burgerBar:first-child { transform: translateY(0) rotate(45deg); }
+.burgerOpen .burgerBar:nth-child(2) { opacity: 0; }
+.burgerOpen .burgerBar:last-child { transform: translateY(0) rotate(-45deg); }
+
+@media (min-width: 1080px) {
+  .phone { display: inline-flex; }
+  .ctaDesktop { display: inline-flex; }
+  .burger { display: none; }
+}
+
+/* Search is a Phase 2+ feature; the trigger is present but announces itself
+   as unavailable rather than silently doing nothing. */
+.searchButton {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .searchButton { display: inline-flex; }
+}
