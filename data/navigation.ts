@@ -172,6 +172,17 @@ export const footer: FooterConfig = {
     placeholder: 'you@company.com',
     submitLabel: 'Subscribe',
     consentNote: 'Unsubscribe any time. We never share your email.',
+    messages: {
+      empty: 'Enter an email address.',
+      invalid: 'That does not look like an email address.',
+      sending: 'Sending',
+      success: 'Thanks. Check your inbox to confirm.',
+      failure: 'That did not go through. Please try again in a moment.',
+      // Deliberately does not say "thanks, you are subscribed" when there is
+      // nowhere for the address to go. Sending someone away believing they
+      // signed up is worse than telling them to email instead.
+      notConfigured: `Signup is not connected yet. Email ${site.contact.email} and we will add you.`,
+    },
   },
   socials: [...site.socials],
   legal: [

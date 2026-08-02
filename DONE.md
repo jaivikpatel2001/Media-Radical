@@ -385,3 +385,39 @@ lockfile, the build is clean, `/` returns 200, `/_next/static` sends
 **Not done, because it is the user's call:** nothing has been committed or
 pushed. The working tree has 5 changed files. The current branch is `home-page`,
 not `main`, which is the branch Render will ask to deploy from.
+
+---
+
+### Converted to a static export for Render Static Site
+
+Reversal of the decision recorded two entries above. The Web Service reasoning
+still stands on the merits, but the deployment target is the user's call and
+they asked for a Static Site after the trade-offs were laid out twice. Recorded
+here rather than quietly rewritten, per the rules at the top of this file.
+
+**What the first attempt proved.** A Static Site was created with Publish
+Directory `.next`. The build succeeded and Render reported "Your site is live",
+but the URL returned `Not Found`. `.next` is a server bundle: there is no
+`index.html` at its root, the HTML lives at `.next/server/app/index.html`, and
+the rest is manifests and cache. Render reports success because it uploaded a
+directory, not because that directory is servable.
+
+| Time | What was completed |
+|---|---|
+| 12:40 | Read the unsupported list from `node_modules/next/dist/docs/01-app/02-guides/static-exports.md` rather than guessing. Three things this project used are on it: Server Actions, `headers()`, and Image Optimization with the default loader. |
+| 12:45 | **Deleted `app/actions.ts` and rewrote the footer newsletter to submit from the browser.** This is a genuine regression: the Server Action version worked with JavaScript disabled, and this does not. It posts to `NEXT_PUBLIC_NEWSLETTER_ENDPOINT`. Unset is a supported state that says signup is not connected and points at the contact address, because thanking somebody for a subscription that went nowhere is worse than telling them to email. Result strings went into `data/navigation.ts`, since no literal copy lives in a `.tsx`. |
+| 12:50 | Set `output: 'export'` and `images.unoptimized: true`. Every device now receives the original file: a phone gets the full 1536px WebP instead of a 25 KB AVIF. Survivable only because `public/images` was already sized to real display slots. |
+| 12:52 | Moved the response headers out of `next.config.ts` into the `headers:` block of `render.yaml`. Under export they are not an error, they are **silently ignored**, which is worse. |
+| 12:55 | **Build failed three times in a row, each on a different route handler.** `robots.txt`, then `sitemap.xml`, then `opengraph-image` each need `export const dynamic = 'force-static'`, because a route handler is dynamic by default and there is no server to run it on. Added to all three. |
+| 13:00 | Rewrote `render.yaml` as `runtime: static` with `staticPublishPath: out`. Deliberately no catch-all rewrite: that is a single-page-app pattern, and this export pre-renders a real `.html` per route, so a catch-all would mask genuine 404s and serve the home page instead. |
+
+**Verified by serving `out/` locally the way Render will**, not by reading the
+build log: `/` returns 200 with the real `h1`, 11 `img` tags and 22 service
+links; `/robots.txt`, `/sitemap.xml`, `/opengraph-image` (a real 1200x630 PNG)
+and `/404.html` all return 200; an unknown path returns 404 rather than the home
+page. Confirmed the markup now carries direct `/images/...` paths with no
+`srcset` and no `/_next/image` URLs, which is the optimisation loss made visible.
+
+**Standing consequence:** adding any dynamic feature later means moving back to
+a Web Service. `output: 'export'` fails at build, not at review, so check the
+unsupported list first.

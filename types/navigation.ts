@@ -72,6 +72,21 @@ export interface FooterConfig {
     placeholder: string;
     submitLabel: string;
     consentNote: string;
+    /**
+     * Result messages. The form validates and submits in the browser, because
+     * the site is a static export and static exports cannot run Server
+     * Actions. These strings live here rather than in the component for the
+     * same reason every other string does.
+     */
+    messages: {
+      empty: string;
+      invalid: string;
+      sending: string;
+      success: string;
+      failure: string;
+      /** Shown when no submit endpoint is configured. Never claims success. */
+      notConfigured: string;
+    };
   };
   socials: SocialLink[];
   legal: NavLink[];

@@ -10,11 +10,38 @@ import type { NextConfig } from 'next';
  *  - `images.minimumCacheTTL` now defaults to 4 hours, which suits this site.
  */
 const nextConfig: NextConfig = {
+  /**
+   * Static export: `next build` emits a folder of plain files in `out/` and
+   * there is no Node server at runtime. Deployed as a Render Static Site.
+   *
+   * WHAT THIS COSTS, so nobody rediscovers it the hard way:
+   *
+   *  - Server Actions are unsupported. The footer newsletter used to post to
+   *    one and worked without JavaScript; it now validates and submits in the
+   *    browser instead.
+   *  - `headers()` is unsupported. Cache-Control and the security headers
+   *    moved to the `headers:` block in render.yaml.
+   *  - Image Optimization with the default loader is unsupported, hence
+   *    `unoptimized` below.
+   *
+   * The full list is in node_modules/next/dist/docs/01-app/02-guides/
+   * static-exports.md under "Unsupported Features". Check it before adding
+   * anything dynamic, because these fail at build, not at review.
+   */
+  output: 'export',
+
   images: {
-    // AVIF first: roughly 20–30% smaller than WebP for the photographic
-    // covers, with WebP as the fallback for older Safari.
-    formats: ['image/avif', 'image/webp'],
-    qualities: [70, 80, 90],
+    /**
+     * Required by `output: 'export'`: the optimizer is a server route, and
+     * there is no server.
+     *
+     * The consequence is that every device now receives the original file,
+     * so a phone gets the full 1536px WebP rather than a ~25 KB AVIF. That is
+     * why the files in public/images were sized to their real display slots
+     * rather than left at source resolution; it is the only thing keeping
+     * this reasonable. Re-check those sizes before adding a new image.
+     */
+    unoptimized: true,
   },
 
   // Trailing slashes off keeps canonical URLs unambiguous for SEO.
@@ -22,32 +49,9 @@ const nextConfig: NextConfig = {
 
   poweredByHeader: false,
 
-  /**
-   * Response headers. These live here rather than in the host's dashboard so
-   * they are versioned with the code and survive a rebuild of the service.
-   *
-   * Next already sends an immutable, one-year cache for /_next/static, whose
-   * filenames are content-hashed. Files in public/ are not hashed, so they get
-   * a bounded max-age instead: long enough to help repeat visits, short enough
-   * that replacing an image is visible within a month.
-   */
-  async headers() {
-    return [
-      {
-        source: '/images/:path*',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=2592000' },
-        ],
-      },
-      {
-        source: '/:path*',
-        headers: [
-          { key: 'X-Content-Type-Options', value: 'nosniff' },
-          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-        ],
-      },
-    ];
-  },
+  // No headers() here. It is unsupported under `output: 'export'` and would
+  // be silently ignored, which is worse than absent. The rules live in the
+  // `headers:` block of render.yaml instead.
 
   // OFF for Phase 1, and it must be explicit. Typed routes validate every
   // <Link href> against the routes that actually exist — and the header and

@@ -146,45 +146,55 @@ Then set `NEXT_PUBLIC_SITE_URL` in the dashboard when prompted.
 
 | | |
 |---|---|
-| Service type | **Web Service** (not Static Site, see below) |
+| Service type | **Static Site** |
 | Build | `npm ci && npm run build` |
-| Start | `npm start` |
-| Health check | `/` |
+| Publish directory | `out` |
 | Node | 22, pinned three ways: `.nvmrc`, `engines`, and `NODE_VERSION` |
 
-### Why not a Static Site
+### What static export costs
 
-Every route prerenders to static HTML, so a Static Site looks like the obvious
-choice. It would break two things:
+`next.config.ts` sets `output: 'export'`, so the build emits `out/` and no
+server runs. Three capabilities are given up, and they are not obvious from the
+dashboard:
 
-1. **`app/actions.ts` is a Server Action**, used by the footer newsletter on
-   every page. `output: 'export'` refuses to build when one is present.
-2. **`next/image` optimisation is a server route.** A static export has to
-   disable it, which means sending the full 1536px source to a phone instead of
-   a ~25 KB AVIF, undoing the image work on purpose.
+1. **No Server Actions.** The footer newsletter used to post to one and worked
+   with JavaScript disabled. It now validates and submits in the browser, and
+   needs `NEXT_PUBLIC_NEWSLETTER_ENDPOINT` to reach anywhere.
+2. **No `next/image` optimisation.** `images.unoptimized` is on, so every
+   device receives the original file. A phone gets the full 1536px WebP rather
+   than a resized AVIF. This is survivable only because `public/images` was
+   sized to real display slots; check those sizes before adding an image.
+3. **No `headers()` or `redirects()` in `next.config.ts`.** They are silently
+   ignored under export, so the rules live in `render.yaml` instead.
 
-Going static is possible, but it costs the newsletter and responsive images.
+Route handlers also need `export const dynamic = 'force-static'`, which
+`robots.ts`, `sitemap.ts` and `opengraph-image.tsx` all carry. Without it the
+build fails outright.
 
-**Free-tier caveat:** a free Render Web Service spins down after roughly 15
-minutes of inactivity and cold-starts on the next request. For a marketing site
-where most visits are the first of a session, that is worth paying to avoid.
+Adding anything dynamic later means moving back to a Web Service. The full
+unsupported list is in
+`node_modules/next/dist/docs/01-app/02-guides/static-exports.md`.
 
 ### Environment
 
-`NEXT_PUBLIC_SITE_URL` is the only variable the code reads. It is declared in
-`render.yaml` with `sync: false`, so Render prompts for it rather than storing
-it in git.
+Two variables, both declared in `render.yaml` with `sync: false` so Render
+prompts rather than storing them in git.
 
-It has a production fallback, which is exactly why it must be set: an unset
-deployment does not fail, it quietly publishes canonical URLs and sitemap
-entries pointing at production. Being a `NEXT_PUBLIC_*` variable it is inlined
-at **build** time, so changing it needs a redeploy, not a restart.
+`NEXT_PUBLIC_SITE_URL` has a production fallback, which is exactly why it must
+be set: an unset deployment does not fail, it quietly publishes canonical URLs
+and sitemap entries pointing at production.
+
+`NEXT_PUBLIC_NEWSLETTER_ENDPOINT` is where the footer form posts. Unset is a
+supported state. Because there is no server, this request happens in the
+browser and the value is public, so a provider API key cannot be used here.
+
+Both are `NEXT_PUBLIC_*`, so they are inlined at **build** time. Changing
+either needs a redeploy, not a restart.
 
 ### Response headers
 
-Set in `next.config.ts` rather than the Render dashboard, so they are versioned
-with the code and survive a service being recreated. Verified against a
-production server:
+Set in `render.yaml`, because `next.config.ts` cannot set them under a static
+export. Verified by serving `out/` locally exactly as Render does:
 
 | Path | `Cache-Control` |
 |---|---|
@@ -193,7 +203,12 @@ production server:
 | HTML | short-lived, so deploys appear immediately |
 
 `X-Content-Type-Options: nosniff` and `Referrer-Policy` are sent on everything.
-`X-Powered-By` is off. Compression is handled at Render's edge.
+Compression is handled at Render's edge.
+
+There is deliberately **no catch-all rewrite**. That pattern is for single-page
+apps served from one `index.html`. This export pre-renders a real `.html` per
+route, so a catch-all would mask genuine 404s and serve the home page instead.
+Render serves `out/404.html` on its own.
 
 ---
 
