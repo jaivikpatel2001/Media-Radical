@@ -23,7 +23,8 @@
 services:
   - type: web
     runtime: node
-    name: media-radical
+    # Matches the hostname already in use: mediaradical.onrender.com
+    name: mediaradical
     plan: free
     # Set this to the region nearest the audience. The audience is in India.
     region: singapore
@@ -52,7 +53,7 @@ services:
       # https://mediaradical.in as its canonical URL and invite Google to
       # deduplicate the preview away. Set it per environment in the dashboard:
       #   production  https://mediaradical.in
-      #   preview     https://media-radical.onrender.com
+      #   staging     https://mediaradical.onrender.com
       - key: NEXT_PUBLIC_SITE_URL
         sync: false
 
