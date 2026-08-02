@@ -421,3 +421,51 @@ page. Confirmed the markup now carries direct `/images/...` paths with no
 **Standing consequence:** adding any dynamic feature later means moving back to
 a Web Service. `output: 'export'` fails at build, not at review, so check the
 unsupported list first.
+
+---
+
+### Staging published production canonical URLs. Fallback removed.
+
+**The incident.** The Render staging site went live with
+`NEXT_PUBLIC_SITE_URL` unset. It did not fail. `data/site.ts` fell back to
+`https://mediaradical.in`, so `mediaradical.onrender.com` served
+`<link rel="canonical" href="https://mediaradical.in">`, a sitemap whose only
+`<loc>` was the production domain, `og:url` pointing at production, and every
+JSON-LD `@id` likewise. A staging site asserting it is production is how a
+domain gets deduplicated out of a search index, and none of it is visible
+without looking at the response.
+
+| Time | What was completed |
+|---|---|
+| 21:20 | **Deleted the production fallback.** `resolveSiteUrl()` in `data/site.ts` replaces `process.env.NEXT_PUBLIC_SITE_URL ?? 'https://mediaradical.in'`. Configured wins; otherwise `RENDER` (set to "true" on every Render service) decides between a hard build failure and the local default of `http://localhost:3000`. `RENDER` is what separates a deploy from someone running `npm run build` on a laptop, so local builds keep working with no `.env` file. |
+| 21:22 | The thrown error carries the fix rather than the diagnosis: which dashboard field, the two correct values, and the fact that it is inlined at build time so a restart will not pick it up. |
+| 21:24 | Trailing slashes are stripped, because `${site.url}/sitemap.xml` would otherwise produce a double slash and canonical URLs have to match byte for byte. |
+
+**Verified all four paths, rather than reasoning about them:**
+
+1. Local, unset: builds, `<loc>http://localhost:3000</loc>`.
+2. `RENDER=true`, unset: **exit 1** with the intended message.
+3. `RENDER=true` and set: canonical, sitemap and robots `Host` all read
+   `https://mediaradical.onrender.com`.
+4. Value with a trailing slash: `Sitemap: https://mediaradical.onrender.com/sitemap.xml`,
+   no double slash.
+
+**Why a failing build is the right trade.** A build that fails costs minutes and
+names its own fix. A wrong canonical costs indexing on the production domain and
+is silent. The asymmetry decides it.
+
+**Also diagnosed and dismissed as not-bugs**, from the same deploy: the CSS and
+JS 404s and the two missing insight images were stale browser cache from the
+earlier broken `.next` deploy. All chunks and all 11 images return 200, and both
+"missing" images were downloaded from the live host and decoded as valid WebP at
+1200x675. Separately, nav links causing a full page reload is correct today:
+`out/` contains only `index.html`, `404.html` and `_not-found.html`, so every nav
+link targets an unbuilt route and hands off to the browser. That resolves itself
+when those page groups are built.
+
+| Time | What was completed |
+|---|---|
+| 21:40 | **Trimmed `.env.example` from 9 variables to 2.** It listed `NEWSLETTER_API_KEY`, `NEWSLETTER_LIST_ID`, `CONTACT_FORM_TO_EMAIL`, four `SMTP_*`, two `TURNSTILE_*`, `NEXT_PUBLIC_ANALYTICS_ID` and `MAINTENANCE_MODE`, all under a PLANNED heading. No code reads any of them. Verified by grepping every `process.env` access in the source: there are exactly three, and one of them is set by the platform. |
+| 21:42 | Documented `RENDER` in its own section as platform-provided rather than as a settable key, with a warning not to set it locally, since doing so makes your own builds fail by design. |
+| 21:43 | Several of the removed entries were also wrong, not merely unused: the newsletter ones described a server-side API key, which a static export cannot hold, and `MAINTENANCE_MODE` described a `proxy.ts` that does not exist. |
+| 21:44 | Fixed a README line claiming the site "runs with no configuration", which stopped being true for Render builds once the fallback was removed. Confirmed no other file referenced any removed variable. |
